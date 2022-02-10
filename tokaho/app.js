@@ -1,11 +1,8 @@
 'use strict'
 
 
-// credential
-
-
-
 // Library
+const serviceAccount = require('SDK/test-96f35-firebase-adminsdk-m8zbg-84b61cb989.json')
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const express = require("express")
