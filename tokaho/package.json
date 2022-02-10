@@ -1,0 +1,27 @@
+{
+  "name": "csci3100",
+  "version": "1.0.0",
+  "description": "project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/firestore": "^5.0.2",
+    "body-parser": "^1.19.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.17.2",
+    "firebase": "^9.6.6",
+    "firebase-admin": "^10.0.2",
+    "firebase-functions": "^3.17.2",
+    "firebase-tools": "^10.1.5",
+    "nodemailer": "^6.7.2",
+    "uuid": "^8.3.2",
+    "ws": "^8.5.0",
+    "xoauth2": "^1.2.0"
+  }
+}
