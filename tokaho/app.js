@@ -2,7 +2,7 @@
 
 
 // Library
-const serviceAccount = require('SDK/test-96f35-firebase-adminsdk-m8zbg-84b61cb989.json')
+const serviceAccount = require('./SDK/test-96f35-firebase-adminsdk-m8zbg-b145316e72.json')
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const express = require("express")
