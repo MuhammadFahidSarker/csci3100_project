@@ -2,24 +2,24 @@ import { useState } from 'react';
 import { BsHash } from 'react-icons/bs';
 import { FaChevronDown, FaChevronRight, FaPlus } from 'react-icons/fa';
 
-const topics = ['tailwind-css', 'react'];
-const questions = ['jit-compilation', 'purge-files', 'dark-mode'];
-const random = ['variants', 'plugins'];
+const chats = ['Group Chat']
+const googleTools = ['Google Docs', 'Google Sheets', 'Google Drive']
+const zoomTools = ['Join Meeting', 'Create Meeting']
 
-const ChannelBar = () => {
+const ChannelBar = ({changeType}) => {
   return (
     <div className='channel-bar shadow-lg'>
       <ChannelBlock />
       <div className='channel-container'>
-        <Dropdown header='Topics' selections={topics} />
-        <Dropdown header='Questions' selections={questions} />
-        <Dropdown header='Random' selections={random} />
+        <Dropdown header = 'Chat' setType = {changeType} selections={chats}/>
+        <Dropdown header = 'Google Docs' setType = {changeType} selections={googleTools} />
+        <Dropdown header = 'Zoom' selections = {zoomTools} setType={changeType}/>
       </div>
     </div>
   );
 };
 
-const Dropdown = ({ header, selections }) => {
+const Dropdown = ({ header, selections, setType }) => {
   const [expanded, setExpanded] = useState(true);
 
   return (
@@ -35,7 +35,7 @@ const Dropdown = ({ header, selections }) => {
       </div>
       {expanded &&
         selections &&
-        selections.map((selection) => <TopicSelection selection={selection} />)}
+        selections.map((selection) => <TopicSelection selection={selection} changeType={setType} />)}
     </div>
   );
 };
@@ -49,16 +49,24 @@ const ChevronIcon = ({ expanded }) => {
   );
 };
 
-const TopicSelection = ({ selection }) => (
+const TopicSelection = ({ selection, changeType}) => (
   <div className='dropdown-selection'>
     <BsHash size='24' className='text-gray-400' />
-    <h5 className='dropdown-selection-text'>{selection}</h5>
+    <h5 className='dropdown-selection-text' onClick = {(e) => {
+        if(selection === 'Join Meeting'){
+            // join meeting
+        }else if (selection === 'Create Meeting'){
+            // Create meeting
+        }else {
+            changeType(selection)
+        }
+    }}>{selection} </h5>
   </div>
 );
 
 const ChannelBlock = () => (
   <div className='channel-block'>
-    <h5 className='channel-block-text'>Channels</h5>
+    <h5 className='channel-block-text'>Tools</h5>
   </div>
 );
 

@@ -1,5 +1,6 @@
-import { BsPlus, BsFillLightningFill, BsGearFill } from 'react-icons/bs';
-import { FaFire, FaPoo } from 'react-icons/fa';
+import {BsPlus, BsFillLightningFill, BsGearFill, BsInfo} from 'react-icons/bs';
+import {FaFire, FaPoo, FaSearch} from 'react-icons/fa';
+import {AiOutlineLogout, BiSearch, FiLogOut} from "react-icons/all";
 
 const SideBar = () => {
   return (
@@ -8,11 +9,11 @@ const SideBar = () => {
                     
         <SideBarIcon icon={<FaFire size="28" />} />
         <Divider />
-        <SideBarIcon icon={<BsPlus size="32" />} />
-        <SideBarIcon icon={<BsFillLightningFill size="20" />} />
-        <SideBarIcon icon={<FaPoo size="20" />} />
+        <SideBarIcon icon={<BiSearch size="32" />} />
+        <SideBarIcon icon={<BsInfo size="20" />} />
+        <SideBarIcon icon={<BsGearFill size="20" />} />
         <Divider />
-        <SideBarIcon icon={<BsGearFill size="22" />} />
+        <SideBarIcon icon={<FiLogOut size="22" />} />
     </div>
   );
 };
