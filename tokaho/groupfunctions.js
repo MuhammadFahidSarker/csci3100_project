@@ -1,15 +1,21 @@
 'use strict'
 /*
-POST /creategroup -> create group with user being an admin
-POST /deletegroup -> delete group (id)
-POST /updategroup -> update any field related to the group (user == admin)
-	…
+Descriptions:
+ all functions related to group operations
+  - POST /creategroup -> create group with user being an admin
+  - POST /deletegroup -> delete group (id)
+  - POST /updategroup -> update any field related to the group (user == admin)
 
 Exports:
   creategroup HTTP POST:
     required params:
       (header)"authorization": securityToken of the user
       (body)"groupname": the name of group being created
+  deletegroup HTTP POST:
+    required params;
+      (header)"authorization": security token of the users
+      (body)"groupname": the name of group being deleted
+    * the user must be a global admin or a group admin to inital the delete operation
 
 Implementations:
   creategroup:
@@ -130,10 +136,10 @@ module.exports = {
     let isGlobalAdmin = await isAdmin(req.header.verified.uid, req)
     try {
       let querySnapshot = await group_table.where("name", "==", req.body.groupname).get()
-      if (querySnapshot._size > 1){
+      if (querySnapshot._size > 1) {
         return res.status(401).send('multiple group found')
       }
-      if (querySnapshot._size < 1){
+      if (querySnapshot._size < 1) {
         return res.status(401).send('group not found')
       }
 

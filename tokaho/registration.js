@@ -166,7 +166,7 @@ async function send_email(email, identifier) {
   let mailOptions = {
     to: email,
     subject: "Please confirm your Email account",
-    html: "Hello,<br> Please Click on the link to verify your email.<br><a href=" + link + ">Click here to verify</a>"
+    html: "Hello,<br> Please Click on the link to verify your email.<br><a href=" + link + ">Click here to verify</a><br><br><br><br>best,<br>UNION"
   }
 
   try{

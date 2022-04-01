@@ -4,7 +4,8 @@
 
 uses:
   registration (for user registration and verification)
-
+  centralAuth (the gateway to our APIs functions)
+  groupfunctions(create group, delete group, update group's info)
 
 */
 
@@ -58,9 +59,7 @@ app.use((req, res, next) => {
 });
 }
 
-//central auth
-
-
+//Gateway - centralAuth
 app.use('/apis', central_auth.central_auth);
 
 //APIs
@@ -69,6 +68,7 @@ app.get('/verify', registration.verify_email); // not guarded by centralAuth
 app.use('/apis/creategroup',groupfunctions.creategroup);
 app.use('/apis/deletegroup',groupfunctions.deletegroup);
 
+//DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
 
 
