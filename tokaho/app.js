@@ -35,8 +35,9 @@ const PORT = 8080
 /*
 custom functions
 */
+const central_auth = require('./centralAuth.js')
 const registration = require('./registration.js');
-const groupfunctions = require('./groupfunctions.js');
+//const groupfunctions = require('./groupfunctions.js');
 
 //
 app.use(cookieParser());
@@ -56,12 +57,14 @@ app.use((req, res, next) => {
 });
 }
 
+//central auth
+app.use('/', central_auth.central_auth);
 
 //APIs
 app.use('/register', registration.authenticate);
 app.get('/verify', registration.verify_email);
 
-app.use('/creategroup',groupfunctions.creategroup);
+//app.use('/creategroup',groupfunctions.creategroup);
 
 app.use(express.static(path.join(__dirname, 'public')))
 

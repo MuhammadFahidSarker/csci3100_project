@@ -36,13 +36,12 @@ Implementations:
 HTTP response:
   authenticate(registration):
     OK:
-      status 300: created user entries, return user_info
-      status 301: already registered, return "already registered"
+      pass the control to next handler
     Error:
       status 401: invalid token, return "not authorized"
       status 402: no token recieved, return "Missing values"
       status 403: outdated token, return "Token expired"
-      status 404: user email address not verified, return "not registered"
+      status 404: unknown error or user not registered, return error
 
 */
 
@@ -63,20 +62,22 @@ const user_table = firestore.collection('users')
 
 
 module.exports = {
-  central_auth: async function authenticate(req, res, next) {
-    const token = req.headers.authorization || req.cookies['authorization']
-    try {
-      const verified = await admin.auth().verifyIdToken(token)
-      if (verified) {
-        req.header.uid = verified.uid
-        res.header('uid', verified.uid)
-        try {
-          let user_info = await user_table.doc(verified.uid).get()
-          if (!user_info.exists) {
+    central_auth: async function authenticate(req, res, next) {
+      const token = req.headers.authorization || req.cookies['authorization']
+      try {
+        const verified = await admin.auth().verifyIdToken(token)
+        if (verified) {
+          req.header.uid = verified.uid
+          res.header('uid', verified.uid)
+          try {
+            let user_info = await user_table.doc(verified.uid).get()
+            if (!user_info.exists) {
               return res.status(404).send("not registered")
             }
-          } else {
-
+          else {
+            req.header.verified = verified
+            // pass the control to next handler
+            console.log('Passed centralAuth')
             return next()
           }
         } catch (e) {
@@ -95,6 +96,8 @@ module.exports = {
         if (e.errorInfo.code == 'auth/id-token-expired') {
           e = 'Token expired'
           return res.status(403).send(e);
+        } else {
+          return res.status(404).send(e);
         }
       }
     }
