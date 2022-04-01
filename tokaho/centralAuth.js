@@ -42,14 +42,8 @@ HTTP response:
       status 401: invalid token, return "not authorized"
       status 402: no token recieved, return "Missing values"
       status 403: outdated token, return "Token expired"
-      status 404: fail to send email, return "internal error"
+      status 404: user email address not verified, return "not registered"
 
-  verify_email:
-    OK:
-      status 200: verified
-    Error:
-      status 402: userID absent in header, return "Missing userID"
-      status 403: userID not found in DB, return "invalid userID"
 */
 
 
@@ -66,15 +60,10 @@ const os = require('os')
 const firestore = new Firestore();
 const user_table = firestore.collection('users')
 
-//default dummy account
-const smtpTransport = nodemailer.createTransport(
-  "smtps://baidu1pan@gmail.com:" + encodeURIComponent('a987456321') +
-  "@smtp.gmail.com:465"
-);
 
 
 module.exports = {
-  authenticate: async function authenticate(req, res, next) {
+  central_auth: async function authenticate(req, res, next) {
     const token = req.headers.authorization || req.cookies['authorization']
     try {
       const verified = await admin.auth().verifyIdToken(token)
@@ -84,16 +73,11 @@ module.exports = {
         try {
           let user_info = await user_table.doc(verified.uid).get()
           if (!user_info.exists) {
-            verified.role = 'member'
-            verified.preferences = []
-            successornot = create_user(verified)
-            if (successornot)
-              return res.status(300).send(user_info)
-            else {
-              return res.status(404).send('internal error')
+              return res.status(404).send("not registered")
             }
           } else {
-            return res.status(301).send('already registered')
+
+            return next()
           }
         } catch (e) {
           console.log('ERROR:\n', e)
@@ -104,7 +88,6 @@ module.exports = {
         return res.status(401).send('not authorized');
       }
     } catch (e) {
-      console.log(e)
       if (token == null) {
         e = 'Token absent'
         return res.status(402).send(e);
@@ -112,65 +95,10 @@ module.exports = {
         if (e.errorInfo.code == 'auth/id-token-expired') {
           e = 'Token expired'
           return res.status(403).send(e);
-        }else{
-          return res.status(404).send(e);
         }
       }
     }
   },
 
 
-  verify_email: async function verify_email(req, res, next) {
-    if (req.query.id) {
-      let user = await user_table.doc(req.query.id).get()
-      if (user.exists) {
-        user_table.doc(req.query.id).update({
-          verified: true
-        })
-        return res.status(200).send("verified")
-
-      } else {
-        return res.status(403).send("invalid userID")
-      }
-
-    } else {
-      return res.status(402).send("Missing userID")
-    }
-  }
-
 };
-
-
-
-async function create_user(user) {
-  let user_info = {
-    email: user.email,
-    name: user.name || user.email,
-    preferences: user.preferences,
-    profile_icon: user.picture || null,
-    role: user.role,
-    verified: false,
-    groupList: []
-  }
-  user_table.doc(user.uid).set(user_info)
-  return send_email(user.email, user.uid)
-}
-
-
-async function send_email(email, identifier) {
-  let link = "http://" + os.hostname() + "/verify?id=" + identifier;
-  let mailOptions = {
-    to: email,
-    subject: "Please confirm your Email account",
-    html: "Hello,<br> Please Click on the link to verify your email.<br><a href=" + link + ">Click here to verify</a>"
-  }
-  smtpTransport.sendMail(mailOptions, function(e, response) {
-    if (e) {
-      console.log('error sending email', e);
-      return false
-    } else {
-      console.log("verification mail sent:", email);
-      return true
-    }
-  })
-}

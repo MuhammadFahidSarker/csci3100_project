@@ -4,7 +4,8 @@
   "description": "project",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"debug": "set GOOGLE_APPLICATION_CREDENTIALS=SDK/test-96f35-firebase-adminsdk-m8zbg-8e10e14cd1.json && node app.js"
   },
   "author": "",
   "license": "ISC",
