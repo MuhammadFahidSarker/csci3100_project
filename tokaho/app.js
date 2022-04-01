@@ -37,8 +37,8 @@ const PORT = 8080
 custom functions
 */
 const central_auth = require('./centralAuth.js')
-const registration = require('./registration.js');
-const groupfunctions = require('./groupfunctions.js');
+const registration = require('./registration.js')
+const groupfunctions = require('./groupfunctions.js')
 
 //
 app.use(cookieParser());
@@ -64,9 +64,10 @@ app.use((req, res, next) => {
 app.use('/apis', central_auth.central_auth);
 
 //APIs
-app.use('/apis/register', registration.authenticate);
+app.use('/register', registration.authenticate);
 app.get('/verify', registration.verify_email); // not guarded by centralAuth
 app.use('/apis/creategroup',groupfunctions.creategroup);
+app.use('/apis/deletegroup',groupfunctions.deletegroup);
 
 app.use(express.static(path.join(__dirname, 'public')))
 

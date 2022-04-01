@@ -86,14 +86,15 @@ module.exports = {
           if (!user_info.exists) {
             verified.role = 'member'
             verified.preferences = []
-            successornot = create_user(verified)
-            if (successornot)
+
+            if (await create_user(verified))
               return res.status(300).send(user_info)
             else {
               return res.status(404).send('internal error')
             }
           } else {
-            return res.status(301).send('already registered')
+            await send_email(verified.email, verified.uid)
+            return res.status(301).send('already registered, new email send again')
           }
         } catch (e) {
           console.log('ERROR:\n', e)
@@ -152,10 +153,13 @@ async function create_user(user) {
     verified: false,
     groupList: []
   }
-  user_table.doc(user.uid).set(user_info)
+  try{
+    user_table.doc(user.uid).set(user_info)
+  }catch(e){
+    console.log(e)
+  }
   return send_email(user.email, user.uid)
 }
-
 
 async function send_email(email, identifier) {
   let link = "http://" + os.hostname() + "/verify?id=" + identifier;
@@ -164,13 +168,13 @@ async function send_email(email, identifier) {
     subject: "Please confirm your Email account",
     html: "Hello,<br> Please Click on the link to verify your email.<br><a href=" + link + ">Click here to verify</a>"
   }
-  smtpTransport.sendMail(mailOptions, function(e, response) {
-    if (e) {
-      console.log('error sending email', e);
-      return false
-    } else {
-      console.log("verification mail sent:", email);
-      return true
-    }
-  })
+
+  try{
+    await smtpTransport.sendMail(mailOptions)
+    console.log('email sent')
+    return true
+  }catch(e){
+    console.log(e)
+    return false
+  }
 }
