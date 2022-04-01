@@ -1,36 +1,23 @@
 'use strict'
 /*
 Description:
-  This file contains two functions responsible for the user registration
-    - authenticate: sending out verification email
-    - verify_email: verify the email address by the link
-                    inside the verification email
+  - This is a middleware as the security module in this projectId
+  - every incoming apis request go beyonds the /apis/ will be guarded by this
+  centralAuth, only authorized user can move forward
 
 Exports:
-  authenticate: HTTP POST,
+  centralAuth: HTTP POST --> every url after /apis/,
     required params: "authorization" as param in the http post body
                       , it should be the security_token obtain from firebase
                       after firebase-authentication in the client side
-
-  verify_email: HTTP GET,
-    required params: "id" as param in http GET query
-                      e.g.: localhost:8000/verify?id=abcdefg
+    changes:
+      the user data will be put inside the req.header.verified
+        - you can extract all  user metadata from req.header.verified
 
 Implementations:
-  authenticate:
+  centralAuth:
     1. verify the security_token with firebaseio
-    2. check if the user is registered or not
-      YES:
-        return already registered
-      NO:
-        -create new document under the user collection with
-          userID as the  document name
-        - send verification email to the user's email address
-
-  verify_email:
-    1. check if "id" present in http.query
-    2. check if the user represented by "id" present in the DB
-    3. turn verified to True or raise error
+    2. hand in the control to next handler or raise error
 
 
 HTTP response:
