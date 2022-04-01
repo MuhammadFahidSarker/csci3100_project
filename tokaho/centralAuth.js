@@ -17,7 +17,7 @@ Exports:
 Implementations:
   centralAuth:
     1. verify the security_token with firebaseio
-    2. hand in the control to next handler or raise error
+    2. pass the control to next handler or raise error
 
 
 HTTP response:
