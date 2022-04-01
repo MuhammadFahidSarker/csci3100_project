@@ -133,7 +133,7 @@ module.exports = {
     if (!req.body || !req.body.groupname)
       return res.status(402).send('Missing groupname')
     //global admin?
-    let isGlobalAdmin = await isAdmin(req.header.verified.uid, req)
+    let isadmin = await isAdmin(req.header.verified.uid, req)
     try {
       let querySnapshot = await group_table.where("name", "==", req.body.groupname).get()
       if (querySnapshot._size > 1) {
@@ -146,9 +146,9 @@ module.exports = {
       querySnapshot.forEach((docu) => {
         // is group admin?
         let admin_list = docu.data().admins
-        let isadmin = isGlobalAdmin || admin_list.includes(req.header.verified.uid)
+        isadmin = isadmin || admin_list.includes(req.header.verified.uid)
         if (!isadmin) {
-          return res.status(403).send('unauthorized')
+          return false
         }
 
         docu.data().members.forEach((user) => {
@@ -181,6 +181,9 @@ module.exports = {
     } catch (e) {
       console.log("Error", e)
       return res.status(401).send(e)
+    }
+    if (!isadmin) {
+      return res.status(403).send('unauthorized')
     }
     console.log('deleted:', req.body.groupname)
     return res.status(200).send('OK')
