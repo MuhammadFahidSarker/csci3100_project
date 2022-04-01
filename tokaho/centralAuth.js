@@ -28,7 +28,7 @@ HTTP response:
       status 401: invalid token, return "not authorized"
       status 402: no token recieved, return "Missing values"
       status 403: outdated token, return "Token expired"
-      status 404: unknown error or user not registered, return error
+      status 404: unknown error or user not registered or user ac not verified, return error
 
 */
 
@@ -62,6 +62,11 @@ module.exports = {
               return res.status(404).send("not registered")
             }
           else {
+            //isVerified?
+            if(!user_info.data().verified){
+              console.log('user didnt verify his/her email yet')
+              return res.status(404).send("account not verified")
+            }
             req.header.verified = verified
             // pass the control to next handler
             console.log('Passed centralAuth')
