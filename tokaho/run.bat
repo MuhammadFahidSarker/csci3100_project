@@ -1,3 +1,3 @@
-set GOOGLE_APPLICATION_CREDENTIALS=SDK/test-96f35-firebase-adminsdk-m8zbg-b145316e72.json
+set GOOGLE_APPLICATION_CREDENTIALS=SDK/test-96f35-firebase-adminsdk-m8zbg-8e10e14cd1.json
 node app.js
 PAUSE
