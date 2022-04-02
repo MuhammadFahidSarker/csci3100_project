@@ -1,35 +1,98 @@
 'use strict'
 /*
+Descriptions:
+ all functions related to group operations
+  - POST /creategroup -> create group with user being an admin
+  - POST /deletegroup -> delete group (id)
+  - POST /updategroup -> update any field related to the group (user == admin)
+  - POST /querygroup  -> query the group content (excluding the messages(messages can be accessed from the chat API))
 
+  -- working
+  - POST /deletefromgroup -> delete the specified from the group **the field has to be a list e.g. zoomLink, admins, members, docLink
 
-
-POST /creategroup -> create group with user being an admin
-POST /deletegroup -> delete group (id)
-POST /updategroup -> update any field related to the group (user == admin)
-	…
 
 Exports:
   creategroup HTTP POST:
     required params:
-      "authorization": securityToken of the user
-      "groupname": the name of group being created
+      (header)"authorization": securityToken of the user
+      (body)"groupname": the name of group being created
+      *use x-www-form-urlencoded
+    return:
+      HTTP Status + JSON
 
+  deletegroup HTTP POST:
+    required params;
+      (header)"authorization": security token of the users
+      (body)"groupname": the name of group being deleted
+      *use x-www-form-urlencoded
+      * the user must be a global admin or a group admin to inital the delete operation
+    return:
+      HTTP Status + JSON
+
+  updategroup HTTP POST:
+    required params;
+      (header)"authorization": security token of the users
+      (body)"groupname": the name of group being deleted
+      (body)"update": a JSON object represent the update field and value
+          - e.g.  {"groupname":"unhappy","zoomLink":["zoomlink1","zoomlink2"]}
+      *use x-www-form-urlencoded
+      *the user must be a global admin or a group admin to inital the update operation
+    return:
+      HTTP Status + JSON
+
+  querygroup HTTP POST:  (**DO NOT** contain messages, if you need the messages of the group, please visit the chat APIs)
+    required params:
+      (header)"authorization": security Token
+      (body)"groupname": the name of group being queried
+      *use x-www-form-urlencoded
+      *the user must be a global admin or a group admin or a group member to inital the query operation
 
 Implementations:
   creategroup:
-    1. check if groupname, authorization(securityToken) are present in the HTTP POST body
-    2. check if securityToken is valid?
+  ("authorization" in the req.header will be checked and verify by centralAuth)
+    1. check if groupname is present in the HTTP POST body
     3. check if groupname duplicated?
-    4. create new group entry in the DB
+    4. create new group entry in the DB with the user as the only member
+    5. add the group id to the user's group list
+  groupActions:
+    1. check if groupname exist?
+    2. chedk is authorized ? (is admin?)
+  deletegroup: (uses groupActions)
+    0. pass the deletegroup function to groupsActions for checking(constraints)
+      1. delete group from all user's grouplist
+      2. delete group from collections
+  updategroup: (uses groupActions)
+    0. pass updategroup function to groupActions for checking(constraints)
+      1. match fields (reject if it contains the "message" field)
+      2. update fields
+  querygroup: (uses groupActions)
+    0. pass querygroup function go groupActions for checking(constraints)
+      1. check additional constraints ( whether the group is private, if yes, whether the user is an admin or a member of the group)
+      2. return the group content
 
 HTTP response:
   creategroup:
     OK:
-
+      status 200: success, return new group id
     Error:
-
+      status 400: interal error, return error
+      status 401: duplicated groupname, return "invalid/duplicated groupname"
       status 402: no groupname recieved, return "Missing groupname"
-      status 402: no security token recieved, return "Missing token"
+  deletegroup/updategroup:
+    OK:
+      status 200: success, return OK
+    Error:
+      status 400: interal error, return error
+      status 401: duplicated groupname, return "invalid/duplicated groupname"
+             401: not a global admin nor group admin, return "unauthorized"
+      status 402: no groupname recieved, return "Missing groupname"
+
+Return JSON format:
+{
+  Error: xxxxxxxx,   (Optional field: exist if error happened)
+  Succeed: yyyyyyy   (Optional field: exist if the API call runs smoothly)
+}
+
 
 
 
@@ -40,35 +103,201 @@ HTTP response:
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const cookieParser = require("cookie-parser")
-const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer")
 const {
   Firestore
-} = require('@google-cloud/firestore');
+} = require('@google-cloud/firestore')
 const os = require('os')
-const firestore = new Firestore();
+const firestore = new Firestore()
+const group_table = firestore.collection('groups')
 const user_table = firestore.collection('users')
 
 
+async function isAdmin(user, req) {
+  let d = await user_table.doc(req.header.verified.uid).get()
+  //console.log(d)
+  if (d.data().role == 'admin')
+    return true
+  else
+    return false
+}
+
+class Assert extends Error {
+  constructor(message) {
+    super(message); // (1)
+    this.name = "Assertion"
+    this.errormsg=message
+  }
+}
+
+
+async function groupsActions(req, res, next, custom_actions) {
+  //contain group name?
+  if (!req.body || !req.body.groupname)
+    return res.status(402).json({
+      "Error": 'Missing groupname'
+    })
+  //global admin?
+  let isadmin = await isAdmin(req.header.verified.uid, req)
+  try {
+    let querySnapshot = await group_table.where("name", "==", req.body.groupname).get()
+    if (querySnapshot._size > 1) {
+      return res.status(401).json({
+        "Error": 'multiple group found'
+      })
+    }
+    if (querySnapshot._size < 1) {
+      return res.status(401).json({
+        "Error": req.body.groupname + ' not found'
+      })
+    }
+
+    for (var i in querySnapshot.docs) {
+      // is group admin?
+      let docu=querySnapshot.docs[i]
+      let admin_list = docu.data().admins
+      isadmin = isadmin || admin_list.includes(req.header.verified.uid)
+      await custom_actions(req, res, next, docu, isadmin)
+    }
+
+
+  } catch (e) {
+    console.log("Error", e)
+    return res.status(401).json({
+      "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+    })
+  }
+
+}
+
 
 module.exports = {
-  creategroup:async function creategroup(req, res, next) {
-        if(!req.body.groupname)
-          return res.return res.status(402).send('Missing groupname')
-        if(!req.body.authorization)
-          return res.return res.status(402).send('Missing security token')
+  creategroup: async function creategroup(req, res, next) {
+    if (!req.body || !req.body.groupname)
+      return res.status(402).json({
+        "Error": 'Missing groupname'
+      })
+    const q = await group_table.where('name', '==', req.body.groupname).get()
+    if (q._size > 0) {
+      return res.status(401).json({
+        "Error": 'invalid/duplicated groupname'
+      })
+    } else {
+      let group_info = {
+        name: req.body.groupname,
+        description: 'Time to invite others to join',
+        docsLink: [],
+        zoomLink: [],
+        group_icon: null,
+        isBanned: false,
+        isPrivate: false,
+        members: [req.header.verified.uid],
+        admins: [req.header.verified.uid]
+      }
+      //create group
+      try {
+        let resid = ''
+        await group_table
+          .add(group_info)
+          .then(
+            //add group id to user's groupList
+            function(gpRef) {
+              resid = gpRef.id
+              user_table.doc(req.header.verified.uid).get().then((d) => {
+                if (d.exists) {
+                  let temp = d.data().groupList
+                  temp.push(gpRef.id)
+                  console.log("Document data:", d.data().groupList, temp)
+                  user_table.doc(req.header.verified.uid).update({
+                    groupList: temp
+                  })
+                } else {
+                  throw ("unknown error")
+                }
+              })
+            }
+          )
+        //initialize empty message collections
+        group_table.doc(resid).collection("messages").doc('dummy').set({})
+        return res.status(200).json({
+          "Succeed": resid
+        })
+      } catch (e) {
+        console.log(e)
+        return res.status(401).json({
+          "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+        })
+      }
+    }
+  },
 
 
-        if (req.body.groupname && req.body.authorization){
-          
-        }else{
+  deletegroup: async function deletegroup(req, res, next) {
+    groupsActions(req, res, next, (req, res, next, docu, isadmin) => {
+      if (!isadmin) {
+        throw (new Assert('unauthorized'))
+      }
+      docu.data().members.forEach((user) => {
+        console.log(user, 'initializing a delete action on group:', docu.data().name)
+        //delete group from every users's grouplist
+        user_table.doc(user).get().then((d) => {
+          if (d.exists) {
+            let temp = d.data().groupList
 
+            var delIdx = temp.indexOf(docu.id)
+            if (delIdx !== -1) {
+              temp.splice(delIdx, 1)
+            } else {
+              throw (new Assert('multiple group found in user\'s grouplist:' + d.id))
+            }
+            //update user's grouplist
+            user_table.doc(d.id).update({
+              groupList: temp
+            })
+          } else {
+            throw (new Assert('unable to remove the group from user:' + d.id))
+          }
+        })
+      })
+      //remove the group from the groups collection
+      firestore.recursiveDelete(docu.ref)
+      console.log('deleted:', req.body.groupname)
+    })
+  },
+
+  updategroup: async function updategroup(req, res, next) {
+    groupsActions(req, res, next, async (req, res, next, docu, isadmin) => {
+      if (!isadmin) {
+        throw (new Assert('unauthorized'))
+      }
+      let resJson = {}
+      if ('message' in req.body) {
+        throw (new Assert('unable to update "message", please invoke the chat apis instead of updategroup'))
+      }
+      await docu.ref.update(JSON.parse(req.body.update))
+      return res.status(200).json({
+        'Succeed': {
+          'updatedContent': await docu.ref.get().then((d) => {
+            return d.data()
+          })
         }
-  },
-  deletegroup:async function deletegroup(req, res, next) {
-      return
-  },
-  updategroup:async function updategroup(req, res, next) {
-      return
+      })
+    })
   },
 
-};
+  querygroup: async function querygroup(req, res, next) {
+    groupsActions(req, res, next, async (req, res, next, docu, isadmin) => {
+      if (docu.data().isPrivate) {
+        if (!isadmin || !req.header.verified.uid in docu.data().member) {
+          throw (new Assert('Not authorized, the requested group is private'))
+        }
+      }
+      return res.status(200).json({
+        'Succeed': {
+          'Content': docu.data()
+        }
+      })
+    })
+  },
+
+}
