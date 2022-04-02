@@ -67,6 +67,8 @@ app.use('/register', registration.authenticate);
 app.get('/verify', registration.verify_email); // not guarded by centralAuth
 app.use('/apis/creategroup',groupfunctions.creategroup);
 app.use('/apis/deletegroup',groupfunctions.deletegroup);
+app.use('/apis/updategroup',groupfunctions.updategroup);
+app.use('/apis/querygroup',groupfunctions.querygroup);
 
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
