@@ -40,6 +40,7 @@ custom functions
 const central_auth = require('./centralAuth.js')
 const registration = require('./registration.js')
 const groupfunctions = require('./groupfunctions.js')
+const usersManagement = require('./usersManagement.js')
 //
 app.use(cookieParser());
 app.use(bodyParser());
@@ -71,6 +72,7 @@ app.use('/apis/deletegroup',groupfunctions.deletegroup);
 app.use('/apis/updategroup',groupfunctions.updategroup);
 app.use('/apis/querygroup',groupfunctions.querygroup);
 app.use('/apis/listgroup',groupfunctions.listgroup);
+app.use('/apis/passwords',usersManagement.passwords);
 
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
