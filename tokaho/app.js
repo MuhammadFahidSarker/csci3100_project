@@ -40,10 +40,10 @@ custom functions
 const central_auth = require('./centralAuth.js')
 const registration = require('./registration.js')
 const groupfunctions = require('./groupfunctions.js')
-
 //
 app.use(cookieParser());
 app.use(bodyParser());
+
 //DEBUG
 {
 app.use((req, res, next) => {
@@ -59,16 +59,18 @@ app.use((req, res, next) => {
 });
 }
 
+// not guarded by centralAuth
+app.use('/register', registration.authenticate);
+app.get('/verify', registration.verify_email);
+
 //Gateway - centralAuth
 app.use('/apis', central_auth.central_auth);
-
-//APIs
-app.use('/register', registration.authenticate);
-app.get('/verify', registration.verify_email); // not guarded by centralAuth
+//guarded by centralAuth
 app.use('/apis/creategroup',groupfunctions.creategroup);
 app.use('/apis/deletegroup',groupfunctions.deletegroup);
 app.use('/apis/updategroup',groupfunctions.updategroup);
 app.use('/apis/querygroup',groupfunctions.querygroup);
+app.use('/apis/listgroup',groupfunctions.listgroup);
 
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
