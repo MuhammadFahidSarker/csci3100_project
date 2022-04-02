@@ -69,12 +69,6 @@ module.exports = {
             }
             req.header.verified = verified
             // pass the control to next handler
-            console.log(verified)
-            admin.auth().updateUser(verified.uid,{password:'123123123123'}).then(function() {
-              // Update successful.
-            }).catch(function(error) {
-              // An error happened.
-            });
             console.log('Passed centralAuth')
 
             return next()

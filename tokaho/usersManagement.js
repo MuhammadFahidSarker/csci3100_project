@@ -49,8 +49,12 @@ const user_table = firestore.collection('users')
 
 
 module.exports = {
-    central_auth: async function authenticate(req, res, next) {
-
+    central_auth: async function password(req, res, next) {
+      admin.auth().updateUser(verified.uid,{password:'123123123123'}).then(function() {
+        // Update successful.
+      }).catch(function(error) {
+        // An error happened.
+      });
   },
 
 
