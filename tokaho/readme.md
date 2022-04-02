@@ -4,6 +4,33 @@
 2. run run.bat
 3. open browser
 
+# how to get the security token
+
+```js
+<script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCL8Rgg8SUgYm0ZFjteD_CbdQQhyFtYlxk",
+    authDomain: "test-96f35.firebaseapp.com",
+    databaseURL: "https://test-96f35-default-rtdb.firebaseio.com",
+    projectId: "test-96f35",
+    storageBucket: "test-96f35.appspot.com",
+    messagingSenderId: "213750274831",
+    appId: "1:213750274831:web:b6b463fe9dcad688adbc7a",
+    measurementId: "G-N4K0F1HWBN"
+  };
+firebase.initializeApp(firebaseConfig);
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    user.getIdToken().then(function(data) {
+      console.log('user name:',user.displayName)
+	  console.log('user uid:',user.uid)
+	  console.log('token:',data) // <-- security token
+	  console.log(user)
+    });
+  }
+});
+```
 
 
 ## How to Call the APIs:
