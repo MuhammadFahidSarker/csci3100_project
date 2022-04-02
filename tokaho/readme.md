@@ -97,7 +97,7 @@ header:
 body (x-www-form-urlencoded):
 >* groupname: name of group being deleted
 >* update: a JSON-like object to represent the update field and value
->> e.g. if you want to set the zoomlink of group unhappy to be z1 and z2 --> {"groupname":"unhappy","zoomLink":["z1","z2"]}
+>> e.g. if you want to set the zoomlink of group unhappy to be z1 and z2 --> {"name":"unhappy","zoomLink":["z1","z2"]}
 
 
 ### /apis/querygroup
@@ -109,3 +109,9 @@ header:
 
 body (x-www-form-urlencoded):
 >* groupname: name of group being deleted
+
+### /apis/listgroup
+> list all groups that a user is authorized to view
+#### necessary params:
+header: 
+>* authorization: [security token]
