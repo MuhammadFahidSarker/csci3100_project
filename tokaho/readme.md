@@ -2,7 +2,7 @@
 
 1. npm install --save
 2. run run.bat
-3. open browser
+3. send HTTP request
 
 # how to get the security token
 
@@ -51,15 +51,61 @@ firebase.auth().onAuthStateChanged(function(user) {
   * if the API call fails, an "Error" field is present inthe response JSON
    
 ## examples:
-* registration
 
-Even if the user has created an account from the firebase, the registration is *NOT YET* finished
+### /register
+> Even if the user has created an account from the firebase, the registration is *NOT YET* finished 
+> Developer need to invoke the API calls to /register, and present the security token from the firebase
+> Then the user shall recieve an email from his/her email account
+#### necessary params:
+header: 
+* authorization: [security token]
 
-Developer need to invoke the API calls to /register, and present the security token from the firebase
+### /verify
+> User can  click on the link inside the email and recieve a success message
+> After that, the user is set to be verified in the database, and he/she is able to invoke subsequence API calls beyond the centralAUth now
+#### necessary params:
+None, just click on the url given in the email
+
+---
+
+### /apis/creategroup
+> Allow every user to create a new group
+> requirement: the groupname must be unique
+#### necessary params:
+header: 
+>* authorization: [security token]
+
+body (x-www-form-urlencoded):
+>* groupname: name of group being created
+
+### /apis/deletegroup
+> Only allow Group admin / Global admin to delete a group
+#### necessary params:
+header: 
+>* authorization: [security token]
+
+body (x-www-form-urlencoded):
+>* groupname: name of group being deleted
+
+### /apis/updategroup
+> Only allow Group admin / Global admin to update the group profile
+> **This API is not designed to handle the messages inside each group, please refer to the chat APIs**
+#### necessary params:
+header: 
+>* authorization: [security token]
+
+body (x-www-form-urlencoded):
+>* groupname: name of group being deleted
+>* update: a JSON-like object to represent the update field and value
+>> e.g. if you want to set the zoomlink of group unhappy to be z1 and z2 --> {"groupname":"unhappy","zoomLink":["z1","z2"]}
 
 
-Then the user shall recieve an email from his/her email account
+### /apis/querygroup
+> Allow all user to get the group profile
+> if the group is private, only admin / group member can invoke this API call
+#### necessary params:
+header: 
+>* authorization: [security token]
 
-User can  click on the link inside the email and recieve a success message
-
-After that, the user is set to be verified in the database, and he/she is able to invoke subsequence API calls beyond the centralAUth now
+body (x-www-form-urlencoded):
+>* groupname: name of group being deleted
