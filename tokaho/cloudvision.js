@@ -1,6 +1,6 @@
 const vision = require('@google-cloud/vision')
 const client = new vision.ImageAnnotatorClient({
-  keyFilename: './SDK/notesfeatureKey.json',
+  keyFilename: './SDK/notesKeyFeature.json',
 })
 
 async function read(fileName) {
