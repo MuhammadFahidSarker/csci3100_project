@@ -50,11 +50,20 @@ const user_table = firestore.collection('users')
 
 module.exports = {
     central_auth: async function password(req, res, next) {
-      admin.auth().updateUser(verified.uid,{password:'123123123123'}).then(function() {
+      uid,newpassword // input parameters
+
+
+
+      uid=req.headers.verified.uid//user who invoke the api
+
+
+
+      admin.auth().updateUser(verified.uid,{password:newpassword}).then(function() {
         // Update successful.
       }).catch(function(error) {
         // An error happened.
       });
+
   },
 
 
