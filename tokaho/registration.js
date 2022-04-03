@@ -78,6 +78,7 @@ module.exports = {
         req.header.uid = verified.uid
         res.header('uid', verified.uid)
         try {
+          //checkVerified(verified.uid)
           let user_info = await user_table.doc(verified.uid).get()
           if (!user_info.exists) {
             verified.role = 'member'
@@ -165,7 +166,6 @@ async function send_email(email, identifier) {
       link +
       '>Click here to verify</a><br><br><br><br>best,<br>UNION',
   }
-
   try {
     await smtpTransport.sendMail(mailOptions)
     console.log('email sent')

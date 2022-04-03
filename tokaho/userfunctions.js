@@ -88,4 +88,30 @@ module.exports = {
         })
       })
   },
+  listuser: async function listuser(req, res, next) {
+    try {
+      let allusers = []
+      let isadmin = await isAdmin(req.header.verified.uid, req)
+      let userSnapshot = await user_table.get()
+      // for each group
+      if (!isadmin) {
+        return res.status(401).json({
+          Error: `not authorized`,
+        })
+      }
+      for (let p in userSnapshot.docs) {
+        allusers.push(userSnapshot.docs[p].data())
+      }
+      return res.status(200).json({
+        Succeed: {
+          users: allusers,
+        },
+      })
+    } catch (e) {
+      console.log(e)
+      return res.status(401).json({
+        Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+      })
+    }
+  },
 }

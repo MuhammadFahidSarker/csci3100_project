@@ -32,40 +32,39 @@ HTTP response:
 
 */
 
-
-
 // Library
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-const cookieParser = require("cookie-parser")
-const nodemailer = require("nodemailer");
-const {
-  Firestore
-} = require('@google-cloud/firestore');
+const cookieParser = require('cookie-parser')
+const nodemailer = require('nodemailer')
+const { Firestore } = require('@google-cloud/firestore')
 const os = require('os')
-const firestore = new Firestore();
+const firestore = new Firestore()
 const user_table = firestore.collection('users')
 
-
+async function emailVerification(uid) {
+  const client = await admin.auth().getUser(uid)
+  return client.emailVerified
+}
 
 module.exports = {
-    central_auth: async function authenticate(req, res, next) {
-      const token = req.headers.authorization || req.cookies['authorization']
-      try {
-        const verified = await admin.auth().verifyIdToken(token)
-        if (verified) {
-          req.header.uid = verified.uid
-          res.header('uid', verified.uid)
-          try {
-            let user_info = await user_table.doc(verified.uid).get()
-            if (!user_info.exists) {
-              return res.status(404).send("not registered")
-            }
-          else {
+  central_auth: async function authenticate(req, res, next) {
+    const token = req.headers.authorization || req.cookies['authorization']
+    try {
+      const verified = await admin.auth().verifyIdToken(token)
+      if (verified) {
+        req.header.uid = verified.uid
+        res.header('uid', verified.uid)
+        try {
+          let user_info = await user_table.doc(verified.uid).get()
+          if (!user_info.exists) {
+            return res.status(404).send('not registered')
+          } else {
             //isVerified?
-            if(!user_info.data().verified){
+            console.log(await emailVerification(verified.uid))
+            if (!(await emailVerification(verified.uid))) {
               console.log('user didnt verify his/her email yet')
-              return res.status(404).send("account not verified")
+              return res.status(404).send('account not verified')
             }
             req.header.verified = verified
             // pass the control to next handler
@@ -75,26 +74,24 @@ module.exports = {
           }
         } catch (e) {
           console.log('ERROR:\n', e)
-          throw (e)
+          throw e
         }
       } else {
         console.log('fail')
-        return res.status(401).send('not authorized');
+        return res.status(401).send('not authorized')
       }
     } catch (e) {
       if (token == null) {
         e = 'Token absent'
-        return res.status(402).send(e);
+        return res.status(402).send(e)
       } else {
         if (e.errorInfo.code == 'auth/id-token-expired') {
           e = 'Token expired'
-          return res.status(403).send(e);
+          return res.status(403).send(e)
         } else {
-          return res.status(404).send(e);
+          return res.status(404).send(e)
         }
       }
     }
   },
-
-
-};
+}
