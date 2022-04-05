@@ -1,30 +1,27 @@
-import Channelbar from './components/ChannelBar';
-import ContentContainer from './components/ContentContainer';
-import SideBar from './components/SideBar';
 import {Component} from "react";
+import {BrowserRouter as Router, Route, Routes}  from 'react-router-dom'
+import LoginScreen from "./auth_screen/login";
+import SignupScreen from "./auth_screen/signup";
+import {H1} from "next-gen-ui/lib/components/typography";
+import Home from "./home_screen/home_screen";
+import history from './common/history';
 
 class App extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            type: 'Group Chat'
-        }
     }
 
     render() {
         return (
-            <div className="flex">
-                <SideBar/>
-                <Channelbar changeType = {this.setType} />
-                <ContentContainer type = {this.state.type} />
-            </div>
+            <Router history={history}>
+                <Routes>
+                    <Route path={'/'} element={<Home/>}/>
+                    <Route path={'/login'} element={<LoginScreen/>}/>
+                    <Route path={'/signup'} element={<SignupScreen/>}/>
+                </Routes>
+            </Router>
         );
-    }
-
-    setType = (newType) =>{
-        //console.log(newType)
-        this.setState({type: newType})
     }
 
 }

@@ -2,12 +2,13 @@ import {BsPlus, BsFillLightningFill, BsGearFill, BsInfo} from 'react-icons/bs';
 import {FaFire, FaPoo, FaSearch} from 'react-icons/fa';
 import {AiOutlineLogout, BiSearch, FiLogOut} from "react-icons/all";
 
-const SideBar = () => {
+const SideBar = ({onClick}) => {
   return (
+      // take full height of the screen
     <div className="fixed top-0 left-0 h-screen w-16 flex flex-col
-                  bg-white dark:bg-gray-900 shadow-lg">
+                  bg-white dark:bg-gray-900 shadow-lg" >
                     
-        <SideBarIcon icon={<FaFire size="28" />} />
+        <SideBarIcon icon={<FaFire size="28" onClick={()=> onClick('hide_show')}/>} />
         <Divider />
         <SideBarIcon icon={<BiSearch size="32" />} />
         <SideBarIcon icon={<BsInfo size="20" />} />
@@ -18,8 +19,8 @@ const SideBar = () => {
   );
 };
 
-const SideBarIcon = ({ icon, text = 'tooltip 💡' }) => (
-  <div className="sidebar-icon group">
+const SideBarIcon = ({ icon, text = 'tooltip 💡' , onClick}) => (
+  <div className="sidebar-icon group" onClick={() => onClick?.()}>
     {icon}
     <span class="sidebar-tooltip group-hover:scale-100">
       {text}
