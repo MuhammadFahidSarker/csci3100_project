@@ -36,7 +36,7 @@ export async function signUp(userName, password) {
 /*
 * Returns the google doc link as a string
 * **/
-export async function getGoogleDocLink() {
+export async function getGoogleDocLink(groupID) {
     //dummy google doc link
     return 'https://docs.google.com/document/d/1OFISOmBrpAjoT4mt1wozwxy1XXoXRuwXne33s06SE1k/edit?usp=sharing';
 }
@@ -44,7 +44,7 @@ export async function getGoogleDocLink() {
 /*
 * returns google drive link as a string
 * **/
-export async function getGoogleDriveLink(){
+export async function getGoogleDriveLink(groupID){
     return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75?usp=sharing';
 }
 
@@ -52,13 +52,13 @@ export async function getGoogleDriveLink(){
  * Returns google sheet link as a string
  * **/
 
- export async function getGoogleSheetLink(){
+ export async function getGoogleSheetLink(groupID){
      return 'https://docs.google.com/spreadsheets/d/1qZ_ejiZnkZyUATXvau2xPVkCkmJC0uectTemLU-bx0o/edit?usp=sharing';
  }
 
 
 
- export async function getJoinAbleZoomMeetingLink(){
+ export async function getJoinAbleZoomMeetingLink(groupID){
      return 'https://zoom.us/j/908724981';
  }
 
@@ -66,7 +66,7 @@ export async function getGoogleDriveLink(){
  * get Group Chats
  */
 
-export async function getGroupChats() {
+export async function getGroupChats(groupID) {
     //30 fake chats
     // each chat contains a name (Person name), a time stamp and a text (all in string)
 
