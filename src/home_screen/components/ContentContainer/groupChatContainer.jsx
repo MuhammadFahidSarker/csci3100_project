@@ -34,7 +34,7 @@ export class GroupChatContainer extends Component {
     }
 
     sendNewMessage = (message) => {
-        sendMessage(message, null, this.props.user);
+        sendMessage(message, this.props.groupID, this.props.user);
         this.setState({
             messages: [...this.state.messages, {
                 name: this.props.user.name,
@@ -74,11 +74,11 @@ export class GroupChatContainer extends Component {
 
     render() {
         const {messages, filterBy} = this.state;
-        const {toolbarHidden} = this.props;
+        const {toolbarHidden, group} = this.props;
         if (messages === null) return <LoadingScreen/>;
         return (
             <div className='content-container' style={{marginLeft:toolbarHidden?'64px' : null}}>
-                <TopNavigation toolbarHidden={toolbarHidden} type={'-Group Chat'} onSearch={this.searchMessages}/>
+                <TopNavigation group={group} toolbarHidden={toolbarHidden} type={'- Group Chat'} onSearch={this.searchMessages}/>
                 <ScrollToBottom>
                     <div className='content-list' style={{height: this.getAvailableHeight()}}>
                         {this.getFilteredMessages().map(message => <Post

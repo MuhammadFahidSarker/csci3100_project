@@ -21,13 +21,13 @@ export class DriveContainer extends Component{
 
     render() {
         const {driveLink, loading} = this.state;
-        const {toolbarHidden} = this.props;
+        const {toolbarHidden, group} = this.props;
 
 
 
         return (
             <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}}  className="content-container">
-                <TopNavigation toolbarHidden={toolbarHidden} url={driveLink} type={'-Google Drive'}/>
+                <TopNavigation group={group} toolbarHidden={toolbarHidden} url={driveLink} type={'- Google Drive'}/>
 
                 {driveLink === null ? <LoadingScreen/> : <div>
                     {loading ? <LoadingScreen/> : null}

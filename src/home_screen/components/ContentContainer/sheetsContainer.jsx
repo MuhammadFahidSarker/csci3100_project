@@ -22,12 +22,12 @@ export class SheetsContainer extends Component{
 
     render() {
         const {sheetLink, loading} = this.state;
-        const {toolbarHidden} = this.props;
+        const {toolbarHidden, group} = this.props;
 
 
         return (
             <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}}  id={'doc-container'} className="content-container">
-                <TopNavigation toolbarHidden={toolbarHidden} url={sheetLink} type={'-Google Sheet'}/>
+                <TopNavigation group={group} toolbarHidden={toolbarHidden} url={sheetLink} type={'- Google Sheet'}/>
 
                 {sheetLink === null ? <LoadingScreen/> : <div>
                     {loading ? <LoadingScreen/> : null}

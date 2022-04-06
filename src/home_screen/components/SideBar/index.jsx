@@ -2,10 +2,14 @@ import {BsPlus, BsFillLightningFill, BsGearFill, BsInfo, BsSearch} from 'react-i
 import {FaFire, FaMoon, FaPoo, FaSearch, FaSun, FaUserCircle} from 'react-icons/fa';
 import {AiOutlineLogout, BiGroup, BiSearch, FiLogOut, GrGroup} from "react-icons/all";
 import useDarkMode from "../../hooks/useDarkMode";
+import { useNavigate } from "react-router-dom";
+import {logout} from "../../../repository/repo";
 
 const SideBar = ({onClick, user}) => {
     const [darkTheme, setDarkTheme] = useDarkMode();
     const handleMode = () => setDarkTheme(!darkTheme);
+    let navigate = useNavigate();
+
   return (
       // take full height of the screen
     <div className="fixed top-0 left-0 h-screen w-16 flex flex-col
@@ -14,15 +18,14 @@ const SideBar = ({onClick, user}) => {
         <SideBarIcon icon={<FaFire size="32" onClick={()=> onClick('hide_show')}/>} text={'Show Hide Toolbar'} />
         <Divider />
         <SideBarIcon text={'View/Edit Profile - '+user.name} icon={user?.photoURL === null ? <BiSearch size="32" /> : <img src={user.photoURL} className='avatar'/> } />
-        <SideBarIcon icon={<BiGroup size="32" />} text={'Groups'}/>
+        <SideBarIcon icon={<BiGroup size="32" />} text={'Groups'} onClick={()=> navigate("/group_launcher", { replace: true })}/>
         <SideBarIcon icon={<BsGearFill size="32" />} text={'Settings'}/>
         <Divider />
-        <SideBarIcon icon={darkTheme ? (
-                <FaSun size={'32'} />
-            ) : (
-                <FaMoon size={'32'}/>
-            )} onClick={handleMode} text={darkTheme ? 'Light Theme' : 'Dark Theme'}/>
-        <SideBarIcon icon={<FiLogOut size="22" />} text={'Log Out'}/>
+
+        <SideBarIcon icon={<FiLogOut size="22" />} text={'Log Out'} onClick={(e) => {
+            logout();
+            navigate("/login", { replace: true })
+        }}/>
     </div>
   );
 };

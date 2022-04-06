@@ -1,0 +1,4 @@
+.prev{
+    @apply text-lg text-left text-gray-800 dark:text-white
+    mr-auto whitespace-normal;
+}

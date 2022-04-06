@@ -179,3 +179,91 @@ export async function getGroupChats(groupID) {
         },
     ];
 }
+
+
+/*
+* Returns the group details:
+* Must contain name, description, photoURL
+* */
+export async function getGroupDetails(groupID){
+    // promise fake wait
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    // returning fake group details
+    return {
+        name: 'CSCI Project CUHK',
+        description: 'This is a group for CSCI Project CUHK',
+        photoURL: '',
+        id: groupID
+    };
+}
+
+/*
+* Logs user out of the app
+* **/
+export async function logout(){
+    // promise fake wait
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    // returning fake group details
+    return true;
+}
+
+
+/**
+ * Load All the groups the user is a member of
+ * **/
+export async function getJoinedGroups(){
+    //promise fake wait
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    //returning fake groups
+    return [
+        {
+            name: 'CSCI Project CUHK',
+            description: 'This is a group for CSCI Project CUHK',
+            photoURL: '',
+            id: '1'
+        },
+        {
+            name: 'Group 2',
+            description: 'Desc of group 2',
+            photoURL: '',
+            id: '2'
+        },
+        {
+            name: 'Group 3',
+            description: 'Desc of group 3',
+            photoURL: '',
+            id: '3'
+        },
+        {
+            name: 'Group 4',
+            description: 'Desc of group 4',
+            photoURL: '',
+            id: '4'
+        },
+        {
+            name: 'CSCI Project CUHK',
+            description: 'This is a group for CSCI Project CUHK',
+            photoURL: '',
+            id: '1'
+        },
+        {
+            name: 'Group 2',
+            description: 'Desc of group 2',
+            photoURL: '',
+            id: '2'
+        },
+        {
+            name: 'Group 3',
+            description: 'Desc of group 3',
+            photoURL: '',
+            id: '3'
+        },
+        {
+            name: 'Group 4',
+            description: 'Desc of group 4',
+            photoURL: '',
+            id: '4'
+        }
+        
+    ];
+}

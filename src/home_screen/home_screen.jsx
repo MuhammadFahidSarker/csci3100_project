@@ -3,11 +3,21 @@ import ContentContainer from './components/ContentContainer';
 import SideBar from './components/SideBar';
 import {Component} from "react";
 import './home.css'
-import {getUserDetails, isUserLoggedIn} from "../repository/repo";
+import {getGroupDetails, getUserDetails, isUserLoggedIn} from "../repository/repo";
 import { Navigate } from 'react-router-dom';
 import {LoadingScreen} from "../common/loading";
+import { useLocation } from 'react-router-dom'
 
-class Home extends Component {
+function Home (props) {
+    const location = useLocation();
+
+    return <HomeComponent {...props} groupID={location.pathname.split('/')[2]}/>
+}
+
+const GROUP_NOT_FOUND = 'Group Not Found!';
+const USER_NOT_SIGNED_IN = 'You need to sign in!';
+
+class HomeComponent extends Component {
 
     constructor(props) {
         super(props);
@@ -16,13 +26,35 @@ class Home extends Component {
             loginRequired:null,
             toolbarHidden:false,
             user:null,
+            group:null,
+            error: null,
         }
     }
 
-    componentDidMount() {
-        getUserDetails().then(details => {
-            this.setState({loginRequired: details === null, user: details});
-        })
+    async componentDidMount() {
+        let user, error, group;
+
+        try {
+            user = await getUserDetails();
+        } catch (e){
+            user = null;
+        }
+
+        if(user === null){
+            this.setState({loginRequired: true});
+            return;
+        }
+
+        try {
+            group = await getGroupDetails();
+        }catch (e){
+            group = null;
+        }
+
+
+
+        error =  group === null ? GROUP_NOT_FOUND :  null;
+        this.setState({user, group, error, loginRequired: false});
     }
 
     handleMainBarOnclick = (type) => {
@@ -32,18 +64,28 @@ class Home extends Component {
     }
 
     render() {
-        const {type, loginRequired, toolbarHidden, user} = this.state;
+        const {type, loginRequired, toolbarHidden, user, error, group} = this.state;
+        const {groupID} = this.props;
+
         if(loginRequired === null){
-            return <LoadingScreen/>
+            return <LoadingScreen withTopNav={false}/>
         }
+
         if(loginRequired === true || user === null){
             return <Navigate to={'/login'}/>
         }
+
+        if(group === null && error === GROUP_NOT_FOUND){
+            return <Navigate to={'/group_launcher'}/>
+        }else if(group === null){
+            return <h1>Unknown Error occured!</h1>
+        }
+
         return (
             <div className="flex">
                 <SideBar onClick={this.handleMainBarOnclick} user={user}/>
                 {toolbarHidden ? null : <Channelbar changeType = {this.setType} /> }
-                <ContentContainer toolbarHidden={toolbarHidden} user={user} type = {this.state.type} />
+                <ContentContainer group={group} toolbarHidden={toolbarHidden} user={user} type = {this.state.type} />
             </div>
         );
     }
