@@ -9,13 +9,13 @@ import {SheetsContainer} from "./sheetsContainer";
 const ContentContainer = (props) => {
     switch (props.type){
         case 'Group Chat':
-            return <GroupChatContainer/>
+            return <GroupChatContainer toolbarHidden={props.toolbarHidden} user={props.user}/>
         case 'Google Docs':
-            return <DocsContainer />
+            return <DocsContainer  toolbarHidden={props.toolbarHidden} user={props.user} />
         case 'Google Sheets':
-            return <SheetsContainer />
+            return <SheetsContainer  toolbarHidden={props.toolbarHidden} user={props.user}/>
         case 'Google Drive':
-            return <DriveContainer />
+            return <DriveContainer toolbarHidden={props.toolbarHidden} user={props.user} />
         default: <div/>
     }
 };

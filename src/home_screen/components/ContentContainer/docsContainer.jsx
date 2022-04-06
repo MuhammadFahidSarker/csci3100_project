@@ -2,29 +2,40 @@ import Iframe from "react-iframe";
 import {Component} from "react";
 import {LoadingScreen} from "../../../common/loading";
 import {getGoogleDocLink} from "../../../repository/repo";
+import {getGoogleToolWidth, getGoogleToolHeight, GOOGLE_TOOL_MARGIN_LEFT} from "./etc";
+import TopNavigation from "../TopNavigation";
 
 
-export class DocsContainer extends Component{
+export class DocsContainer extends Component {
     constructor(props) {
         super(props);
-        this.state={
-            docLink:null,
+        this.state = {
+            docLink: null,
+            loading: true,
         }
     }
 
+
+
     componentDidMount() {
-        getGoogleDocLink().then(res => this.setState({docLink:res}))
+        getGoogleDocLink().then(res => this.setState({docLink: res}))
     }
 
     render() {
-        const {docLink} = this.state;
-
-        if(docLink === null)
-            return <LoadingScreen/>;
+        const {docLink, loading} = this.state;
+        const {toolbarHidden} = this.props;
 
         return (
-            <div className="docs-container">
-                <Iframe url={docLink} width={'1080px'} height={'750px'}/>
+            <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}} id={'doc-container'} className="content-container">
+                <TopNavigation toolbarHidden={toolbarHidden} url={docLink} type={'-Google Doc'}/>
+                {docLink === null ? <LoadingScreen/> : <div>
+                    {loading ? <LoadingScreen/> : null}
+                    <Iframe onLoad={() => {
+                        this.setState({loading: false})
+                    }} allowFullScreen={true} url={docLink} width={loading ? '0px' : getGoogleToolWidth(toolbarHidden)}
+                            height={loading ? '0px' : getGoogleToolHeight()}/>
+                </div>}
+
             </div>
         );
     }

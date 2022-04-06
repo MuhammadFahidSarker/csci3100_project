@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BsHash } from 'react-icons/bs';
 import { FaChevronDown, FaChevronRight, FaPlus } from 'react-icons/fa';
 import {getJoinAbleZoomMeetingLink} from "../../../repository/repo";
+import {BiLinkExternal, GoLinkExternal} from "react-icons/all";
 
 const chats = ['Group Chat']
 const googleTools = ['Google Docs', 'Google Sheets', 'Google Drive']
@@ -9,7 +10,7 @@ const zoomTools = ['Join Meeting', 'Create Meeting']
 
 const ChannelBar = ({changeType}) => {
   return (
-    <div className='channel-bar shadow-lg' style={{height:'100vh'}}>
+    <div id={'channelBar'} className='channel-bar shadow-lg' style={{height:'100vh'}}>
       <ChannelBlock />
       <div className='channel-container'>
         <Dropdown header = 'Chat' setType = {changeType} selections={chats}/>
@@ -64,6 +65,7 @@ const TopicSelection = ({ selection, changeType}) => (
             changeType(selection)
         }
     }}>{selection} </h5>
+
   </div>
 );
 

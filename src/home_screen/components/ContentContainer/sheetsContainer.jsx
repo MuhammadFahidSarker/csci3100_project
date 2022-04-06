@@ -2,6 +2,8 @@ import Iframe from "react-iframe";
 import {Component} from "react";
 import {LoadingScreen} from "../../../common/loading";
 import {getGoogleDocLink, getGoogleSheetLink} from "../../../repository/repo";
+import {getGoogleToolWidth, getGoogleToolHeight, GOOGLE_TOOL_MARGIN_LEFT} from "./etc";
+import TopNavigation from "../TopNavigation";
 
 
 export class SheetsContainer extends Component{
@@ -9,6 +11,8 @@ export class SheetsContainer extends Component{
         super(props);
         this.state={
             sheetLink:null,
+            loading: true,
+
         }
     }
 
@@ -17,14 +21,21 @@ export class SheetsContainer extends Component{
     }
 
     render() {
-        const {sheetLink} = this.state;
+        const {sheetLink, loading} = this.state;
+        const {toolbarHidden} = this.props;
 
-        if(sheetLink === null)
-            return <LoadingScreen/>;
 
         return (
-            <div className="docs-container">
-                <Iframe url={sheetLink} width={'1080px'} height={'750px'}/>
+            <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}}  id={'doc-container'} className="content-container">
+                <TopNavigation toolbarHidden={toolbarHidden} url={sheetLink} type={'-Google Sheet'}/>
+
+                {sheetLink === null ? <LoadingScreen/> : <div>
+                    {loading ? <LoadingScreen/> : null}
+                    <Iframe onLoad={() => {
+                        this.setState({loading: false})
+                    }} allowFullScreen={true} url={sheetLink} width={loading ? '0px' : getGoogleToolWidth(toolbarHidden)}
+                            height={loading ? '0px' : getGoogleToolHeight()}/>
+                </div>}
             </div>
         );
     }

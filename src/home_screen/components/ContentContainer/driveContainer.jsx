@@ -1,7 +1,9 @@
 import Iframe from "react-iframe";
 import {Component} from "react";
 import {LoadingScreen} from "../../../common/loading";
-import {getGoogleDocLink, getGoogleDriveLink} from "../../../repository/repo";
+import {getGoogleDriveLink} from "../../../repository/repo";
+import {getGoogleToolWidth, getGoogleToolHeight, GOOGLE_TOOL_MARGIN_LEFT} from "./etc";
+import TopNavigation from "../TopNavigation";
 
 
 export class DriveContainer extends Component{
@@ -9,6 +11,7 @@ export class DriveContainer extends Component{
         super(props);
         this.state={
             driveLink:null,
+            loading:true,
         }
     }
 
@@ -17,14 +20,22 @@ export class DriveContainer extends Component{
     }
 
     render() {
-        const {driveLink} = this.state;
+        const {driveLink, loading} = this.state;
+        const {toolbarHidden} = this.props;
 
-        if(driveLink === null)
-            return <LoadingScreen/>;
+
 
         return (
-            <div className="docs-container">
-                <Iframe url={driveLink} width={'1080px'} height={'750px'}/>
+            <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}}  className="content-container">
+                <TopNavigation toolbarHidden={toolbarHidden} url={driveLink} type={'-Google Drive'}/>
+
+                {driveLink === null ? <LoadingScreen/> : <div>
+                    {loading ? <LoadingScreen/> : null}
+                    <Iframe onLoad={() => {
+                        this.setState({loading: false})
+                    }} allowFullScreen={true} url={driveLink} width={loading ? '0px' : getGoogleToolWidth(toolbarHidden)}
+                            height={loading ? '0px' : getGoogleToolHeight()}/>
+                </div>}
             </div>
         );
     }
