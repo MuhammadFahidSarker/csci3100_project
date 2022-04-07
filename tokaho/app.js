@@ -47,20 +47,34 @@ app.use(bodyParser())
   app.use((req, res, next) => {
     console.log('-----------------------')
     console.log('Time: ', Date.now())
-    next()
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    )
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization') //Add other headers used in your requests
+
+    if ('OPTIONS' == req.method) {
+      res.sendStatus(200)
+    } else {
+      next()
+    }
   })
   app.use((req, res, next) => {
     console.log('Request type: ', req.method)
     console.log('request body')
     console.log(req.body)
+    console.log('header')
+    console.log(req.headers)
     next()
   })
 }
 
 // not guarded by centralAuth
 app.use('/register', registration.authenticate)
-app.get('/verify', registration.verify_email)
-
+app.use('/verify', registration.verify_email)
+app.use('/queryuser', groupfunctions.queryuser)
+app.use('/scandocument', scanfile.scanfile)
 //Gateway - centralAuth
 app.use('/apis', central_auth.central_auth)
 //guarded by centralAuth
@@ -69,7 +83,7 @@ app.use('/apis/deletegroup', groupfunctions.deletegroup)
 app.use('/apis/updategroup', groupfunctions.updategroup)
 app.use('/apis/querygroup', groupfunctions.querygroup)
 app.use('/apis/listgroup', groupfunctions.listgroup)
-app.use('/scandocument', scanfile.scanfile)
+app.use('/apis/queryusergroup', groupfunctions.queryusergroup)
 
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))

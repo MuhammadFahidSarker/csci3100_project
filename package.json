@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.4.3",
+    "firebase": "^9.6.10",
     "next-gen-ui": "^2.1.0",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
