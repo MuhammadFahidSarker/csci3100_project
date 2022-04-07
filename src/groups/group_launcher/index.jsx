@@ -37,7 +37,11 @@ export default class GroupLauncher extends Component{
             if(groups.success){
                 groups=groups.response
             }else{
-                groups=[]
+                // TODO: the JSON below is only for DEBUG, 
+                groups=[{name: 'debug',
+                        description: 'please remove me in group_launcher/index.jsx afterward',
+                        photoURL: '',
+                        id: 0}]
             }
         }catch (e){
             groups = [];
