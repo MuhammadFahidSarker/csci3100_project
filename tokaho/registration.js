@@ -94,7 +94,7 @@ module.exports = {
             }
           } else {
             await send_email(verified.email, verified.uid)
-            return res.status(301).send('already registered, new email send again')
+            return res.status(301).send('already registered, please verify your email')
           }
         } catch (e) {
           console.log('ERROR:\n', e)
@@ -141,8 +141,6 @@ module.exports = {
 
 };
 
-
-
 async function create_user(user) {
   let user_info = {
     email: user.email,
@@ -150,7 +148,6 @@ async function create_user(user) {
     preferences: user.preferences,
     profile_icon: user.picture || null,
     role: user.role,
-    verified: false,
     groupList: []
   }
   try{
@@ -158,7 +155,7 @@ async function create_user(user) {
   }catch(e){
     console.log(e)
   }
-  return send_email(user.email, user.uid)
+  return true //send_email(user.email, user.uid)
 }
 
 async function send_email(email, identifier) {

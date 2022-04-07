@@ -16,7 +16,11 @@ class LoginScreen extends Component{
     handleSignIn = async ({email, password}) => {
         this.setState({loading: true});
         const res = await signIn(email, password);
-        this.setState({loginSuccess: res === true, loading: false});
+        if(!res.success){
+            // TODO: pop error to user
+            console.log(res.error)            
+        }
+        this.setState({loginSuccess: res.success === true, loading: false});
     }
 
     render() {

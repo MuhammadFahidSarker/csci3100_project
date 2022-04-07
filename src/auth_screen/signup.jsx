@@ -16,7 +16,13 @@ export  default class SignupScreen extends Component{
     handleSignUp = async ({email, password}) => {
         this.setState({loading: true});
         const res = await signUp(email, password);
-        this.setState({loginSuccess: res === true, loading: false});
+        
+        if(!res.success){
+            // TODO: pop error to user
+            console.log(res.error)            
+        }
+
+        this.setState({loginSuccess: res.success === true, loading: false});
     }
 
     render() {

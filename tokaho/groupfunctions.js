@@ -308,19 +308,54 @@ module.exports = {
   },
 
   querygroup: async function querygroup(req, res, next) {
-    groupsActions(req, res, next, async (req, res, next, docu, isadmin) => {
-      //check membership
-      if (docu.data().isPrivate) {
-        if (!isadmin || !req.header.verified.uid in docu.data().member) {
-          throw (new Assert('Not authorized, the requested group is private'))
+    console.log('querygroup')
+    console.log(req.body)
+    if(req.body.groupname){
+      groupsActions(req, res, next, async (req, res, next, docu, isadmin) => {
+        //check membership
+        if (docu.data().isPrivate) {
+          if (!isadmin || !docu.data().member.includes(req.header.verified.uid)) {
+            throw (new Assert('Not authorized, the requested group is private'))
+          }
         }
-      }
-      return res.status(200).json({
-        'Succeed': {
-          'Content': docu.data()
-        }
+        return res.status(200).json({
+          'Succeed': {
+            'Content': docu.data()
+          }
+        })
       })
-    })
+    }else{
+      if(req.body.groupid){
+        console.log('querygroup by groupid')
+        try{
+          let isadmin = await isAdmin(req.header.verified.uid, req)
+          let groupSnapshot = await group_table.doc(req.body.groupid).get()        
+          let docu = groupSnapshot
+          if (docu.data().isPrivate) {
+            if (!isadmin || !docu.data().members.includes(req.header.verified.uid)) {
+              return res.status(401).json({
+                "Error":'not authorized'
+              })
+            }
+            return res.status(200).json({
+              'Succeed': {
+                'Content': docu.data()
+              }
+            })
+          }
+        }catch(e){
+          console.log(e)
+          return res.status(400).json({
+            "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+          })
+        }
+      }else{
+        return res.status(400).json({
+          "Error": 'please contain groupname or groupid'
+        })
+      }
+    }
+    
   },
 
   listgroup: async function listgroup(req, res, next) {
@@ -331,7 +366,7 @@ module.exports = {
       // for each group
       for (let p in groupSnapshot.docs) {
         if (groupSnapshot.docs[p].data().isprivate) {
-          if (!(isadmin || req.header.verified.uid in groupSnapshot.docs[p].data().members)) {
+          if (!(isadmin || groupSnapshot.docs[p].data().members.includes(req.header.verified.uid))) {
             continue
           }
         }
@@ -350,5 +385,71 @@ module.exports = {
       })
     }
   },
+
+  //TODO: move this to user function
+  queryuser: async function queryuser(req, res, next) {
+    console.log('queryuser')
+    try{
+      if(!req.body.userid){
+        throw new Assert('no userID provided')
+      }
+      let userRecord = await admin.auth().getUser(req.body.userid)
+      let isVerified = userRecord.emailVerified
+      let userSnapshot = await user_table.doc(req.body.userid).get()        
+      let docu = userSnapshot
+      return res.status(200).json({
+        'Succeed': {
+          'isVerified': isVerified,
+          'Content': docu.data()
+        }
+      })
+    }catch(e){
+      console.log(e)
+      return res.status(400).json({
+        "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+      })
+    }
+  },
+
+
+  queryusergroup: async function queryusergroup(req, res, next) {
+    console.log('queryusergroup')
+    console.log(req.body)
+      if(req.body.userid){
+        try{
+          let allgroups=[]
+          let groupSnapshot = await group_table.get()    
+          for (let p in groupSnapshot.docs) {
+            console.log(groupSnapshot.docs[p].data().members)
+            if (!(groupSnapshot.docs[p].data().members.includes(req.body.userid))) {
+              continue
+            }
+            //console.log('list:', groupSnapshot.docs[p].id)
+            let content = groupSnapshot.docs[p].data()
+            content.groupid=groupSnapshot.docs[p].id
+            allgroups.push(content)
+          }
+          console.log(allgroups)
+          return res.status(200).json({
+            'Succeed': {
+              'Content': allgroups
+            }
+          })
+        }catch(e){
+          console.log(e)
+          return res.status(400).json({
+            "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+          })
+        }
+      }else{
+        return res.status(400).json({
+          "Error": 'please contain groupname or groupid'
+        })
+      }
+    
+    
+  },
+
+
 
 }
