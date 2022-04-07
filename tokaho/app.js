@@ -57,6 +57,7 @@ app.use(bodyParser())
     if ('OPTIONS' == req.method) {
       res.sendStatus(200)
     } else {
+      console.log('API call to:',req.url)
       next()
     }
   })
