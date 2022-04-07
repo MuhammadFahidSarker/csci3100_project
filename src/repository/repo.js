@@ -289,6 +289,15 @@ export async function getGroupChats(groupID) {
 export async function getGroupDetails(groupID){
     //this is just a dummy photo
     let dummyIcon='https://cdn.pixabay.com/photo/2017/11/10/05/46/group-2935521_960_720.png'
+    
+    // return {
+    //     name: 'debug ',
+    //     description: 'de-ing bug',
+    //     photoURL: dummyIcon,
+    //     id: 0
+    // };
+    
+    
     try{    
         let token = await user.getIdToken()
         let res = await fetch(baseURL+'/apis/querygroup', {
@@ -339,12 +348,16 @@ export async function logout(){
  *  else => query userID
  * 
  * implementation: 1. get user's groups --> get group's content
+ * 
+ * TODO
  * **/
 export async function getJoinedGroups(userID=null){
-
     //get user's groups
     try{
-        let token = await user.getIdToken()
+        //user === null if the user is not logged in
+        if(!userID)
+            console.log('WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in')
+        let token = await user.getIdToken() 
         let res = await fetch(baseURL+'/apis/queryusergroup', {
             method: 'POST',
             mode: 'cors', // no-cors, *cors, same-origin        
@@ -356,6 +369,7 @@ export async function getJoinedGroups(userID=null){
             body: new URLSearchParams({userid:userID||user.uid}) 
         })
         let resBody=await res.json()
+        console.log(resBody)
         let groups = resBody.Content
 
         let groupContent=[]
@@ -369,6 +383,7 @@ export async function getJoinedGroups(userID=null){
         }
         return {success:true,response:groupContent};
     }catch(e){
+        console.log('getJoinedGroups() failed:\n',e)
         return {success:false,error:e}
     }
     

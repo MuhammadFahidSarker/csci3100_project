@@ -59,13 +59,13 @@ module.exports = {
           try {
             let user_info = await user_table.doc(verified.uid).get()
             if (!user_info.exists) {
-              return res.status(404).send("not registered")
+              return res.status(404).json({Error:" not registered"})
             }
           else {
             //isVerified?
             if(!user_info.data().verified){
               console.log('user didnt verify his/her email yet')
-              return res.status(404).send("account not verified")
+              return res.status(404).json({Error:"account not verified"})
             }
             req.header.verified = verified
             // pass the control to next handler
@@ -78,18 +78,18 @@ module.exports = {
         }
       } else {
         console.log('fail')
-        return res.status(401).send('not authorized');
+        return res.status(401).send({Error:'not authorized'});
       }
     } catch (e) {
       if (token == null) {
         e = 'Token absent'
-        return res.status(402).send(e);
+        return res.status(402).json({"Error": JSON.stringify(e, Object.getOwnPropertyNames(e))})
       } else {
         if (e.errorInfo.code == 'auth/id-token-expired') {
           e = 'Token expired'
-          return res.status(403).send(e);
+          return res.status(403).json({"Error": JSON.stringify(e, Object.getOwnPropertyNames(e))})
         } else {
-          return res.status(404).send(e);
+          return res.status(404).json({"Error": JSON.stringify(e, Object.getOwnPropertyNames(e))})
         }
       }
     }

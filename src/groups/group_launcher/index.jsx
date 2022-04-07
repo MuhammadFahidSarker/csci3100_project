@@ -34,6 +34,11 @@ export default class GroupLauncher extends Component{
 
         try {
             groups = await getJoinedGroups(user.userID);
+            if(groups.success){
+                groups=groups.response
+            }else{
+                groups=[]
+            }
         }catch (e){
             groups = [];
         }
