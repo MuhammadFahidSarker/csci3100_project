@@ -47,6 +47,7 @@ export async function getUserDetails(userID=null) {
             isVerified: resBody.isVerified, //whether the user being queried is verified
             name: resBody.Content.name,
             userID: userID||user.uid,
+            isAdmin: resBody.Content.role == 'admin',
             photoURL: resBody.Content.profile_icon||'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80'
         }
     }catch(e){
