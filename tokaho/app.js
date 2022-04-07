@@ -38,6 +38,7 @@ const central_auth = require('./centralAuth.js')
 const registration = require('./registration.js')
 const groupfunctions = require('./groupfunctions.js')
 const scanfile = require('./scanfile.js')
+const zoomlink = require('./zoomlink.js')
 //
 app.use(cookieParser())
 app.use(bodyParser())
@@ -57,7 +58,7 @@ app.use(bodyParser())
     if ('OPTIONS' == req.method) {
       res.sendStatus(200)
     } else {
-      console.log('API call to:',req.url)
+      console.log('API call to:', req.url)
       next()
     }
   })
@@ -76,6 +77,7 @@ app.use('/register', registration.authenticate)
 app.use('/verify', registration.verify_email)
 app.use('/queryuser', groupfunctions.queryuser)
 app.use('/scandocument', scanfile.scanfile)
+app.use('/getzoom', zoomlink.retrieveZoomLink)
 //Gateway - centralAuth
 app.use('/apis', central_auth.central_auth)
 //guarded by centralAuth

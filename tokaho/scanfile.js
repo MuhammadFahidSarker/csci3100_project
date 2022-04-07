@@ -21,7 +21,9 @@ const checkread = async (req, res, next) => {
 }
 
 const scanfile = async (req, res, next) => {
-  if (!req.body.url) {
+  // delete this line when code is implemented from the front end
+  req.body.fileName = 'figure-65.png'
+  if (!req.body.fileName) {
     return res.status(401).json({
       Error: 'File not found',
     })
@@ -29,7 +31,7 @@ const scanfile = async (req, res, next) => {
   try {
     // Need to change the default relative url to the req.body.url
     const [result] = await client.documentTextDetection(
-      `gs://test-96f35.appspot.com/images/figure-65.png`,
+      `gs://test-96f35.appspot.com/images/${req.body.fileName}`,
     )
     console.log(result)
     const fullTextAnnotation = result.fullTextAnnotation
