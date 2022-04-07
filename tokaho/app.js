@@ -13,26 +13,23 @@ uses:
 const serviceAccount = require('./SDK/test-96f35-firebase-adminsdk-m8zbg-8e10e14cd1.json')
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-const express = require("express")
-const path = require("path")
-const cors = require("cors")
-const cookieParser = require("cookie-parser")
-const nodemailer = require("nodemailer")
+const express = require('express')
+const path = require('path')
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
+const nodemailer = require('nodemailer')
 const bodyParser = require('body-parser')
 const xoauth2 = require('xoauth2')
-const {
-  Firestore
-} = require('@google-cloud/firestore')
+const { Firestore } = require('@google-cloud/firestore')
 const os = require('os')
 // initialization
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  projectId: "test-96f35",
-  databaseURL: "https://test-96f35-default-rtdb.firebaseio.com"
+  projectId: 'test-96f35',
+  databaseURL: 'https://test-96f35-default-rtdb.firebaseio.com',
 })
 const app = express()
 const PORT = 8080
-
 
 /*
 custom functions
@@ -40,54 +37,56 @@ custom functions
 const central_auth = require('./centralAuth.js')
 const registration = require('./registration.js')
 const groupfunctions = require('./groupfunctions.js')
+const scanfile = require('./scanfile.js')
 //
 app.use(cookieParser())
 app.use(bodyParser())
 
 //DEBUG
 {
-app.use((req, res, next) => {
-  console.log('-----------------------')
-  console.log('Time: ', Date.now())
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS')
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization') //Add other headers used in your requests
+  app.use((req, res, next) => {
+    console.log('-----------------------')
+    console.log('Time: ', Date.now())
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    )
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization') //Add other headers used in your requests
 
-  if ('OPTIONS' == req.method) {
-    res.sendStatus(200)
-  } else {
+    if ('OPTIONS' == req.method) {
+      res.sendStatus(200)
+    } else {
+      next()
+    }
+  })
+  app.use((req, res, next) => {
+    console.log('Request type: ', req.method)
+    console.log('request body')
+    console.log(req.body)
+    console.log('header')
+    console.log(req.headers)
     next()
-  }
-})
-app.use((req, res, next) => {
-  console.log('Request type: ', req.method)
-  console.log('request body')
-  console.log(req.body)
-  console.log('header')
-  console.log(req.headers)
-  next()
-})
+  })
 }
 
 // not guarded by centralAuth
 app.use('/register', registration.authenticate)
 app.use('/verify', registration.verify_email)
-app.use('/queryuser',groupfunctions.queryuser)
-
+app.use('/queryuser', groupfunctions.queryuser)
+app.use('/scandocument', scanfile.scanfile)
 //Gateway - centralAuth
 app.use('/apis', central_auth.central_auth)
 //guarded by centralAuth
-app.use('/apis/creategroup',groupfunctions.creategroup)
-app.use('/apis/deletegroup',groupfunctions.deletegroup)
-app.use('/apis/updategroup',groupfunctions.updategroup)
-app.use('/apis/querygroup',groupfunctions.querygroup)
-app.use('/apis/listgroup',groupfunctions.listgroup)
-app.use('/apis/queryusergroup',groupfunctions.queryusergroup)
-
+app.use('/apis/creategroup', groupfunctions.creategroup)
+app.use('/apis/deletegroup', groupfunctions.deletegroup)
+app.use('/apis/updategroup', groupfunctions.updategroup)
+app.use('/apis/querygroup', groupfunctions.querygroup)
+app.use('/apis/listgroup', groupfunctions.listgroup)
+app.use('/apis/queryusergroup', groupfunctions.queryusergroup)
 
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
-
 
 // serve
 app.listen(PORT, () => console.log(`serving on port ${PORT}`))
