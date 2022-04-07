@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.4.3",
+    "@google-cloud/vision": "^2.4.2",
     "firebase": "^9.6.10",
     "next-gen-ui": "^2.1.0",
     "prop-types": "^15.8.1",
