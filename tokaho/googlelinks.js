@@ -5,7 +5,7 @@ const firestore = new Firestore()
 const group_table = firestore.collection('groups')
 
 // Service account
-const credentials = `./SDK/test-96f35-firebase-adminsdk-m8zbg-8e10e14cd1.json`
+const credentials = `./SDK/csci3100-340406-1af9fb71166c.json`
 
 // Add drive scope (gives full access)
 const SCOPES = ['https://www.googleapis.com/auth/drive']
