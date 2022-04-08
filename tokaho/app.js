@@ -39,6 +39,7 @@ const registration = require('./registration.js')
 const groupfunctions = require('./groupfunctions.js')
 const scanfile = require('./scanfile.js')
 const zoomlink = require('./zoomlink.js')
+const googlelinks = require('./googlelinks.js')
 //
 app.use(cookieParser())
 app.use(bodyParser())
@@ -78,6 +79,10 @@ app.use('/verify', registration.verify_email)
 app.use('/queryuser', groupfunctions.queryuser)
 app.use('/scandocument', scanfile.scanfile)
 app.use('/getzoom', zoomlink.retrieveZoomLink)
+app.use('/getgoogledoc', googlelinks.createDoc)
+app.use('/getgooglesheet', googlelinks.createSheet)
+app.use('/getgooglePres', googlelinks.createPres)
+
 //Gateway - centralAuth
 app.use('/apis', central_auth.central_auth)
 //guarded by centralAuth
