@@ -40,9 +40,8 @@ const retrieveZoomLink = async (req, res, next) => {
           "waiting_room": false,
           "join_before_host": true,
           "email_notification": false,
-          "registrants_email_notification":false.
+          "registrants_email_notification":false
         }
-      ,
     },
     auth: {
       bearer: token,
@@ -68,7 +67,7 @@ const retrieveZoomLink = async (req, res, next) => {
       console.log(response)
       res
         .status(200)
-        .json({JoinURL: response.join_url })
+        .json({JoinURL: response.join_url})
     })
     .catch(function (err) {
       // API call failed...
