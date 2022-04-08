@@ -68,7 +68,7 @@ const retrieveZoomLink = async (req, res, next) => {
       console.log(response)
       res
         .status(200)
-        .json({ StartURL: response.start_url, JoinURL: response.join_url })
+        .json({JoinURL: response.join_url })
     })
     .catch(function (err) {
       // API call failed...
