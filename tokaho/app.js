@@ -82,20 +82,18 @@ app.use('/getzoom', zoomlink.retrieveZoomLink)
 app.use('/getgoogledoc', googlelinks.createDoc)
 app.use('/getgooglesheet', googlelinks.createSheet)
 app.use('/getgooglePres', googlelinks.createPres)
-
+app.use('/banuser', groupfunctions.banuser) //!!!!!
 
 //Gateway - centralAuth
 app.use('/apis', central_auth.central_auth)
 //guarded by centralAuth
-app.use('/apis/creategroup', groupfunctions.creategroup)
 app.use('/apis/deletegroup', groupfunctions.deletegroup)
 app.use('/apis/updategroup', groupfunctions.updategroup)
 app.use('/apis/querygroup', groupfunctions.querygroup)
-app.use('/apis/listgroup', groupfunctions.listgroup)
+app.use('/apis/creategroup', groupfunctions.creategroup)
 app.use('/apis/queryusergroup', groupfunctions.queryusergroup)
-app.use('/apis/banuser', groupfunctions.banuser)
-
-
+app.use('/apis/listgroup', groupfunctions.listgroup)
+app.use('/apis/joingroup', groupfunctions.joingroup)
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
 

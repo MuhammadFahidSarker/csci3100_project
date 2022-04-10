@@ -122,54 +122,52 @@ Return JSON format:
 // Library
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-const cookieParser = require("cookie-parser")
-const nodemailer = require("nodemailer")
-const {
-  Firestore
-} = require('@google-cloud/firestore')
+const cookieParser = require('cookie-parser')
+const nodemailer = require('nodemailer')
+const { Firestore, FieldValue } = require('@google-cloud/firestore')
 const os = require('os')
+const { deepStrictEqual } = require('assert')
+const { resolveSoa } = require('dns')
 const firestore = new Firestore()
 const group_table = firestore.collection('groups')
 const user_table = firestore.collection('users')
 
-
 async function isAdmin(user, req) {
   let d = await user_table.doc(req.header.verified.uid).get()
   //console.log(d)
-  if (d.data().role == 'admin')
-    return true
-  else
-    return false
+  if (d.data().role == 'admin') return true
+  else return false
 }
 
 class Assert extends Error {
   constructor(message) {
-    super(message); // (1)
-    this.name = "Assertion"
+    super(message) // (1)
+    this.name = 'Assertion'
     this.errormsg = message
   }
 }
 
-
 async function groupsActions(req, res, next, custom_actions) {
-  console.log('groupaction on:',req.body.groupname)
+  console.log('groupaction on:', req.body.groupname)
   //contain group name?
   if (!req.body || !req.body.groupname)
     return res.status(402).json({
-      "Error": 'Missing groupname'
+      Error: 'Missing groupname',
     })
   //global admin?
   let isadmin = await isAdmin(req.header.verified.uid, req)
   try {
-    let querySnapshot = await group_table.where("name", "==", req.body.groupname).get()
+    let querySnapshot = await group_table
+      .where('name', '==', req.body.groupname)
+      .get()
     if (querySnapshot._size > 1) {
       return res.status(401).json({
-        "Error": 'multiple group found'
+        Error: 'multiple group found',
       })
     }
     if (querySnapshot._size < 1) {
       return res.status(401).json({
-        "Error": req.body.groupname + ' not found'
+        Error: req.body.groupname + ' not found',
       })
     }
 
@@ -182,189 +180,216 @@ async function groupsActions(req, res, next, custom_actions) {
       //custom functions
       await custom_actions(req, res, next, docu, isadmin)
     }
-
   } catch (e) {
-    console.log("Error", e)
+    console.log('Error', e)
     return res.status(401).json({
-      "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+      Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
     })
   }
-
 }
-
 
 module.exports = {
   creategroup: async function creategroup(req, res, next) {
     if (!req.body || !req.body.groupname)
       return res.status(402).json({
-        "Error": 'Missing groupname'
+        Error: 'Missing groupname',
       })
     const q = await group_table.where('name', '==', req.body.groupname).get()
     if (q._size > 0) {
       return res.status(401).json({
-        "Error": 'invalid/duplicated groupname'
+        Error: 'invalid/duplicated groupname',
       })
     } else {
       let group_info = {
         name: req.body.groupname,
         description: 'Time to invite others to join',
-        docsLink: [],
-        zoomLink: [],
-        group_icon: null,
-        isBanned: false,
+        docsLink: null,
+        sheetLink: null,
+        presLink: null,
+        group_icon:
+          'https://thumbs.dreamstime.com/b/linear-group-icon-customer-service-outline-collection-thin-line-vector-isolated-white-background-138644548.jpg',
         isPrivate: false,
         members: [req.header.verified.uid],
-        admins: [req.header.verified.uid]
+        admins: [req.header.verified.uid],
       }
       //create group
       try {
         let resid = ''
-        await group_table
-          .add(group_info)
-          .then(
-            //add group id to the user's groupList
-            function(gpRef) {
-              resid = gpRef.id
-              user_table.doc(req.header.verified.uid).get().then((d) => {
+        await group_table.add(group_info).then(
+          //add group id to the user's groupList
+          function (gpRef) {
+            resid = gpRef.id
+            user_table
+              .doc(req.header.verified.uid)
+              .get()
+              .then((d) => {
                 if (d.exists) {
                   let temp = d.data().groupList
                   temp.push(gpRef.id)
-                  console.log("Document data:", d.data().groupList, temp)
+                  console.log('Document data:', d.data().groupList, temp)
                   user_table.doc(req.header.verified.uid).update({
-                    groupList: temp
+                    groupList: temp,
                   })
                 } else {
-                  throw ("unknown error")
+                  throw 'unknown error'
                 }
               })
-            }
-          )
+          },
+        )
         //initialize empty message collections
-        group_table.doc(resid).collection("messages").doc('dummy').set({})
+        group_table.doc(resid).collection('messages').doc('dummy').set({})
         return res.status(200).json({
-          "Succeed": resid
+          Succeed: resid,
         })
       } catch (e) {
         console.log(e)
         return res.status(401).json({
-          "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
         })
       }
     }
   },
 
-
   deletegroup: async function deletegroup(req, res, next) {
-    if(req.body.groupname){
+    if (req.body.groupname) {
       groupsActions(req, res, next, (req, res, next, docu, isadmin) => {
         if (!isadmin) {
-          throw (new Assert('unauthorized'))
+          throw new Assert('unauthorized')
         }
+        //////////////////////////////////////////////
+
         docu.data().members.forEach((user) => {
-          console.log(user, 'initializing a delete action on group:', docu.data().name)
+          console.log(
+            user,
+            'initializing a delete action on group:',
+            docu.data().name,
+          )
           //delete group from every user's grouplist
-          user_table.doc(user).get().then((d) => {
-            if (d.exists) {
-              let temp = d.data().groupList
-  
-              var delIdx = temp.indexOf(docu.id)
-              if (delIdx !== -1) {
-                temp.splice(delIdx, 1)
+          user_table
+            .doc(user)
+            .get()
+            .then((d) => {
+              if (d.exists) {
+                //console.log('D - EXIST')
+                let temp = d.data().groupList
+                //console.log('temp: ' + temp)
+                var delIdx = temp.indexOf(docu.id)
+                //console.log('delIdx: ' + delIdx)
+                if (delIdx !== -1) {
+                  temp.splice(delIdx, 1)
+                } else {
+                  throw new Assert(
+                    "multiple group found in user's grouplist:" + d.id,
+                  )
+                }
+                //update user's grouplist
+                user_table.doc(d.id).update({
+                  groupList: temp,
+                })
               } else {
-                throw (new Assert('multiple group found in user\'s grouplist:' + d.id))
+                throw new Assert('unable to remove the group from user:' + d.id)
               }
-              //update user's grouplist
-              user_table.doc(d.id).update({
-                groupList: temp
-              })
-            } else {
-              throw (new Assert('unable to remove the group from user:' + d.id))
-            }
-          })
+            })
         })
         //remove the group from the groups collection
         firestore.recursiveDelete(docu.ref)
         console.log('deleted:', req.body.groupname)
         return res.status(200).json({
-          'Succeed': 'OK'
+          Succeed: 'OK',
         })
       })
-    }else{
-      if(req.body.groupid){
+    } else {
+      if (req.body.groupid) {
         console.log('delete by groupid')
-        try{
+        try {
           let isadmin = await isAdmin(req.header.verified.uid, req)
-          console.log('isadmin',isadmin)
-          let groupSnapshot = await group_table.doc(req.body.groupid).get()        
+          console.log('isadmin', isadmin)
+          let groupSnapshot = await group_table.doc(req.body.groupid).get()
           let docu = groupSnapshot
-          console.log('group data',docu.data())
+          console.log('group data', docu.data())
           if (docu.data().isPrivate) {
-            if (!(isadmin || docu.data().members.includes(req.header.verified.uid))) {
+            if (
+              !(
+                isadmin || docu.data().members.includes(req.header.verified.uid)
+              )
+            ) {
               return res.status(401).json({
-                "Error":'not authorized'
+                Error: 'not authorized',
               })
-            }}
-            docu.data().members.forEach((user) => {
-              console.log(user, 'initializing a delete action on group:', docu.data().name)
-              //delete group from every user's grouplist
-              user_table.doc(user).get().then((d) => {
+            }
+          }
+          docu.data().members.forEach((user) => {
+            console.log(
+              user,
+              'initializing a delete action on group:',
+              docu.data().name,
+            )
+            //delete group from every user's grouplist
+            user_table
+              .doc(user)
+              .get()
+              .then((d) => {
                 if (d.exists) {
                   let temp = d.data().groupList
-      
+
                   var delIdx = temp.indexOf(docu.id)
                   if (delIdx !== -1) {
                     temp.splice(delIdx, 1)
                   } else {
-                    throw (new Assert('multiple group found in user\'s grouplist:' + d.id))
+                    throw new Assert(
+                      "multiple group found in user's grouplist:" + d.id,
+                    )
                   }
                   //update user's grouplist
                   user_table.doc(d.id).update({
-                    groupList: temp
+                    groupList: temp,
                   })
-                } else {                  
-                  throw (new Assert('unable to remove the group from user:' + d.id))
+                } else {
+                  throw new Assert(
+                    'unable to remove the group from user:' + d.id,
+                  )
                 }
               })
-            })
-            //remove the group from the groups collection
-            firestore.recursiveDelete(docu.ref)
-            console.log('deleted:', req.body.groupid)
-            return res.status(200).json({
-              'Succeed': 'OK'
-            })
-          
-        }catch(e){
+          })
+          //remove the group from the groups collection
+          firestore.recursiveDelete(docu.ref)
+          console.log('deleted:', req.body.groupid)
+          return res.status(200).json({
+            Succeed: 'OK',
+          })
+        } catch (e) {
           console.log(e)
           return res.status(400).json({
-            "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+            Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
           })
         }
-      }else{
+      } else {
         return res.status(400).json({
-          "Error": 'please contain groupname or groupid'
+          Error: 'please contain groupname or groupid',
         })
       }
     }
-    
   },
 
   updategroup: async function updategroup(req, res, next) {
     groupsActions(req, res, next, async (req, res, next, docu, isadmin) => {
       if (!isadmin) {
-        throw (new Assert('unauthorized'))
+        throw new Assert('unauthorized')
       }
       let resJson = {}
       if ('message' in req.body) {
-        throw (new Assert('unable to update "message", please invoke the chat apis instead of updategroup'))
+        throw new Assert(
+          'unable to update "message", please invoke the chat apis instead of updategroup',
+        )
       }
       //update
       await docu.ref.update(JSON.parse(req.body.update))
       return res.status(200).json({
-        'Succeed': {
-          'updatedContent': await docu.ref.get().then((d) => {
+        Succeed: {
+          updatedContent: await docu.ref.get().then((d) => {
             return d.data()
-          })
-        }
+          }),
+        },
       })
     })
   },
@@ -372,63 +397,76 @@ module.exports = {
   querygroup: async function querygroup(req, res, next) {
     console.log('querygroup')
     console.log(req.body)
-    if(req.body.groupname){
+    if (req.body.groupname) {
       groupsActions(req, res, next, async (req, res, next, docu, isadmin) => {
         //check membership
         if (docu.data().isPrivate) {
-          if (!isadmin || !docu.data().member.includes(req.header.verified.uid)) {
-            throw (new Assert('Not authorized, the requested group is private'))
+          if (
+            !isadmin ||
+            !docu.data().member.includes(req.header.verified.uid)
+          ) {
+            throw new Assert('Not authorized, the requested group is private')
           }
         }
         return res.status(200).json({
-          'Succeed': {
-            'Content': docu.data()
-          }
+          Succeed: {
+            Content: docu.data(),
+          },
         })
       })
-    }else{
-      if(req.body.groupid){
+    } else {
+      if (req.body.groupid) {
         console.log('querygroup by groupid')
-        try{
+        try {
           let isadmin = await isAdmin(req.header.verified.uid, req)
-          let groupSnapshot = await group_table.doc(req.body.groupid).get()        
+          let groupSnapshot = await group_table.doc(req.body.groupid).get()
           let docu = groupSnapshot
           if (docu.data().isPrivate) {
-            if (!isadmin || !docu.data().members.includes(req.header.verified.uid)) {
+            if (
+              !isadmin ||
+              !docu.data().members.includes(req.header.verified.uid)
+            ) {
               return res.status(401).json({
-                "Error":'not authorized'
+                Error: 'not authorized',
               })
             }
             return res.status(200).json({
-              'Succeed': {
-                'Content': docu.data()
-              }
+              Succeed: {
+                Content: docu.data(),
+              },
             })
           }
-        }catch(e){
+        } catch (e) {
           console.log(e)
           return res.status(400).json({
-            "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+            Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
           })
         }
-      }else{
+      } else {
         return res.status(400).json({
-          "Error": 'please contain groupname or groupid'
+          Error: 'please contain groupname or groupid',
         })
       }
     }
-    
   },
 
   listgroup: async function listgroup(req, res, next) {
     try {
       let allgroups = []
+      console.log(req.header.verified)
       let isadmin = await isAdmin(req.header.verified.uid, req)
       let groupSnapshot = await group_table.get()
       // for each group
       for (let p in groupSnapshot.docs) {
-        if (groupSnapshot.docs[p].data().isprivate) {
-          if (!(isadmin || groupSnapshot.docs[p].data().members.includes(req.header.verified.uid))) {
+        if (groupSnapshot.docs[p].data().isPrivate) {
+          if (
+            !(
+              isadmin ||
+              groupSnapshot.docs[p]
+                .data()
+                .members.includes(req.header.verified.uid)
+            )
+          ) {
             continue
           }
         }
@@ -436,14 +474,14 @@ module.exports = {
         allgroups.push(groupSnapshot.docs[p].data())
       }
       return res.status(200).json({
-        'Succeed': {
-          'groups': allgroups
-        }
+        Succeed: {
+          groups: allgroups,
+        },
       })
     } catch (e) {
       console.log(e)
       return res.status(401).json({
-        "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+        Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
       })
     }
   },
@@ -451,94 +489,124 @@ module.exports = {
   //TODO: move this to user function
   queryuser: async function queryuser(req, res, next) {
     console.log('queryuser')
-    try{
-      if(!req.body.userid){
+    try {
+      if (!req.body.userid) {
         throw new Assert('no userID provided')
       }
       let userRecord = await admin.auth().getUser(req.body.userid)
       let isVerified = userRecord.emailVerified
-      let userSnapshot = await user_table.doc(req.body.userid).get()        
+      let userSnapshot = await user_table.doc(req.body.userid).get()
       let docu = userSnapshot
       return res.status(200).json({
-        'Succeed': {
-          'isVerified': isVerified
+        Succeed: {
+          isVerified: isVerified,
         },
-        'Content': docu.data()
+        Content: docu.data(),
       })
-    }catch(e){
+    } catch (e) {
       console.log(e)
       return res.status(400).json({
-        "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+        Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
       })
     }
   },
 
-    //TODO: move this to user function
-    banuser: async function banuser(req, res, next) {
-      console.log('queryuser')
-      try{
-        if(!req.body.userid){
-          throw new Assert('no userID provided')
-        }
-        let userRecord = await admin.auth().getUser(req.body.userid)
-        let isVerified = userRecord.emailVerified
-        let userSnapshot = await user_table.doc(req.body.userid).get()        
-        let docu = userSnapshot.data()
-        //ban user
-        await docu.ref.update({isBanned:true})
-
-        return res.status(200).json({
-          'Succeed': {
-            'isVerified': isVerified
-          },
-          'Content': docu.ref.data()
-        })
-      }catch(e){
-        console.log(e)
-        return res.status(400).json({
-          "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
-        })
+  //TODO: move this to user function
+  banuser: async function banuser(req, res, next) {
+    console.log('banuser')
+    try {
+      if (!req.body.userid) {
+        throw new Assert('no userID provided')
       }
-    },
+      let userRecord = await admin.auth().getUser(req.body.userid)
+      let isVerified = userRecord.emailVerified
+      let userSnapshot = await user_table.doc(req.body.userid).get()
+      let docu = userSnapshot
+      //ban user
+      await docu.ref.update({ isBanned: true })
+
+      return res.status(200).json({
+        Succeed: {
+          isVerified: isVerified,
+        },
+        Content: docu.data(),
+      })
+    } catch (e) {
+      console.log(e)
+      return res.status(400).json({
+        Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+      })
+    }
+  },
 
   queryusergroup: async function queryusergroup(req, res, next) {
     console.log('queryusergroup')
     console.log(req.body)
-      if(req.body.userid){
-        try{
-          let allgroups=[]
-          let groupSnapshot = await group_table.get()    
-          for (let p in groupSnapshot.docs) {
-            console.log(groupSnapshot.docs[p].data().members)
-            if (!(groupSnapshot.docs[p].data().members.includes(req.body.userid))) {
-              continue
-            }
-            //console.log('list:', groupSnapshot.docs[p].id)
-            let content = groupSnapshot.docs[p].data()
-            content.groupid=groupSnapshot.docs[p].id
-            allgroups.push(content)
+    if (req.body.userid) {
+      try {
+        let allgroups = []
+        let groupSnapshot = await group_table.get()
+        for (let p in groupSnapshot.docs) {
+          console.log(groupSnapshot.docs[p].data().members)
+          if (!groupSnapshot.docs[p].data().members.includes(req.body.userid)) {
+            continue
           }
-          console.log(allgroups)
-          return res.status(200).json({
-            'Succeed': {
-              'Content': allgroups
-            }
-          })
-        }catch(e){
-          console.log(e)
-          return res.status(400).json({
-            "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
-          })
+          //console.log('list:', groupSnapshot.docs[p].id)
+          let content = groupSnapshot.docs[p].data()
+          content.groupid = groupSnapshot.docs[p].id
+          allgroups.push(content)
         }
-      }else{
+        console.log(allgroups)
+        return res.status(200).json({
+          Succeed: {
+            Content: allgroups,
+          },
+        })
+      } catch (e) {
+        console.log(e)
         return res.status(400).json({
-          "Error": 'please contain groupname or groupid'
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
         })
       }
-    
-    
+    } else {
+      return res.status(400).json({
+        Error: 'please contain groupname or groupid',
+      })
+    }
   },
 
+  joingroup: async function joingroup(req, res, next) {
+    console.log('join group')
+    console.log(req.body)
+    const uid = req.header.verified.uid
+    const groupid = req.body.groupid
+    if (groupid) {
+      try {
+        // update in group collection
+        let groupSnapshot = await group_table.doc(groupid).get()
+        console.log('group data', groupSnapshot.data())
+        await groupSnapshot.ref.update({ members: FieldValue.arrayUnion(uid) })
 
+        // update in users collection
+        let userSnapshot = await user_table.doc(uid).get()
+        console.log('user data', userSnapshot.data())
+        await userSnapshot.ref.update({
+          groupList: FieldValue.arrayUnion(groupid),
+        })
 
+        return res.status(200).json({
+          Succeed: true,
+        })
+      } catch (e) {
+        console.log(e)
+        return res.status(400).json({
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+        })
+      }
+    } else {
+      return res.status(400).json({
+        Error: 'please contain groupid',
+      })
+    }
+  },
 }

@@ -45,7 +45,7 @@ export async function getUserDetails(userID = null) {
       body: new URLSearchParams({ userid: userID || user.uid }),
     })
     let resBody = await res.json()
-    console.log('debug get UserDetails\n',resBody)
+    console.log('debug get UserDetails\n', resBody)
     return {
       success: true,
       isVerified: resBody.isVerified, //whether the user being queried is verified
@@ -238,8 +238,8 @@ export async function getGoogleSheetLink(groupID) {
   return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75'
 }
 
-export async function getGoogleDriveLink(groupID){
-  return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75';
+export async function getGoogleDriveLink(groupID) {
+  return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75'
 }
 
 /**
@@ -483,10 +483,9 @@ export async function logout() {
  * TODO
  * **/
 export async function getJoinedGroups(userID = null) {
-
   return {
     success: true,
-    response:[
+    response: [
       {
         name: 'CSCI Proj',
         description: 'smt',
@@ -697,7 +696,7 @@ export async function getJoinedGroups(userID = null) {
         photoURL: 'asd',
         id: 'asd',
       },
-    ]
+    ],
   }
 
   //get user's groups
@@ -717,7 +716,7 @@ export async function getJoinedGroups(userID = null) {
     })
     let resBody = await res.json()
     console.log(resBody)
-    if(resBody.Error){
+    if (resBody.Error) {
       return { success: false, error: resBody.Error }
     }
     let groups = resBody.Content
@@ -739,12 +738,11 @@ export async function getJoinedGroups(userID = null) {
   }
 }
 
-
 /**
  * ban user (ADMIN function)
  */
- export async function banUser(userID = null) {
-  if(!userID){
+export async function banUser(userID = null) {
+  if (!userID) {
     return { success: false, error: 'userID cant be null' }
   }
   try {
@@ -757,16 +755,16 @@ export async function getJoinedGroups(userID = null) {
         Authorization: token,
       },
       // current userID => user.uid
-      body: new URLSearchParams({userid: userID}),
+      body: new URLSearchParams({ userid: userID }),
     })
     let resBody = await res.json()
-    console.log('debug get banUser\n',resBody)
+    console.log('debug get banUser\n', resBody)
     if (res.status === 200) {
       return {
         success: true,
-        updatedProfile:resBody.Content
+        updatedProfile: resBody.Content,
       }
-    }else{
+    } else {
       return { success: false, error: resBody }
     }
   } catch (e) {
@@ -776,11 +774,11 @@ export async function getJoinedGroups(userID = null) {
 
 /**
  * delete group (ADMIN function)
- * param: groupID 
+ * param: groupID
  * return: success:true/false
  */
- export async function deleteGroup(groupID) {
-  if(!groupID){
+export async function deleteGroup(groupID) {
+  if (!groupID) {
     return { success: false, error: 'groupID cant be null' }
   }
   try {
@@ -793,25 +791,21 @@ export async function getJoinedGroups(userID = null) {
         Authorization: token,
       },
       // current userID => user.uid
-      body: new URLSearchParams({groupid: groupID}),
+      body: new URLSearchParams({ groupid: groupID }),
     })
     let resBody = await res.json()
-    console.log('debug get banUser\n',resBody)
+    console.log('debug delete Group\n', resBody)
     if (res.status === 200) {
-      //not a global admin OR not a member in the private group
       return {
         success: true,
-        updatedProfile:resBody.Content
       }
-    }else{
+    } else {
       return { success: false, error: resBody }
     }
-    
   } catch (e) {
     return { success: false, error: e }
   }
 }
-
 
 /**
  * getAllGroups (ADMIN function)
@@ -834,7 +828,7 @@ sheetLink: null.
 zoomLink: (2) ['zoomlink1', 'new']
  * }]
  */
- export async function getAllGroups() {
+export async function getAllGroups() {
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/listgroup', {
@@ -845,19 +839,18 @@ zoomLink: (2) ['zoomlink1', 'new']
         Authorization: token,
       },
       // current userID => user.uid
-      body: new URLSearchParams({dummy:null}),
+      body: new URLSearchParams({ dummy: null }),
     })
     let resBody = await res.json()
-    console.log('debug get banUser\n',resBody)
+    console.log('debug get getAllGroups\n', resBody)
     if (res.status === 200) {
       return {
         success: true,
-        groups:resBody.Succeed.groups
+        groups: resBody.Succeed.groups,
       }
-    }else{
+    } else {
       return { success: false, error: resBody }
     }
-    
   } catch (e) {
     return { success: false, error: e }
   }
