@@ -24,6 +24,7 @@ class App extends Component {
                     <Route path={'/groups/:id'} element={<Home/>}/>
                     <Route path={'/login'} element={<LoginScreen/>}/>
                     <Route path={'/signup'} element={<SignupScreen/>}/>
+                    <Route path={'/profile'} element={<H1>Profile</H1>}/>
                 </Routes>
             </Router>
         );

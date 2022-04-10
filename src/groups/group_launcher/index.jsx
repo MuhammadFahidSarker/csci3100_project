@@ -21,14 +21,10 @@ export default class GroupLauncher extends Component{
     async componentDidMount() {
         let user, groups;
 
-        try {
-            user = await getUserDetails();
-        } catch (e){
-            user = null;
-        }
-
-        if(user === null){
-            this.setState({loginRequired: true});
+        user = await getUserDetails();
+        if(user.success === false){
+            this.setState({loginRequired:true});
+            console.log(user.error);
             return;
         }
 
@@ -37,11 +33,7 @@ export default class GroupLauncher extends Component{
             if(groups.success){
                 groups=groups.response
             }else{
-                // TODO: the JSON below is only for DEBUG, 
-                groups=[{name: 'debug',
-                        description: 'please remove me in group_launcher/index.jsx afterward',
-                        photoURL: '',
-                        id: 0}]
+                groups = [];
             }
         }catch (e){
             groups = [];
