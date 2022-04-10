@@ -283,6 +283,9 @@ module.exports = {
       //remove the group from the groups collection
       firestore.recursiveDelete(docu.ref)
       console.log('deleted:', req.body.groupname)
+      return res.status(200).json({
+        'Succeed': 'OK'
+      })
     })
   },
 
@@ -411,6 +414,33 @@ module.exports = {
     }
   },
 
+    //TODO: move this to user function
+    banuser: async function banuser(req, res, next) {
+      console.log('queryuser')
+      try{
+        if(!req.body.userid){
+          throw new Assert('no userID provided')
+        }
+        let userRecord = await admin.auth().getUser(req.body.userid)
+        let isVerified = userRecord.emailVerified
+        let userSnapshot = await user_table.doc(req.body.userid).get()        
+        let docu = userSnapshot.data()
+        //ban user
+        await docu.ref.update({isBanned:true})
+
+        return res.status(200).json({
+          'Succeed': {
+            'isVerified': isVerified
+          },
+          'Content': docu.ref.data()
+        })
+      }catch(e){
+        console.log(e)
+        return res.status(400).json({
+          "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+        })
+      }
+    },
 
   queryusergroup: async function queryusergroup(req, res, next) {
     console.log('queryusergroup')

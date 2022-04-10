@@ -148,6 +148,7 @@ async function create_user(user) {
     preferences: user.preferences,
     profile_icon: user.picture || null,
     role: user.role,
+    isBanned: false,
     groupList: []
   }
   try{

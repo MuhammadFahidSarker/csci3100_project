@@ -738,3 +738,64 @@ export async function getJoinedGroups(userID = null) {
     return { success: false, error: e }
   }
 }
+
+
+/**
+ * ban user (ADMIN function)
+ */
+ export async function banUser(userID = null) {
+  if(!userID){
+    return { success: false, error: 'userID cant be null' }
+  }
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/queryuser', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({userid: userID}),
+    })
+    let resBody = await res.json()
+    console.log('debug get banUser\n',resBody)
+    return {
+      success: true,
+      updatedProfile:resBody.Content
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * ban user (ADMIN function)
+ */
+ export async function deleteGroup(groupID) {
+  if(!groupID){
+    return { success: false, error: 'groupID cant be null' }
+  }
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/deletegroup', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({userid: userID}),
+    })
+    let resBody = await res.json()
+    console.log('debug get banUser\n',resBody)
+    return {
+      success: true,
+      updatedProfile:resBody.Content
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
