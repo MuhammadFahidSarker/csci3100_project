@@ -81,12 +81,13 @@ async function createUser() {
     body: JSON.stringify({}),
   })
   //DEBUG
-  console.log('createUser()', res.json())
+  let resBody = await res.json()
+  console.log('createUser()', resBody)
   if (res.status != 300) {
     //error in backend side
-    return { success: false, error: res.json() }
+    return { success: false, error: resBody }
   }
-  return { success: true, response: res.json() }
+  return { success: true, response: resBody }
 }
 
 /*
