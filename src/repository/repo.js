@@ -4,7 +4,6 @@ import {
   signOut,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail,
 } from 'firebase/auth'
 import { auth, user } from './firebase_auth'
 //backend server url
@@ -46,7 +45,7 @@ export async function getUserDetails(userID = null) {
       body: new URLSearchParams({ userid: userID || user.uid }),
     })
     let resBody = await res.json()
-    console.log('debug get UserDetails\n', resBody)
+    console.log('debug get UserDetails\n',resBody)
     return {
       success: true,
       isVerified: resBody.isVerified, //whether the user being queried is verified
@@ -99,20 +98,6 @@ export async function sendVerificationEmail() {
   if (user == null) return { success: false, error: 'user==null' }
   try {
     let res = await sendEmailVerification(user)
-    return { success: true, response: res }
-  } catch (e) {
-    return { success: false, error: e }
-  }
-}
-
-/*
- * send password reset email to current user
- * return true if success
- */
-export async function sendPasswordResetEmail() {
-  if (user == null) return { success: false, error: 'user==null' }
-  try {
-    let res = await sendPasswordResetEmail(user, user.email)
     return { success: true, response: res }
   } catch (e) {
     return { success: false, error: e }
@@ -253,8 +238,8 @@ export async function getGoogleSheetLink(groupID) {
   return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75'
 }
 
-export async function getGoogleDriveLink(groupID) {
-  return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75'
+export async function getGoogleDriveLink(groupID){
+  return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75';
 }
 
 /**
@@ -498,9 +483,10 @@ export async function logout() {
  * TODO
  * **/
 export async function getJoinedGroups(userID = null) {
+
   return {
     success: true,
-    response: [
+    response:[
       {
         name: 'CSCI Proj',
         description: 'smt',
@@ -711,7 +697,7 @@ export async function getJoinedGroups(userID = null) {
         photoURL: 'asd',
         id: 'asd',
       },
-    ],
+    ]
   }
 
   //get user's groups
@@ -731,7 +717,7 @@ export async function getJoinedGroups(userID = null) {
     })
     let resBody = await res.json()
     console.log(resBody)
-    if (resBody.Error) {
+    if(resBody.Error){
       return { success: false, error: resBody.Error }
     }
     let groups = resBody.Content
@@ -775,9 +761,13 @@ export async function getJoinedGroups(userID = null) {
     })
     let resBody = await res.json()
     console.log('debug get banUser\n',resBody)
-    return {
-      success: true,
-      updatedProfile:resBody.Content
+    if (res.status === 200) {
+      return {
+        success: true,
+        updatedProfile:resBody.Content
+      }
+    }else{
+      return { success: false, error: resBody }
     }
   } catch (e) {
     return { success: false, error: e }
@@ -785,7 +775,9 @@ export async function getJoinedGroups(userID = null) {
 }
 
 /**
- * ban user (ADMIN function)
+ * delete group (ADMIN function)
+ * param: groupID 
+ * return: success:true/false
  */
  export async function deleteGroup(groupID) {
   if(!groupID){
@@ -801,14 +793,71 @@ export async function getJoinedGroups(userID = null) {
         Authorization: token,
       },
       // current userID => user.uid
-      body: new URLSearchParams({userid: userID}),
+      body: new URLSearchParams({groupid: groupID}),
     })
     let resBody = await res.json()
     console.log('debug get banUser\n',resBody)
-    return {
-      success: true,
-      updatedProfile:resBody.Content
+    if (res.status === 200) {
+      //not a global admin OR not a member in the private group
+      return {
+        success: true,
+        updatedProfile:resBody.Content
+      }
+    }else{
+      return { success: false, error: resBody }
     }
+    
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+
+/**
+ * getAllGroups (ADMIN function)
+ * remark: it will get all groups that a user is authorized to access
+ *  if the user is an admin, basically he can get all groups
+ * 
+ * example: (this is just a demo, this profile is not updated, please refer to the latest group content)
+ * groups:[
+ * {
+admins: [' fmRPCPBMndWbTDxUGedKoN9Lgl73'].
+description: "Time to invite others to join".
+docsLink: "https://docs.google.com/document/d/1vLcn-ShrfyMYsYjUwJXoikLoQ_QOKzBgDfTLA1JJ_XY/edit?usp=drivesdk".
+group_icon: null.
+isBanned: false.
+isPrivate: true.
+members: ['fmRPCPBMndWbTDxUGedKoN9Lgl73'].
+name: "unhapy".
+presLink: null.
+sheetLink: null.
+zoomLink: (2) ['zoomlink1', 'new']
+ * }]
+ */
+ export async function getAllGroups() {
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/listgroup', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({dummy:null}),
+    })
+    let resBody = await res.json()
+    console.log('debug get banUser\n',resBody)
+    if (res.status === 200) {
+      return {
+        success: true,
+        groups:resBody.Succeed.groups
+      }
+    }else{
+      return { success: false, error: resBody }
+    }
+    
   } catch (e) {
     return { success: false, error: e }
   }

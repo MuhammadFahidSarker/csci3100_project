@@ -63,7 +63,8 @@ module.exports = {
             }
           else {
             //isVerified?
-            if(!user_info.data().verified){
+            console.log(verified)
+            if(!verified.email_verified){
               console.log('user didnt verify his/her email yet')
               return res.status(404).json({Error:"account not verified"})
             }

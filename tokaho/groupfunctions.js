@@ -152,6 +152,7 @@ class Assert extends Error {
 
 
 async function groupsActions(req, res, next, custom_actions) {
+  console.log('groupaction on:',req.body.groupname)
   //contain group name?
   if (!req.body || !req.body.groupname)
     return res.status(402).json({
@@ -254,39 +255,98 @@ module.exports = {
 
 
   deletegroup: async function deletegroup(req, res, next) {
-    groupsActions(req, res, next, (req, res, next, docu, isadmin) => {
-      if (!isadmin) {
-        throw (new Assert('unauthorized'))
-      }
-      docu.data().members.forEach((user) => {
-        console.log(user, 'initializing a delete action on group:', docu.data().name)
-        //delete group from every user's grouplist
-        user_table.doc(user).get().then((d) => {
-          if (d.exists) {
-            let temp = d.data().groupList
-
-            var delIdx = temp.indexOf(docu.id)
-            if (delIdx !== -1) {
-              temp.splice(delIdx, 1)
+    if(req.body.groupname){
+      groupsActions(req, res, next, (req, res, next, docu, isadmin) => {
+        if (!isadmin) {
+          throw (new Assert('unauthorized'))
+        }
+        docu.data().members.forEach((user) => {
+          console.log(user, 'initializing a delete action on group:', docu.data().name)
+          //delete group from every user's grouplist
+          user_table.doc(user).get().then((d) => {
+            if (d.exists) {
+              let temp = d.data().groupList
+  
+              var delIdx = temp.indexOf(docu.id)
+              if (delIdx !== -1) {
+                temp.splice(delIdx, 1)
+              } else {
+                throw (new Assert('multiple group found in user\'s grouplist:' + d.id))
+              }
+              //update user's grouplist
+              user_table.doc(d.id).update({
+                groupList: temp
+              })
             } else {
-              throw (new Assert('multiple group found in user\'s grouplist:' + d.id))
+              throw (new Assert('unable to remove the group from user:' + d.id))
             }
-            //update user's grouplist
-            user_table.doc(d.id).update({
-              groupList: temp
-            })
-          } else {
-            throw (new Assert('unable to remove the group from user:' + d.id))
-          }
+          })
+        })
+        //remove the group from the groups collection
+        firestore.recursiveDelete(docu.ref)
+        console.log('deleted:', req.body.groupname)
+        return res.status(200).json({
+          'Succeed': 'OK'
         })
       })
-      //remove the group from the groups collection
-      firestore.recursiveDelete(docu.ref)
-      console.log('deleted:', req.body.groupname)
-      return res.status(200).json({
-        'Succeed': 'OK'
-      })
-    })
+    }else{
+      if(req.body.groupid){
+        console.log('delete by groupid')
+        try{
+          let isadmin = await isAdmin(req.header.verified.uid, req)
+          console.log('isadmin',isadmin)
+          let groupSnapshot = await group_table.doc(req.body.groupid).get()        
+          let docu = groupSnapshot
+          console.log('group data',docu)
+          if (docu.data().isPrivate) {
+            if (!(isadmin || docu.data().members.includes(req.header.verified.uid))) {
+              console.log('?')
+              return res.status(401).json({
+                "Error":'not authorized'
+              })
+            }
+            docu.data().members.forEach((user) => {
+              console.log(user, 'initializing a delete action on group:', docu.data().name)
+              //delete group from every user's grouplist
+              user_table.doc(user).get().then((d) => {
+                if (d.exists) {
+                  let temp = d.data().groupList
+      
+                  var delIdx = temp.indexOf(docu.id)
+                  if (delIdx !== -1) {
+                    temp.splice(delIdx, 1)
+                  } else {
+                    throw (new Assert('multiple group found in user\'s grouplist:' + d.id))
+                  }
+                  //update user's grouplist
+                  user_table.doc(d.id).update({
+                    groupList: temp
+                  })
+                } else {                  
+                  throw (new Assert('unable to remove the group from user:' + d.id))
+                }
+              })
+            })
+            //remove the group from the groups collection
+            firestore.recursiveDelete(docu.ref)
+            console.log('deleted:', req.body.groupname)
+            return res.status(200).json({
+              'Succeed': 'OK'
+            })
+          }
+        }catch(e){
+          console.log(e)
+          return res.status(400).json({
+            "Error": JSON.stringify(e, Object.getOwnPropertyNames(e))
+          })
+        }
+      }else{
+        return res.status(400).json({
+          "Error": 'please contain groupname or groupid'
+        })
+      }
+    }
+    
   },
 
   updategroup: async function updategroup(req, res, next) {
