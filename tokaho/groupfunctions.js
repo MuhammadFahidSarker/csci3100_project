@@ -297,14 +297,13 @@ module.exports = {
           console.log('isadmin',isadmin)
           let groupSnapshot = await group_table.doc(req.body.groupid).get()        
           let docu = groupSnapshot
-          console.log('group data',docu)
+          console.log('group data',docu.data())
           if (docu.data().isPrivate) {
             if (!(isadmin || docu.data().members.includes(req.header.verified.uid))) {
-              console.log('?')
               return res.status(401).json({
                 "Error":'not authorized'
               })
-            }
+            }}
             docu.data().members.forEach((user) => {
               console.log(user, 'initializing a delete action on group:', docu.data().name)
               //delete group from every user's grouplist
@@ -329,11 +328,11 @@ module.exports = {
             })
             //remove the group from the groups collection
             firestore.recursiveDelete(docu.ref)
-            console.log('deleted:', req.body.groupname)
+            console.log('deleted:', req.body.groupid)
             return res.status(200).json({
               'Succeed': 'OK'
             })
-          }
+          
         }catch(e){
           console.log(e)
           return res.status(400).json({
