@@ -4,6 +4,7 @@ import {
   signOut,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from 'firebase/auth'
 import { auth, user } from './firebase_auth'
 //backend server url
@@ -45,7 +46,7 @@ export async function getUserDetails(userID = null) {
       body: new URLSearchParams({ userid: userID || user.uid }),
     })
     let resBody = await res.json()
-    console.log('debug get UserDetails\n',resBody)
+    console.log('debug get UserDetails\n', resBody)
     return {
       success: true,
       isVerified: resBody.isVerified, //whether the user being queried is verified
@@ -98,6 +99,20 @@ export async function sendVerificationEmail() {
   if (user == null) return { success: false, error: 'user==null' }
   try {
     let res = await sendEmailVerification(user)
+    return { success: true, response: res }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/*
+ * send password reset email to current user
+ * return true if success
+ */
+export async function sendPasswordResetEmail() {
+  if (user == null) return { success: false, error: 'user==null' }
+  try {
+    let res = await sendPasswordResetEmail(user, user.email)
     return { success: true, response: res }
   } catch (e) {
     return { success: false, error: e }
@@ -238,8 +253,8 @@ export async function getGoogleSheetLink(groupID) {
   return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75'
 }
 
-export async function getGoogleDriveLink(groupID){
-  return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75';
+export async function getGoogleDriveLink(groupID) {
+  return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75'
 }
 
 /**
@@ -483,10 +498,9 @@ export async function logout() {
  * TODO
  * **/
 export async function getJoinedGroups(userID = null) {
-
   return {
     success: true,
-    response:[
+    response: [
       {
         name: 'CSCI Proj',
         description: 'smt',
@@ -697,7 +711,7 @@ export async function getJoinedGroups(userID = null) {
         photoURL: 'asd',
         id: 'asd',
       },
-    ]
+    ],
   }
 
   //get user's groups
@@ -717,7 +731,7 @@ export async function getJoinedGroups(userID = null) {
     })
     let resBody = await res.json()
     console.log(resBody)
-    if(resBody.Error){
+    if (resBody.Error) {
       return { success: false, error: resBody.Error }
     }
     let groups = resBody.Content
