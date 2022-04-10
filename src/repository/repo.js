@@ -812,21 +812,6 @@ export async function deleteGroup(groupID) {
  * remark: it will get all groups that a user is authorized to access
  *  if the user is an admin, basically he can get all groups
  * 
- * example: (this is just a demo, this profile is not updated, please refer to the latest group content)
- * groups:[
- * {
-admins: [' fmRPCPBMndWbTDxUGedKoN9Lgl73'].
-description: "Time to invite others to join".
-docsLink: "https://docs.google.com/document/d/1vLcn-ShrfyMYsYjUwJXoikLoQ_QOKzBgDfTLA1JJ_XY/edit?usp=drivesdk".
-group_icon: null.
-isBanned: false.
-isPrivate: true.
-members: ['fmRPCPBMndWbTDxUGedKoN9Lgl73'].
-name: "unhapy".
-presLink: null.
-sheetLink: null.
-zoomLink: (2) ['zoomlink1', 'new']
- * }]
  */
 export async function getAllGroups() {
   try {
@@ -855,3 +840,34 @@ export async function getAllGroups() {
     return { success: false, error: e }
   }
 }
+
+/**
+ * join group
+ * - add current user to the group of groupID
+ * params: groupID
+ */
+export async function joinGroup(groupID){
+  try{
+      let token = await user.getIdToken()
+      let res = await fetch(baseURL + '/apis/joingroup', {
+        method: 'POST',
+        mode: 'cors', // no-cors, *cors, same-origin
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: token,
+        },
+        // current userID => user.uid
+        body: new URLSearchParams({ groupid: groupID }),
+      })
+      let resBody = await res.json()
+      if(res.status === 200){
+        return {success: true}
+      }else{
+        return { success: false, error: resBody }
+      }
+  }catch(e){
+    return { success: false, error: e }
+  }
+}
+
+
