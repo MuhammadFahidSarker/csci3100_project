@@ -483,6 +483,223 @@ export async function logout() {
  * TODO
  * **/
 export async function getJoinedGroups(userID = null) {
+
+  return {
+    success: true,
+    response:[
+      {
+        name: 'CSCI Proj',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 2',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 3',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 4',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 5',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 2',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 3',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 4',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 5',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 2',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 3',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 4',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 5',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 2',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 3',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 4',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 5',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 2',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 3',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 4',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 5',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 2',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 3',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 4',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 5',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 2',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 3',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 4',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+      {
+        name: 'CSCI Proj 5',
+        description: 'smt',
+        photoURL: 'asd',
+        id: 'asd',
+      },
+    ]
+  }
+
   //get user's groups
   try {
     //user === null if the user is not logged in
