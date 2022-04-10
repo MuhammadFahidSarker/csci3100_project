@@ -399,9 +399,9 @@ module.exports = {
       let docu = userSnapshot
       return res.status(200).json({
         'Succeed': {
-          'isVerified': isVerified,
-          'Content': docu.data()
-        }
+          'isVerified': isVerified
+        },
+        'Content': docu.data()
       })
     }catch(e){
       console.log(e)

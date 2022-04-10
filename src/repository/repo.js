@@ -45,7 +45,7 @@ export async function getUserDetails(userID = null) {
       body: new URLSearchParams({ userid: userID || user.uid }),
     })
     let resBody = await res.json()
-
+    console.log('debug get UserDetails\n',resBody)
     return {
       success: true,
       isVerified: resBody.isVerified, //whether the user being queried is verified
@@ -500,9 +500,13 @@ export async function getJoinedGroups(userID = null) {
     })
     let resBody = await res.json()
     console.log(resBody)
+    if(resBody.Error){
+      return { success: false, error: resBody.Error }
+    }
     let groups = resBody.Content
 
     let groupContent = []
+    console.log(groups)
     for (let i = 0; i < groups.length; i++) {
       groupContent.push({
         name: groups[i].name,
