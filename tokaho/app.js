@@ -94,6 +94,8 @@ app.use('/apis/creategroup', groupfunctions.creategroup)
 app.use('/apis/queryusergroup', groupfunctions.queryusergroup)
 app.use('/apis/listgroup', groupfunctions.listgroup)
 app.use('/apis/joingroup', groupfunctions.joingroup)
+app.use('/apis/leavegroup', groupfunctions.leavegroup)
+app.use('/apis/kickuser', groupfunctions.kickuser)
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
 

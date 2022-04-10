@@ -811,7 +811,7 @@ export async function deleteGroup(groupID) {
  * getAllGroups (ADMIN function)
  * remark: it will get all groups that a user is authorized to access
  *  if the user is an admin, basically he can get all groups
- * 
+ *
  */
 export async function getAllGroups() {
   try {
@@ -846,28 +846,84 @@ export async function getAllGroups() {
  * - add current user to the group of groupID
  * params: groupID
  */
-export async function joinGroup(groupID){
-  try{
-      let token = await user.getIdToken()
-      let res = await fetch(baseURL + '/apis/joingroup', {
-        method: 'POST',
-        mode: 'cors', // no-cors, *cors, same-origin
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: token,
-        },
-        // current userID => user.uid
-        body: new URLSearchParams({ groupid: groupID }),
-      })
-      let resBody = await res.json()
-      if(res.status === 200){
-        return {success: true}
-      }else{
-        return { success: false, error: resBody }
-      }
-  }catch(e){
+export async function joinGroup(groupID) {
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/joingroup', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 200) {
+      return { success: true }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
     return { success: false, error: e }
   }
 }
 
+/**
+ * leave group
+ * - kick the user from the group of groupID
+ * params: groupID
+ */
+export async function leaveGroup(groupID) {
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/leavegroup', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 200) {
+      return { success: true }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
 
+/**
+ * kick user (can only be done by local group admin)
+ * - kick the user of userID from the group of groupID
+ * params: groupID, userID
+ */
+export async function kickUser(userID, groupID) {
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/kickuser', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ groupid: groupID, uid: userID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 200) {
+      return { success: true }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}

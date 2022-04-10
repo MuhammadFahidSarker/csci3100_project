@@ -609,4 +609,88 @@ module.exports = {
       })
     }
   },
+
+  leavegroup: async function leavegroup(req, res, next) {
+    console.log('leave group')
+    console.log(req.body)
+    const uid = req.header.verified.uid
+    const groupid = req.body.groupid
+    if (groupid) {
+      try {
+        // update in group collection
+        let groupSnapshot = await group_table.doc(groupid).get()
+        console.log('group data', groupSnapshot.data())
+        await groupSnapshot.ref.update({ members: FieldValue.arrayRemove(uid) })
+
+        // update in users collection
+        let userSnapshot = await user_table.doc(uid).get()
+        console.log('user data', userSnapshot.data())
+        await userSnapshot.ref.update({
+          groupList: FieldValue.arrayRemove(groupid),
+        })
+
+        return res.status(200).json({
+          Succeed: true,
+        })
+      } catch (e) {
+        console.log(e)
+        return res.status(400).json({
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+        })
+      }
+    } else {
+      return res.status(400).json({
+        Error: 'please contain groupid',
+      })
+    }
+  },
+
+  kickuser: async function kickuser(req, res, next) {
+    console.log('kick user')
+    console.log(req.body)
+    const uid = req.body.uid
+    const groupid = req.body.groupid
+    const callerid = req.header.verified.uid
+    if (!groupid || !uid) {
+      return res.status(401).json({
+        Error: 'please contain groupid and uid',
+      })
+    }
+    try {
+      // update in group collection
+      let groupSnapshot = await group_table.doc(groupid).get()
+      console.log('group data', groupSnapshot.data())
+
+      // check if the caller is a local admin
+      if (!groupSnapshot.data().admins.includes(callerid)) {
+        return res.status(401).json({
+          Error: 'unauthorized',
+        })
+      }
+
+      if (uid == callerid) {
+        return res.status(401).json({
+          Error: 'you cannot kick yourself',
+        })
+      }
+
+      await groupSnapshot.ref.update({ members: FieldValue.arrayRemove(uid) })
+
+      // update in users collection
+      let userSnapshot = await user_table.doc(uid).get()
+      console.log('user data', userSnapshot.data())
+      await userSnapshot.ref.update({
+        groupList: FieldValue.arrayRemove(groupid),
+      })
+
+      return res.status(200).json({
+        Succeed: true,
+      })
+    } catch (e) {
+      console.log(e)
+      return res.status(401).json({
+        Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+      })
+    }
+  },
 }
