@@ -36,7 +36,7 @@ class LoginScreen extends Component{
             <div>
                 <div style={{fontSize:'80px', textAlign:'center', width:'100%',}}>Union</div>
                 <div className={'auth'}>
-                    <Login registerLink={'/signup'} initialValues={{email:'as@gmail.com', password:'asdas'}} onSubmit={this.handleSignIn} loading={loading} />
+                    <Login registerLink={'/signup'} onSubmit={this.handleSignIn} loading={loading} />
                 </div>
             </div>
         );

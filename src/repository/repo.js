@@ -17,7 +17,7 @@ const baseURL = 'http://localhost:8080'
  *
  * */
 export async function isUserLoggedIn() {
-  return true
+  return (await getUserDetails()).success === true
 }
 
 /*
@@ -51,7 +51,7 @@ export async function getUserDetails(userID = null) {
       isVerified: resBody.isVerified, //whether the user being queried is verified
       name: resBody.Content.name,
       userID: userID || user.uid,
-      isAdmin: resBody.Content.role == 'admin',
+      isAdmin: resBody.Content.role === 'admin',
       photoURL:
         resBody.Content.profile_icon ||
         'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80',
@@ -147,12 +147,12 @@ export async function signUp(userName, password) {
       console.log({ registered: userCredential })
       //send verification email
       let sent = await sendVerificationEmail()
-      if (sent.success == false) {
+      if (sent.success === false) {
         console.log('fail to send verification email', sent.error)
         return { success: false, error: 'fail to send verification email' }
       } else {
         let create = await createUser()
-        if (create.success == false) {
+        if (create.success === false) {
           console.log('failed to create user profile')
           return { success: false, error: 'fail to create user profile' }
         } else {
@@ -186,7 +186,7 @@ export async function getGoogleDocLink(groupID) {
       body: new URLSearchParams({ groupID: groupID }),
     })
     let resBody = res.json()
-    if (res.status == 401) {
+    if (res.status === 401) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
     }
@@ -205,7 +205,7 @@ export async function getGoogleDocLink(groupID) {
 }
 
 /*
- * returns google drive link as a string
+ * returns google sheet link as a string
  * **/
 export async function getGoogleSheetLink(groupID) {
   console.log('Get Sheet Link')
@@ -222,7 +222,7 @@ export async function getGoogleSheetLink(groupID) {
       body: new URLSearchParams({ groupID: groupID }),
     })
     let resBody = res.json()
-    if (res.status == 401) {
+    if (res.status === 401) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
     }
@@ -236,6 +236,10 @@ export async function getGoogleSheetLink(groupID) {
     return { success: false, error: e }
   }
   return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75'
+}
+
+export async function getGoogleDriveLink(groupID){
+  return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75';
 }
 
 /**
@@ -257,7 +261,7 @@ export async function getGooglePresLink(groupID) {
       body: new URLSearchParams({ groupID: groupID }),
     })
     let resBody = res.json()
-    if (res.status == 401) {
+    if (res.status === 401) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
     }
@@ -286,7 +290,7 @@ export async function sendMessage(message, groupID, user) {
   await new Promise((resolve) => setTimeout(resolve, 1000))
 }
 
-export async function getJoinAbleZoomMeetingLink(groupID) {
+export async function getJoinAbleZoomMeetingLink(userID, groupID) {
   try {
     //user === null if the user is not logged in
     if (!userID) console.log('WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in')
@@ -437,7 +441,7 @@ export async function getGroupDetails(groupID) {
       body: new URLSearchParams({ groupid: groupID }),
     })
     let resBody = res.json()
-    if (res.status == 401) {
+    if (res.status === 401) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
     }
