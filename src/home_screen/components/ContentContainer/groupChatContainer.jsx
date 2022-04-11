@@ -14,13 +14,12 @@ firebase.initializeApp(firebaseConfig);
 const firestore = firebase.firestore()
 
 export function GroupChatContainer ({group, toolbarHidden, user}){
-
     const groupId = group.groupid;
+    
     const messagesRef = firestore.collection(`groups/${groupId}/messages`)
     const query = messagesRef.orderBy('createdAt').limit(25)
     // Hook for input value (send message)
-    const [messages] = useCollectionData(query, { idField: 'id' })
-
+    let [messages, loadingMessages, error] = useCollectionData(query)//{ idField: 'id' }
 
     const sendMessage = async (text, url) => {
         console.log(user);
@@ -44,11 +43,11 @@ export function GroupChatContainer ({group, toolbarHidden, user}){
     return <div className={'content-container'}>
         <TopNavigation group={group} toolbarHidden={toolbarHidden}/>
         <div className={'content-list'} style={{height: height}}>
-            {messages.map((message, index) => {
+            {console.log('can u c me?',groupId)}
+            {messages&&messages.map((message, index) => {
                 return <Message key={index} message={message}/>
             })}
         </div>
-
         <BottomBar onSend={(message) => sendMessage(message, null)}/>
     </div>
 };
