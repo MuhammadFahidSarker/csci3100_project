@@ -474,7 +474,7 @@ module.exports = {
         }
         console.log('list:', groupSnapshot.docs[p].data().name)
         allgroups.push(groupSnapshot.docs[p].data())
-        allgroups[allgroups.length - 1].groupID=groupSnapshot.docs[p].id
+        allgroups[allgroups.length - 1].groupid=groupSnapshot.docs[p].id
       }
       return res.status(200).json({
         Succeed: {
