@@ -433,9 +433,7 @@ export async function getGroupDetails(groupID) {
   // };
 
   try {
-    console.log(1)
     let token = await user.getIdToken()
-    console.log(2)
     let res = await fetch(baseURL + '/apis/querygroup', {
       method: 'POST',
       mode: 'cors', // no-cors, *cors, same-origin
@@ -445,12 +443,12 @@ export async function getGroupDetails(groupID) {
       },
       body: new URLSearchParams({ groupid: groupID }),
     })
-    let resBody = res.json()
-    console.log(3)
+    let resBody = await res.json()
     if (res.status === 401) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
     }
+    console.log('response from querygroup API', resBody)
     return {
       success: true,
       content: {
