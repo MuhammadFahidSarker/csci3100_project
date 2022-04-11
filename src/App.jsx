@@ -9,6 +9,7 @@ import GroupLauncher from "./groups/group_launcher";
 import GroupSearch from "./groups/group_search";
 import {ProfileScreen} from "./profile/profile";
 import {user} from "./repository/firebase_auth";
+import {CreateGroup} from "./groups/create_group/create_group";
 
 class App extends Component {
 
@@ -20,9 +21,9 @@ class App extends Component {
         return (
             <Router history={history}>
                 <Routes>
-                    <Route path={'/'} element={<Navigate to={'/group_launcher'}/>}/>
-                    <Route path={'/group_launcher'} element={<GroupLauncher/>}/>
-                    <Route path={'/search_group'} element={<GroupSearch/>}/>
+                    <Route path={'/'} element={<Navigate to={'/groups'}/>}/>
+                    <Route path={'/groups'} element={<GroupLauncher/>}/>
+                    <Route path={'/search-group'} element={<GroupSearch/>}/>
                     <Route path={'/groups/:id'} element={<Home/>}/>
                     <Route path={'/login'} element={<LoginScreen/>}/>
                     <Route path={'/signup'} element={<SignupScreen/>}/>
@@ -34,6 +35,7 @@ class App extends Component {
                         isAdmin: false,
                         photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80',
                     }}/>}/>
+                    <Route path={'/create-group'} element={<CreateGroup/>}/>
                 </Routes>
             </Router>
         );

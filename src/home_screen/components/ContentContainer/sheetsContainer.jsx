@@ -17,7 +17,16 @@ export class SheetsContainer extends Component{
     }
 
     componentDidMount() {
-        getGoogleSheetLink().then(res => this.setState({sheetLink:res}))
+        getGoogleSheetLink().then(res => {
+            if (res.success === true) {
+                this.setState({
+                    sheetLink: res.content,
+                    loading: false,
+                })
+            }else{
+                console.log(res.error)
+            }
+        })
     }
 
     render() {

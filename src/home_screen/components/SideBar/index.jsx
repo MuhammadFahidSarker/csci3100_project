@@ -18,7 +18,7 @@ const SideBar = ({onClick, user}) => {
         <SideBarIcon icon={<FaFire size="32" onClick={()=> onClick('hide_show')}/>} text={'Show Hide Toolbar'} />
         <Divider />
         <SideBarIcon text={'View/Edit Profile - '+user.name} icon={user?.photoURL === null ? <BiSearch size="32" /> : <img src={user.photoURL} className='avatar'/> } />
-        <SideBarIcon icon={<BiGroup size="32" />} text={'Groups'} onClick={()=> navigate("/group_launcher", { replace: true })}/>
+        <SideBarIcon icon={<BiGroup size="32" />} text={'Groups'} onClick={()=> navigate("/groups", { replace: true })}/>
         <SideBarIcon icon={<BsGearFill size="32" />} text={'Settings'}/>
         <Divider />
 

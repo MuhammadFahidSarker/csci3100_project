@@ -1,0 +1,29 @@
+.inp {
+    @apply bg-white text-black dark:bg-gray-800 dark:text-white;
+    width: 600px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.inp-ml{
+    @apply bg-white text-black dark:bg-gray-800 dark:text-white;
+    width: 600px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.label{
+    @apply text-black dark:text-white;
+}
+
+.create-group-button{
+    @apply bg-blue-500 hover:bg-blue-700 text-white dark:bg-gray-800 dark:hover:bg-gray-900;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
