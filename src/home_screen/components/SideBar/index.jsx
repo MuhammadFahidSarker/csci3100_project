@@ -5,7 +5,8 @@ import useDarkMode from "../../hooks/useDarkMode";
 import { useNavigate } from "react-router-dom";
 import {logout} from "../../../repository/repo";
 
-const SideBar = ({onClick, user}) => {
+
+const SideBar = ({onClick, user, group}) => {
     const [darkTheme, setDarkTheme] = useDarkMode();
     const handleMode = () => setDarkTheme(!darkTheme);
     let navigate = useNavigate();
@@ -19,7 +20,7 @@ const SideBar = ({onClick, user}) => {
         <Divider />
         <SideBarIcon text={'View/Edit Profile - '+user.name} icon={user?.photoURL === null ? <BiSearch size="32" /> : <img src={user.photoURL} className='avatar'/> } />
         <SideBarIcon icon={<BiGroup size="32" />} text={'Groups'} onClick={()=> navigate("/groups", { replace: true })}/>
-        <SideBarIcon icon={<BsGearFill size="32" />} text={'Settings'}/>
+        <SideBarIcon icon={<BsGearFill size="32" />} text={'Edit '+group.name} onClick={(_)=>navigate('/groups/'+group.groupid+'/edit')}/>
         <Divider />
 
         <SideBarIcon icon={<FiLogOut size="22" />} text={'Log Out'} onClick={(e) => {

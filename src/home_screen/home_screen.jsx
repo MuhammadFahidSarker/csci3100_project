@@ -34,7 +34,7 @@ class HomeComponent extends Component {
     async componentDidMount() {
         let user, error, group;
 
-        user = getUserDetails();
+        user = await getUserDetails();
         if(user.success === false){
             this.setState({loginRequired: true});
         }
@@ -58,6 +58,8 @@ class HomeComponent extends Component {
         }
     }
 
+
+
     render() {
         const {type, loginRequired, toolbarHidden, user, error, group} = this.state;
         const {groupID} = this.props;
@@ -78,7 +80,7 @@ class HomeComponent extends Component {
 
         return (
             <div className="flex">
-                <SideBar onClick={this.handleMainBarOnclick} user={user}/>
+                <SideBar onClick={this.handleMainBarOnclick} group={group} user={user}/>
                 {toolbarHidden ? null : <Channelbar changeType = {this.setType} /> }
                 <ContentContainer group={group} toolbarHidden={toolbarHidden} user={user} type = {this.state.type} />
             </div>

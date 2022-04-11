@@ -10,6 +10,7 @@ import GroupSearch from "./groups/group_search";
 import {ProfileScreen} from "./profile/profile";
 import {user} from "./repository/firebase_auth";
 import {CreateGroup} from "./groups/create_group/create_group";
+import {EditGroup} from "./groups/edit_group/edit_group";
 
 class App extends Component {
 
@@ -25,16 +26,10 @@ class App extends Component {
                     <Route path={'/groups'} element={<GroupLauncher/>}/>
                     <Route path={'/search-group'} element={<GroupSearch/>}/>
                     <Route path={'/groups/:id'} element={<Home/>}/>
+                    <Route path={'/groups/:id/edit'} element={<EditGroup/>}/>
                     <Route path={'/login'} element={<LoginScreen/>}/>
                     <Route path={'/signup'} element={<SignupScreen/>}/>
-                    <Route path={'/profile'} element={<ProfileScreen user={{
-                        success: true,
-                        isVerified: false, //whether the user being queried is verified
-                        name: 'Fahid',
-                        userID: 'asdasd',
-                        isAdmin: false,
-                        photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80',
-                    }}/>}/>
+                    <Route path={'/profile'} element={<ProfileScreen />}/>
                     <Route path={'/create-group'} element={<CreateGroup/>}/>
                 </Routes>
             </Router>

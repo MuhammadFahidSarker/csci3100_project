@@ -18,7 +18,7 @@ export class DocsContainer extends Component {
 
 
     componentDidMount() {
-        getGoogleDocLink(this.props.group.id).then(res => {
+        getGoogleDocLink(this.props.group.groupid).then(res => {
             console.log('doc link recieved:',res.content)
             if (res.success === true) {
                 this.setState({
