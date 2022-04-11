@@ -34,27 +34,22 @@ class HomeComponent extends Component {
     async componentDidMount() {
         let user, error, group;
 
-        try {
-            user = await getUserDetails();
-        } catch (e){
-            user = null;
-        }
-
-        if(user === null){
+        user = getUserDetails();
+        if(user.success === false){
             this.setState({loginRequired: true});
-            return;
-        }
-
-        try {
-            group = await getGroupDetails();
-        }catch (e){
-            group = null;
         }
 
 
 
-        error =  group === null ? GROUP_NOT_FOUND :  null;
-        this.setState({user, group, error, loginRequired: false});
+        group = await getGroupDetails(this.props.groupID);
+        console.log(group);
+        if(group.success === false){
+            this.setState({error: GROUP_NOT_FOUND, loginRequired: false});
+        }
+
+        console.log(group);
+
+        this.setState({user: user, group: group.content, loginRequired: false});
     }
 
     handleMainBarOnclick = (type) => {
@@ -76,7 +71,7 @@ class HomeComponent extends Component {
         }
 
         if(group === null && error === GROUP_NOT_FOUND){
-            return <Navigate to={'/group_launcher'}/>
+            return <Navigate to={'/groups'}/>
         }else if(group === null){
             return <h1>Unknown Error occured!</h1>
         }

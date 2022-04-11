@@ -173,6 +173,7 @@ export async function signUp(userName, password) {
  * **/
 export async function getGoogleDocLink(groupID) {
   console.log('Get Doc Link')
+  console.log('Group ID: ', groupID)
   //get google docLink
   try {
     let token = await user.getIdToken()
