@@ -80,7 +80,7 @@ async function createDoc(req, res, next) {
               group_table
                 .doc(req.body.groupID)
                 .update({ docsLink: result.data.webViewLink })
-              return res.status(200).json({ Succeed: result.data })
+              return res.status(200).json({ Succeed: result.data.webViewLink })
             },
           )
         },
@@ -157,7 +157,7 @@ async function createSheet(req, res, next) {
               group_table
                 .doc(req.body.groupID)
                 .update({ sheetLink: result.data.webViewLink })
-              return res.status(200).json({ Succeed: result.data })
+              return res.status(200).json({ Succeed: result.data.webViewLink })
             },
           )
         },

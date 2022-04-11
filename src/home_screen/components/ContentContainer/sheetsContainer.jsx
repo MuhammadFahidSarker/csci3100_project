@@ -18,6 +18,7 @@ export class SheetsContainer extends Component{
 
     componentDidMount() {
         getGoogleSheetLink(this.props.group.id).then(res => {
+            console.log('sheet link recieved:',res.content)
             if (res.success === true) {
                 this.setState({
                     sheetLink: res.content.sheetLink,
