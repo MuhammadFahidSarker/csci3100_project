@@ -775,11 +775,11 @@ export async function kickUser(userID, groupID) {
  * get group members
  * 
  * params: groupID
- * returns:  {
+ * returns:  members: [{
             "name": "tokaho2000@gmail.com",
             "profileURL": null,
             "role": "admin" or "member"
-        }
+        }]
  */
  export async function getGroupMembers(groupID) {
   await waitAuthObject()
