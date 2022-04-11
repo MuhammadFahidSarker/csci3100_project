@@ -20,7 +20,7 @@ export class SheetsContainer extends Component{
         getGoogleSheetLink(this.props.group.id).then(res => {
             if (res.success === true) {
                 this.setState({
-                    sheetLink: res.content,
+                    sheetLink: res.content.sheetLink,
                     loading: false,
                 })
             }else{

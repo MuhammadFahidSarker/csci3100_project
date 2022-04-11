@@ -193,15 +193,16 @@ export async function getGoogleDocLink(groupID) {
       },
       body: new URLSearchParams({ groupID: groupID }),
     })
-    let resBody = res.json()
+    let resBody = await res.json()
     if (res.status === 401) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
     }
+    console.log('getGoogleDocLink\'s response:',resBody)
     return {
       success: true,
       content: {
-        docsLink: resBody,
+        docsLink: resBody.Succeed,
       },
     }
   } catch (e) {
@@ -230,7 +231,7 @@ export async function getGoogleSheetLink(groupID) {
       },
       body: new URLSearchParams({ groupID: groupID }),
     })
-    let resBody = res.json()
+    let resBody = await res.json()
     if (res.status === 401) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
@@ -238,7 +239,7 @@ export async function getGoogleSheetLink(groupID) {
     return {
       success: true,
       content: {
-        sheetLink: resBody,
+        sheetLink: resBody.Succeed,
       },
     }
   } catch (e) {
@@ -271,7 +272,7 @@ export async function getGooglePresLink(groupID) {
       },
       body: new URLSearchParams({ groupID: groupID }),
     })
-    let resBody = res.json()
+    let resBody = await res.json()
     if (res.status === 401) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
@@ -433,7 +434,7 @@ export async function getGroupChats(groupID) {
  * */
 export async function getGroupDetails(groupID) {
   await waitAuthObject()
-  console.log('get group details')
+  console.log('get group details', groupID)
   //this is just a dummy photo
   let dummyIcon =
     'https://cdn.pixabay.com/photo/2017/11/10/05/46/group-2935521_960_720.png'

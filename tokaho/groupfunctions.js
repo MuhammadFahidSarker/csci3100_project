@@ -416,7 +416,7 @@ module.exports = {
       })
     } else {
       if (req.body.groupid) {
-        console.log('querygroup by groupid')
+        console.log('querygroup by groupid', req.body)
         try {
           let isadmin = await isAdmin(req.header.verified.uid, req)
           let groupSnapshot = await group_table.doc(req.body.groupid).get()

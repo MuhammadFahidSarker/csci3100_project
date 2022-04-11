@@ -21,7 +21,7 @@ export class DocsContainer extends Component {
         getGoogleDocLink(this.props.group.id).then(res => {
             if (res.success === true) {
                 this.setState({
-                    docLink: res.content,
+                    docLink: res.content.docsLink,
                     loading: false,
                 })
             }else{
