@@ -34,7 +34,7 @@ class HomeComponent extends Component {
     async componentDidMount() {
         let user, error, group;
 
-        user = getUserDetails();
+        user = await getUserDetails();
         if(user.success === false){
             this.setState({loginRequired: true});
         }

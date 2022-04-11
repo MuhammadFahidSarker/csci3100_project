@@ -446,6 +446,9 @@ export async function getGroupDetails(groupID) {
   //     id: 0
   // };
 
+  
+  console.log(user);
+  
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/querygroup', {
