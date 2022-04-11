@@ -1,6 +1,6 @@
 import TopNavigation from "../TopNavigation";
 import {BsPlusCircleFill} from "react-icons/bs";
-import {Component, useEffect, useState} from "react";
+import {Component, useEffect, useRef, useState} from "react";
 import React from 'react';
 import {LoadingScreen} from "../../../common/loading";
 import {getGroupChats, sendMessage} from "../../../repository/repo";
@@ -38,22 +38,32 @@ export function GroupChatContainer ({group, toolbarHidden, user}){
 
     }
 
-    console.log(messages);
+
+    const height = window.innerHeight - 64+'px';
 
     return <div className={'content-container'}>
         <TopNavigation group={group} toolbarHidden={toolbarHidden}/>
-        <div className={'content-list'} style={{}}>
-
+        <div className={'content-list'} style={{height: height}}>
+            {messages.map((message, index) => {
+                return <Message key={index} message={message}/>
+            })}
         </div>
 
         <BottomBar onSend={(message) => sendMessage(message, null)}/>
     </div>
 };
 
+
+function Message({message}) {
+    return <div className={'message-container'}>
+        <div className={'message-text'}>{message.text}</div>
+    </div>
+}
+
 const BottomBar = ({onSend}) => {
 
     return <div className='bottom-bar'>
-        {/*<PlusIcon />*/}
+        <PlusIcon />
         <input type='text' id={'chatInput'} placeholder='Enter message...' className='bottom-bar-input'
                onKeyDown={(e) => {
                    if (e.key === 'Enter') {
@@ -89,12 +99,39 @@ const Post = ({name, timestamp, text, photoURL = 'https://avatars.dicebear.com/a
     );
 };
 
-const PlusIcon = () => (
-    <BsPlusCircleFill
-        size='22'
-        className='text-green-500 dark:shadow-lg mx-2 dark:text-primary'
-    />
-);
+const PlusIcon = ({onFileUploaded}) => {
+
+    const fileUpload = useRef(null);
+    const uploadProfilePic = (e) => {
+        console.log(e);
+    };
+
+    const handleUpload = () => {
+        console.log(fileUpload.current.click(), "fileUpload");
+    };
+
+    return (
+        <div>
+            <div style={{height:0, width:0}}>
+                <input
+                    type="file"
+                    ref={fileUpload}
+                    onChange={uploadProfilePic}
+                    style={{ opacity: "0" }}
+                />
+            </div>
+            <BsPlusCircleFill
+                size='22'
+                className='text-green-500 dark:shadow-lg mx-2 dark:text-primary'
+                onClick={handleUpload}
+                style={{cursor:'pointer'}}
+            />
+        </div>
+    );
+
+}
+
+
 
 const SendIcon = ({onClick}) => (
     <BiSend
