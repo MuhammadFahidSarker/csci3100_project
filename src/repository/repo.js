@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth'
-import { auth, user } from './firebase_auth'
+import { auth, user, waitAuthObject } from './firebase_auth'
 
 //backend server url
 const baseURL = 'http://localhost:8080'
@@ -33,6 +33,7 @@ export async function isUserLoggedIn() {
  *  else => query userID
  * */
 export async function getUserDetails(userID = null) {
+  await waitAuthObject()
   console.log('calling getUserDetails',user)
   try {
     let token = await user.getIdToken()
@@ -70,6 +71,7 @@ export async function getUserDetails(userID = null) {
  *
  */
 async function createUser() {
+  await waitAuthObject()
   console.log('userid:', await user.getIdToken())
   let token = await user.getIdToken()
   let res = await fetch(baseURL + '/register', {
@@ -97,6 +99,7 @@ async function createUser() {
  * return true if success
  */
 export async function sendVerificationEmail() {
+  await waitAuthObject()
   if (user == null) return { success: false, error: 'user==null' }
   try {
     let res = await sendEmailVerification(user)
@@ -112,6 +115,7 @@ export async function sendVerificationEmail() {
  *
  * */
 export async function signIn(userName, password) {
+  await waitAuthObject()
   console.log('Sign in with: ', userName, password)
   try {
     let userCredential = await signInWithEmailAndPassword(
@@ -137,6 +141,7 @@ export async function signIn(userName, password) {
  *
  * */
 export async function signUp(userName, password) {
+  await waitAuthObject()
   console.log('Sign up with: ', userName, password)
   try {
     let userCredential = await createUserWithEmailAndPassword(
@@ -174,6 +179,7 @@ export async function signUp(userName, password) {
  * Returns the google doc link as a string
  * **/
 export async function getGoogleDocLink(groupID) {
+  await waitAuthObject()
   console.log('Get Doc Link')
   //get google docLink
   try {
@@ -210,6 +216,7 @@ export async function getGoogleDocLink(groupID) {
  * returns google sheet link as a string
  * **/
 export async function getGoogleSheetLink(groupID) {
+  await waitAuthObject()
   console.log('Get Sheet Link')
   //get google sheetlink
   try {
@@ -241,6 +248,7 @@ export async function getGoogleSheetLink(groupID) {
 }
 
 export async function getGoogleDriveLink(groupID) {
+  await waitAuthObject()
   return 'https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75'
 }
 
@@ -249,6 +257,7 @@ export async function getGoogleDriveLink(groupID) {
  * **/
 
 export async function getGooglePresLink(groupID) {
+  await waitAuthObject()
   console.log('Get Pres Link')
   //get google presLink
   try {
@@ -287,12 +296,14 @@ export async function getGooglePresLink(groupID) {
  * todo: implementation
  * **/
 export async function sendMessage(message, groupID, user) {
+  await waitAuthObject()
   console.log('sendMessage: ', message, groupID, user)
   // promise fake wait
   await new Promise((resolve) => setTimeout(resolve, 1000))
 }
 
 export async function getJoinAbleZoomMeetingLink(userID, groupID) {
+  await waitAuthObject()
   try {
     //user === null if the user is not logged in
     if (!userID) console.log('WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in')
@@ -323,6 +334,7 @@ export async function getJoinAbleZoomMeetingLink(userID, groupID) {
  * each message must contain name, text, timeStamp, and photoURL
  */
 export async function getGroupChats(groupID) {
+  await waitAuthObject()
   // here are some 30 fake messages with some random google images as profileurl
   return [
     {
@@ -420,6 +432,7 @@ export async function getGroupChats(groupID) {
  * e.g. body: new URLSearchParams({groupname:groupName})
  * */
 export async function getGroupDetails(groupID) {
+  await waitAuthObject()
   console.log('get group details')
   //this is just a dummy photo
   let dummyIcon =
@@ -467,6 +480,7 @@ export async function getGroupDetails(groupID) {
  * Logs user out of the app
  * **/
 export async function logout() {
+  await waitAuthObject()
   try {
     let signout = await signOut(auth)
     return { success: true, response: 'logout' }
@@ -487,7 +501,7 @@ export async function logout() {
  * TODO
  * **/
 export async function getJoinedGroups(userID = null) {
-
+  await waitAuthObject()
   //get user's groups
   try {
     //user === null if the user is not logged in
@@ -531,6 +545,7 @@ export async function getJoinedGroups(userID = null) {
  * ban user (ADMIN function)
  */
 export async function banUser(userID = null) {
+  await waitAuthObject()
   if (!userID) {
     return { success: false, error: 'userID cant be null' }
   }
@@ -567,6 +582,7 @@ export async function banUser(userID = null) {
  * return: success:true/false
  */
 export async function deleteGroup(groupID) {
+  await waitAuthObject()
   if (!groupID) {
     return { success: false, error: 'groupID cant be null' }
   }
@@ -603,6 +619,7 @@ export async function deleteGroup(groupID) {
  *
  */
 export async function getAllGroups() {
+  await waitAuthObject()
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/listgroup', {
@@ -636,6 +653,7 @@ export async function getAllGroups() {
  * params: groupID
  */
 export async function joinGroup(groupID) {
+  await waitAuthObject()
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/joingroup', {
@@ -665,6 +683,7 @@ export async function joinGroup(groupID) {
  * params: groupID
  */
 export async function leaveGroup(groupID) {
+  await waitAuthObject()
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/leavegroup', {
@@ -694,6 +713,7 @@ export async function leaveGroup(groupID) {
  * params: groupID, userID
  */
 export async function kickUser(userID, groupID) {
+  await waitAuthObject()
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/kickuser', {
@@ -725,6 +745,7 @@ export async function kickUser(userID, groupID) {
  * returns: succ
  */
  export async function createGroup(groupName) {
+  await waitAuthObject()
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/creategroup', {

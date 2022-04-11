@@ -18,7 +18,11 @@ const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 
 //current user
-export var user=null
+export var user=undefined
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 onAuthStateChanged(auth, (u) => {
   if (u) {
@@ -30,5 +34,11 @@ onAuthStateChanged(auth, (u) => {
     user=null
   }
 })
+
+export async function waitAuthObject(){
+    while(user===undefined){
+      await sleep(1000)
+    }
+}
 
 
