@@ -2,18 +2,36 @@ import {
     FaSearch, FaHashtag, FaRegBell, FaUserCircle, FaMoon, FaSun,
 } from 'react-icons/fa';
 import useDarkMode from '../../hooks/useDarkMode';
-import {GoLinkExternal} from "react-icons/all";
+import {BiGroup, FiPlusCircle, GoLinkExternal} from "react-icons/all";
+import { useNavigate } from 'react-router-dom';
 
-const TopNavigation = ({toolbarHidden, group, url = null, onSearch=null, type=''}) => {
+const TopNavigation = ({toolbarHidden, showAllGroup=false, showCreateGroup=false, group, url = null, onSearch=null, type=''}) => {
     return (<div className='top-navigation'>
         <HashtagIcon toolbarHidden={toolbarHidden}/>
         <Title groupName={group?.name} type={type}/>
+        {showCreateGroup === true ? <CreateGroupIcon group={group}/> : null}
+        {showAllGroup === true ? <AllGroups/> : null}
         <ThemeIcon/>
         {url === null ? null : <Expand url={url}/>}
         {onSearch === null ? null : <Search onSearch={onSearch}/>}
         <BellIcon/>
     </div>);
 };
+
+
+const CreateGroupIcon = ({}) =>{
+    const navigate = useNavigate();
+    return <FiPlusCircle size={'24px'} className={'top-navigation-icon'} onClick={(_)=> {
+        navigate('/create-group');
+    }} />
+}
+
+const AllGroups = ({}) =>{
+    const navigate = useNavigate();
+    return <BiGroup size={'24px'} className={'top-navigation-icon'} onClick={(_)=> {
+        navigate('/groups');
+    }} />
+}
 
 const ThemeIcon = () => {
     const [darkTheme, setDarkTheme] = useDarkMode();

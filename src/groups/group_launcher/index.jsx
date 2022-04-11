@@ -55,7 +55,7 @@ export default class GroupLauncher extends Component{
 
         return (
             <div className={'content-container'} style={{height:window.innerHeight, width:window.innerWidth}}>
-                <TopNavigation />
+                <TopNavigation showCreateGroup={true}/>
                 <div className={'content-list'} style={{display:'flex'}}>
                     {groups.map(group => {
                         return <GroupPreview group={group}/>

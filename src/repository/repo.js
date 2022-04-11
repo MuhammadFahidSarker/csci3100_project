@@ -720,7 +720,7 @@ export async function kickUser(userID, groupID) {
  * params: groupName
  * returns: succ
  */
- export async function createGroup(groupName) {
+ export async function createGroup(groupName, groupDesc) {
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/creategroup', {

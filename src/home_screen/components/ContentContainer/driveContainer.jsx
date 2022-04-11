@@ -16,7 +16,16 @@ export class DriveContainer extends Component{
     }
 
     componentDidMount() {
-        getGoogleDriveLink().then(res => this.setState({driveLink:res}))
+        getGoogleDriveLink().then(res => {
+            if (res.success === true) {
+                this.setState({
+                    driveLink: res.content,
+                    loading: false,
+                })
+            }else{
+                console.log(res.error)
+            }
+        })
     }
 
     render() {
