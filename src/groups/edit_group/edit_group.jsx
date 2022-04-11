@@ -55,9 +55,13 @@ export function EditGroup({}) {
                 </div>
                 <div className={'hr-line'}/>
                 <div className={'content-list'}>
-                    Group members here
+
                 </div>
             </div>
         </div>
     );
+}
+
+function groupMembers({groupID}){
+
 }

@@ -632,7 +632,7 @@ export async function getAllGroups() {
     if (res.status === 200) {
       return {
         success: true,
-        groups: resBody.Succeed.groups,
+        groups: resBody.Succeed.groups
       }
     } else {
       return { success: false, error: resBody }
