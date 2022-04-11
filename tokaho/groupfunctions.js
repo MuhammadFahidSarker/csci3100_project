@@ -695,4 +695,43 @@ module.exports = {
       })
     }
   },
+
+  getgroupmembers: async function getgroupmembers(req, res, next) {
+    console.log('getGroupMembers')
+    console.log(req.body)
+    const groupID = req.body.groupid
+    if (groupID) {
+      console.log('getGroupMembers by groupid', groupID)
+      try {
+        let groupSnapshot = await group_table.doc(req.body.groupid).get()
+        let members = groupSnapshot.data().members
+        let admins = groupSnapshot.data().admins
+        let memberProfiles=[]
+        for (let memberID of members) {
+          let userSnapshot = await user_table.doc(memberID).get()
+          let userData = userSnapshot.data()
+          let profile={name:userData.name,
+                      profileURL:userData.profile_icon,
+                      role:admins.includes(memberID)?'admin':'member'
+                      }
+          memberProfiles.push(profile)
+        }
+        return res.status(200).json({
+          Succeed: true,
+          Members: memberProfiles
+        })
+        
+        
+      } catch (e) {
+        console.log(e)
+        return res.status(400).json({
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+        })
+      }
+    } else {
+      return res.status(400).json({
+        Error: 'please contain groupid',
+      })
+    }
+  },
 }

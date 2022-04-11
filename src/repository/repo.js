@@ -769,3 +769,36 @@ export async function kickUser(userID, groupID) {
     return { success: false, error: e }
   }
 }
+
+
+/**
+ * get group members
+ * 
+ * params: groupName
+ * returns: succ
+ */
+ export async function getGroupMembers(groupID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/getgroupmembers', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+
+    if (res.status === 200) {
+      return { success: true, members:resBody.Members }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
