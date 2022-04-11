@@ -34,7 +34,7 @@ export async function isUserLoggedIn() {
  * */
 export async function getUserDetails(userID = null) {
   await waitAuthObject()
-  console.log('calling getUserDetails',user)
+  console.log('calling getUserDetails', user)
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/queryuser', {
@@ -198,7 +198,7 @@ export async function getGoogleDocLink(groupID) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
     }
-    console.log('getGoogleDocLink\'s response:',resBody)
+    console.log("getGoogleDocLink's response:", resBody)
     return {
       success: true,
       content: {
@@ -309,22 +309,51 @@ export async function getJoinAbleZoomMeetingLink(userID, groupID) {
     //user === null if the user is not logged in
     if (!userID) console.log('WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in')
     let token = await user.getIdToken()
-    let res = await fetch(baseURL + '/getZoom', {
+    let res = await fetch(baseURL + '/getzoom', {
       method: 'POST',
       mode: 'cors', // no-cors, *cors, same-origin
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: token,
       },
+      body: new URLSearchParams({ groupID: groupID }),
     })
     let resBody = await res.json()
     console.log(resBody)
     return {
       success: true,
-      response: `${resBody.StartURL}, ${resBody.JoinURL}`,
+      response: `${resBody.JoinURL}`,
     }
   } catch (e) {
     console.log('getJoinAbleZoomMeetingLink() failed:\n', e)
+    return { success: false, error: e }
+  }
+  //return 'https://zoom.us/j/908724981'
+}
+
+export async function getCreateZoomMeetingLink(userID, groupID) {
+  await waitAuthObject()
+  try {
+    //user === null if the user is not logged in
+    if (!userID) console.log('WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in')
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/createzoom', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      body: new URLSearchParams({ groupID: groupID }),
+    })
+    let resBody = await res.json()
+    console.log(resBody)
+    return {
+      success: true,
+      response: `${resBody.JoinURL}`,
+    }
+  } catch (e) {
+    console.log('getCreateZoomMeetingLink() failed:\n', e)
     return { success: false, error: e }
   }
   //return 'https://zoom.us/j/908724981'
@@ -446,9 +475,8 @@ export async function getGroupDetails(groupID) {
   //     id: 0
   // };
 
-  
-  console.log(user);
-  
+  console.log(user)
+
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/querygroup', {
@@ -526,7 +554,6 @@ export async function getJoinedGroups(userID = null) {
       return { success: false, error: resBody.Error }
     }
     let groups = resBody.Succeed.Content
-
 
     return { success: true, groups: groups }
   } catch (e) {
@@ -632,7 +659,7 @@ export async function getAllGroups() {
     if (res.status === 200) {
       return {
         success: true,
-        groups: resBody.Succeed.groups
+        groups: resBody.Succeed.groups,
       }
     } else {
       return { success: false, error: resBody }
@@ -735,11 +762,11 @@ export async function kickUser(userID, groupID) {
 /**
  * create group
  * the user who create a group will be the admin and member of the group automatically
- * 
+ *
  * params: groupName
  * returns: succ
  */
- export async function createGroup(groupName) {
+export async function createGroup(groupName) {
   await waitAuthObject()
   try {
     let token = await user.getIdToken()
@@ -755,7 +782,7 @@ export async function kickUser(userID, groupID) {
     })
     let resBody = await res.json()
     if (res.status === 200) {
-      return { success: true, groupId:resBody.Succeed }
+      return { success: true, groupId: resBody.Succeed }
     } else {
       return { success: false, error: resBody }
     }
@@ -763,7 +790,6 @@ export async function kickUser(userID, groupID) {
     return { success: false, error: e }
   }
 }
-
 
 /**
  * get group members
@@ -775,7 +801,7 @@ export async function kickUser(userID, groupID) {
             "role": "admin" or "member"
         }]
  */
- export async function getGroupMembers(groupID) {
+export async function getGroupMembers(groupID) {
   await waitAuthObject()
   try {
     let token = await user.getIdToken()
@@ -792,7 +818,7 @@ export async function kickUser(userID, groupID) {
     let resBody = await res.json()
 
     if (res.status === 200) {
-      return { success: true, members:resBody.Members }
+      return { success: true, members: resBody.Members }
     } else {
       return { success: false, error: resBody }
     }
