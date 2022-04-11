@@ -23,6 +23,7 @@ export var user=null
 onAuthStateChanged(auth, (u) => {
   if (u) {
     // User is signed in
+    console.log(u)
     user=u
   } else {
     // User is signed out

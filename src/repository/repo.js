@@ -504,7 +504,7 @@ export async function getJoinedGroups(userID = null) {
     if (resBody.Error) {
       return { success: false, error: resBody.Error }
     }
-    let groups = resBody.Content
+    let groups = resBody.Succeed.Content
 
     let groupContent = []
     console.log(groups)
@@ -705,6 +705,37 @@ export async function kickUser(userID, groupID) {
     let resBody = await res.json()
     if (res.status === 200) {
       return { success: true }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * create group
+ * the user who create a group will be the admin and member of the group automatically
+ * 
+ * params: groupName
+ * returns: succ
+ */
+ export async function createGroup(groupName) {
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/creategroup', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ groupname: groupName }),
+    })
+    let resBody = await res.json()
+    if (res.status === 200) {
+      return { success: true, groupId:resBody.Succeed }
     } else {
       return { success: false, error: resBody }
     }
