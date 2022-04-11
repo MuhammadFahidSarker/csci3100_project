@@ -15,7 +15,7 @@ const firestore = firebase.firestore()
 
 export function GroupChatContainer ({group, toolbarHidden, user}){
 
-    const groupId = group.id;
+    const groupId = group.groupid;
     const messagesRef = firestore.collection(`groups/${groupId}/messages`)
     const query = messagesRef.orderBy('createdAt').limit(25)
     // Hook for input value (send message)

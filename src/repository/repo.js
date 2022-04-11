@@ -469,10 +469,9 @@ export async function getGroupDetails(groupID) {
     return {
       success: true,
       content: {
-        name: resBody.Succeed.Content.name,
-        description: resBody.Succeed.Content.description,
+        ...resBody.Succeed.Content,
         photoURL: resBody.Succeed.Content.group_icon || dummyIcon,
-        id: groupID,
+        groupid: groupID,
       },
     }
   } catch (e) {
@@ -528,17 +527,8 @@ export async function getJoinedGroups(userID = null) {
     }
     let groups = resBody.Succeed.Content
 
-    let groupContent = []
-    console.log(groups)
-    for (let i = 0; i < groups.length; i++) {
-      groupContent.push({
-        name: groups[i].name,
-        description: groups[i].description,
-        photoURL: groups[i].group_icon || '',
-        id: groups[i].groupid,
-      })
-    }
-    return { success: true, response: groupContent }
+
+    return { success: true, groups: groups }
   } catch (e) {
     console.log('getJoinedGroups() failed:\n', e)
     return { success: false, error: e }
@@ -638,6 +628,7 @@ export async function getAllGroups() {
     })
     let resBody = await res.json()
     console.log('debug get getAllGroups\n', resBody)
+
     if (res.status === 200) {
       return {
         success: true,
