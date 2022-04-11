@@ -740,6 +740,38 @@ export async function uploadUserIcon(url) {
 }
 
 /**
+ * scanDocument
+ * remark: it will scan document and return text from it
+ * input: filename from Front END
+ */
+
+export async function scanDocument(fileName) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/scandocument', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ fileName: fileName }),
+    })
+    let resBody = await res.json()
+
+    if (res.status === 200) {
+      return { success: true, content: resBody.Content }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
  * join group
  * - add current user to the group of groupID
  * params: groupID
