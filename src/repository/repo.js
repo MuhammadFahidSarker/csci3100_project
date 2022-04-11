@@ -670,6 +670,42 @@ export async function getAllGroups() {
 }
 
 /**
+ * getAllUsers (ADMIN function)
+ * remark: it will get all users that a user is authorized to access
+ *  if the user is an admin, basically he can get all users
+ *
+ */
+export async function getAllUsers() {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/getallusers', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ dummy: null }),
+    })
+    let resBody = await res.json()
+    console.log('debug get getAllUsers\n', resBody)
+
+    if (res.status === 200) {
+      return {
+        success: true,
+        users: resBody.Users,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
  * join group
  * - add current user to the group of groupID
  * params: groupID

@@ -734,4 +734,24 @@ module.exports = {
       })
     }
   },
+
+  getallusers: async function getallusers(req, res, next) {
+    console.log('getAllUsers')
+    console.log(req.body)
+    try {
+      let allusers = []
+      let isadmin = await isAdmin(req.header.verified.uid, req)
+      if (!isadmin) {
+        return res.status(401).json('unauthorized')
+      }
+      let userSnapshot = await user_table.get()
+      for (let p in userSnapshot.docs) {
+        console.log('list:', userSnapshot.docs[p].data().email)
+        allusers.push(userSnapshot.docs[p].data())
+      }
+      return res.status(200).json({ Succeed: true, Users: allusers })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
 }
