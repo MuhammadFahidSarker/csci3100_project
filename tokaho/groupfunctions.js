@@ -429,13 +429,15 @@ module.exports = {
               return res.status(401).json({
                 Error: 'not authorized',
               })
-            }
+            }}
+            console.log('return',docu.data())
             return res.status(200).json({
+              
               Succeed: {
                 Content: docu.data(),
               },
             })
-          }
+          
         } catch (e) {
           console.log(e)
           return res.status(400).json({

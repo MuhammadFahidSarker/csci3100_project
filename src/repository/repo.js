@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth'
 import { auth, user } from './firebase_auth'
+
 //backend server url
 const baseURL = 'http://localhost:8080'
 
@@ -32,6 +33,7 @@ export async function isUserLoggedIn() {
  *  else => query userID
  * */
 export async function getUserDetails(userID = null) {
+  console.log('calling getUserDetails',user)
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/queryuser', {
@@ -173,7 +175,6 @@ export async function signUp(userName, password) {
  * **/
 export async function getGoogleDocLink(groupID) {
   console.log('Get Doc Link')
-  console.log('Group ID: ', groupID)
   //get google docLink
   try {
     let token = await user.getIdToken()
@@ -419,6 +420,7 @@ export async function getGroupChats(groupID) {
  * e.g. body: new URLSearchParams({groupname:groupName})
  * */
 export async function getGroupDetails(groupID) {
+  console.log('get group details')
   //this is just a dummy photo
   let dummyIcon =
     'https://cdn.pixabay.com/photo/2017/11/10/05/46/group-2935521_960_720.png'
@@ -431,7 +433,9 @@ export async function getGroupDetails(groupID) {
   // };
 
   try {
+    console.log(1)
     let token = await user.getIdToken()
+    console.log(2)
     let res = await fetch(baseURL + '/apis/querygroup', {
       method: 'POST',
       mode: 'cors', // no-cors, *cors, same-origin
@@ -442,6 +446,7 @@ export async function getGroupDetails(groupID) {
       body: new URLSearchParams({ groupid: groupID }),
     })
     let resBody = res.json()
+    console.log(3)
     if (res.status === 401) {
       //not a global admin OR not a member in the private group
       return { success: false, error: resBody, unauthorized: true }
@@ -721,7 +726,7 @@ export async function kickUser(userID, groupID) {
  * params: groupName
  * returns: succ
  */
- export async function createGroup(groupName, groupDesc) {
+ export async function createGroup(groupName) {
   try {
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/apis/creategroup', {
