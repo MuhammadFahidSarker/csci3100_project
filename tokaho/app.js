@@ -99,6 +99,7 @@ app.use('/apis/leavegroup', groupfunctions.leavegroup)
 app.use('/apis/kickuser', groupfunctions.kickuser)
 app.use('/apis/getgroupmembers', groupfunctions.getgroupmembers)
 app.use('/apis/getallusers', groupfunctions.getallusers)
+app.use('/apis/uploadusericon', groupfunctions.uploadusericon)
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
 

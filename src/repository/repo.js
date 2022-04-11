@@ -706,6 +706,40 @@ export async function getAllUsers() {
 }
 
 /**
+ * uploadUserIcon
+ * remark: it will upload user icon to the user's profile
+ * input: url from Front END
+ */
+export async function uploadUserIcon(url) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/uploadusericon', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ url: url }),
+    })
+    let resBody = await res.json()
+    console.log('debug get uploadUserIcon\n', resBody)
+
+    if (res.status === 200) {
+      return {
+        success: true,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
  * join group
  * - add current user to the group of groupID
  * params: groupID

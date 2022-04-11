@@ -754,4 +754,18 @@ module.exports = {
       return res.status(401).json({ Error: err })
     }
   },
+
+  uploadusericon: async function uploadusericon(req, res, next) {
+    console.log('uploadusericon')
+    console.log(req.body)
+    try {
+      if (!req.body.url) return res.status(401).json('No URL appended')
+      await user_table.doc(req.header.verified.uid).update({
+        profile_icon: req.body.url,
+      })
+      return res.status(200).json({ Succeed: true })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
 }
