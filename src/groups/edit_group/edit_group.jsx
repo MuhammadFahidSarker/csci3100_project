@@ -80,6 +80,8 @@ export function EditGroup({}) {
         })
     }
 
+
+    //TODO refresh after update
     function updateGroupDetails(){
         console.log('updateGroupDetails to',name,description)
         
@@ -95,10 +97,9 @@ export function EditGroup({}) {
                 }
             })
         )
-        //todo implement user globale name and description
-
     }
 
+    //TODO refresh after update
     async function updateGroupPhoto(file){
         let [url,metadata] = await uploadFiles(file)
         console.log('uploaded photo,',url)
@@ -114,7 +115,6 @@ export function EditGroup({}) {
                 }
             })
         )
-        //todo implement user globale name and description
     }
 
     if (group === null) {
