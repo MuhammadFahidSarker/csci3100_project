@@ -34,9 +34,10 @@ export async function isUserLoggedIn() {
  * */
 export async function getUserDetails(userID = null) {
   await waitAuthObject()
-  console.log('calling getUserDetails', user)
+  //console.log('calling getUserDetails', user)
   try {
     let token = await user.getIdToken()
+    console.log('calling getUserDetails', user)
     let res = await fetch(baseURL + '/queryuser', {
       method: 'POST',
       mode: 'cors', // no-cors, *cors, same-origin

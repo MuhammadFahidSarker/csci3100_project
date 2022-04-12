@@ -34,7 +34,7 @@ export function VerifyUser() {
         })
     }
 
-    console.log(user);
+    console.log('verification screen:',user);
 
     if (loading === true) {
         return <LoadingScreen withTopNav={false}/>

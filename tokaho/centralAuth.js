@@ -53,6 +53,7 @@ module.exports = {
       const token = req.headers.authorization || req.cookies['authorization']
       try {
         const verified = await admin.auth().verifyIdToken(token)
+        console.log('token:',token)
         if (verified) {
           req.header.uid = verified.uid
           res.header('uid', verified.uid)

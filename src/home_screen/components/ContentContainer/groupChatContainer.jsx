@@ -34,13 +34,13 @@ const uploadFiles = async (file) => {
   if (!file) return null
   console.log('uploading file')
   // newfilename is a random string
-  const newFileName = uuidv4()
+  const newFileName = uuidv4()+'.'+file.name.split('.').pop()
   // creates a reference to a new file
   const storageRef = ref(storage, `/images/${newFileName}`)
   // uploads file to the given reference
   const uploadTask = await uploadBytesResumable(storageRef, file)
   const url = await getDownloadURL(uploadTask.ref)
-  console.log('finished upload')
+  console.log('finished upload:',newFileName)
   return url
 }
 
