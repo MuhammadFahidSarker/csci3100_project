@@ -748,7 +748,9 @@ module.exports = {
       let userSnapshot = await user_table.get()
       for (let p in userSnapshot.docs) {
         console.log('list:', userSnapshot.docs[p].data().email)
+        //console.log('ID:', userSnapshot.docs[p].id)
         allusers.push(userSnapshot.docs[p].data())
+        allusers[allusers.length - 1].userid = userSnapshot.docs[p].id
       }
       return res.status(200).json({ Succeed: true, Users: allusers })
     } catch (err) {
