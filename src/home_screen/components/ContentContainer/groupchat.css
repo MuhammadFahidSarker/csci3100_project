@@ -1,0 +1,31 @@
+.message-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.message-avatar{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 10px;
+}
+
+.message-text{
+    @apply text-black dark:text-white;
+}
+
+.message-self{
+    margin-left: auto;
+}
+
+.message-other{
+    margin-right: auto;
+}
+
+.chat-file-container{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
