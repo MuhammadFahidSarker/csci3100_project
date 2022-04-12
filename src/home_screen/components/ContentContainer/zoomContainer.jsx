@@ -13,7 +13,7 @@ import {
 import TopNavigation from '../TopNavigation'
 import ZoomMtgEmbedded from '@zoomus/websdk/embedded'
 
-export function ZoomContainer({group, toolbarHidden, user}) {
+export function ZoomContainer({ group, toolbarHidden, user }) {
   const client = ZoomMtgEmbedded.createClient()
   const meetingSDKElement = document.getElementById('meetingSDKElement')
   //init zoomClient
@@ -51,9 +51,12 @@ export function ZoomContainer({group, toolbarHidden, user}) {
     console.log(e)
   }
 
-  function getSignature(e) {
+  async function getSignature(e) {
     e.preventDefault()
-    let meetingNumber = getJoinAbleZoomMeetingLink(group.groupid, user.userID) // <-------------change this
+    let resp = await getJoinAbleZoomMeetingLink(user.userID, group.groupid) // <-------------change this 81149079754
+    console.log('Resp: ' + resp)
+    let meetingNumber = resp.response
+    console.log('Meeting Number: ' + meetingNumber)
     getZoomSignature(meetingNumber)
       .then((response) => {
         console.log('signature', response.signature, response.name)
