@@ -206,6 +206,7 @@ module.exports = {
         docsLink: null,
         sheetLink: null,
         presLink: null,
+        zoomLinl: null,
         group_icon:
           'https://thumbs.dreamstime.com/b/linear-group-icon-customer-service-outline-collection-thin-line-vector-isolated-white-background-138644548.jpg',
         isPrivate: false,
@@ -429,15 +430,14 @@ module.exports = {
               return res.status(401).json({
                 Error: 'not authorized',
               })
-            }}
-            console.log('return',docu.data())
-            return res.status(200).json({
-              
-              Succeed: {
-                Content: docu.data(),
-              },
-            })
-          
+            }
+          }
+          console.log('return', docu.data())
+          return res.status(200).json({
+            Succeed: {
+              Content: docu.data(),
+            },
+          })
         } catch (e) {
           console.log(e)
           return res.status(400).json({
@@ -474,7 +474,7 @@ module.exports = {
         }
         console.log('list:', groupSnapshot.docs[p].data().name)
         allgroups.push(groupSnapshot.docs[p].data())
-        allgroups[allgroups.length - 1].groupid=groupSnapshot.docs[p].id
+        allgroups[allgroups.length - 1].groupid = groupSnapshot.docs[p].id
       }
       return res.status(200).json({
         Succeed: {
@@ -707,22 +707,21 @@ module.exports = {
         let groupSnapshot = await group_table.doc(req.body.groupid).get()
         let members = groupSnapshot.data().members
         let admins = groupSnapshot.data().admins
-        let memberProfiles=[]
+        let memberProfiles = []
         for (let memberID of members) {
           let userSnapshot = await user_table.doc(memberID).get()
           let userData = userSnapshot.data()
-          let profile={name:userData.name,
-                      profileURL:userData.profile_icon,
-                      role:admins.includes(memberID)?'admin':'member'
-                      }
+          let profile = {
+            name: userData.name,
+            profileURL: userData.profile_icon,
+            role: admins.includes(memberID) ? 'admin' : 'member',
+          }
           memberProfiles.push(profile)
         }
         return res.status(200).json({
           Succeed: true,
-          Members: memberProfiles
+          Members: memberProfiles,
         })
-        
-        
       } catch (e) {
         console.log(e)
         return res.status(400).json({
@@ -733,6 +732,40 @@ module.exports = {
       return res.status(400).json({
         Error: 'please contain groupid',
       })
+    }
+  },
+
+  getallusers: async function getallusers(req, res, next) {
+    console.log('getAllUsers')
+    console.log(req.body)
+    try {
+      let allusers = []
+      let isadmin = await isAdmin(req.header.verified.uid, req)
+      if (!isadmin) {
+        return res.status(401).json('unauthorized')
+      }
+      let userSnapshot = await user_table.get()
+      for (let p in userSnapshot.docs) {
+        console.log('list:', userSnapshot.docs[p].data().email)
+        allusers.push(userSnapshot.docs[p].data())
+      }
+      return res.status(200).json({ Succeed: true, Users: allusers })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
+
+  uploadusericon: async function uploadusericon(req, res, next) {
+    console.log('uploadusericon')
+    console.log(req.body)
+    try {
+      if (!req.body.url) return res.status(401).json('No URL appended')
+      await user_table.doc(req.header.verified.uid).update({
+        profile_icon: req.body.url,
+      })
+      return res.status(200).json({ Succeed: true })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
     }
   },
 }

@@ -21,8 +21,6 @@ const checkread = async (req, res, next) => {
 }
 
 const scanfile = async (req, res, next) => {
-  // delete this line when code is implemented from the front end
-  req.body.fileName = 'figure-65.png'
   if (!req.body.fileName) {
     return res.status(401).json({
       Error: 'File not found',
@@ -38,8 +36,8 @@ const scanfile = async (req, res, next) => {
     console.log(`Full text:`)
     console.log(`${fullTextAnnotation.text}`)
     return res.status(200).json({
-      Success: `${fullTextAnnotation.text}
-    `,
+      Success: true,
+      Content: `${fullTextAnnotation.text}`,
     })
     //return res.status(200).json({ Success: 'Success' })
   } catch (e) {
