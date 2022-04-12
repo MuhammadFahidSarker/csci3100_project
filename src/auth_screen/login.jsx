@@ -21,6 +21,7 @@ export default function LoginScreen({adminLogin = false}) {
                         logout().then(()=>{
                                 setLoading(false);
                                 setError('You are not an admin');
+                                return;
                             }
                         )
                     }else if (adminLogin === true){
@@ -28,7 +29,11 @@ export default function LoginScreen({adminLogin = false}) {
                     }else{
                         navigate('/');
                     }
+
                 }
+
+                setLoading(false);
+
             })
         }, []
     )
