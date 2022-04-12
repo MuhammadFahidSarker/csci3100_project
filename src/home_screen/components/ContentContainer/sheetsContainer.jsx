@@ -37,7 +37,7 @@ export class SheetsContainer extends Component{
 
         return (
             <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}}  id={'doc-container'} className="content-container">
-                <TopNavigation user={user} group={group} toolbarHidden={toolbarHidden} url={sheetLink} type={'- Google Sheet'}/>
+                <TopNavigation user={user} showAllGroup={true} group={group} toolbarHidden={toolbarHidden} url={sheetLink} type={'- Google Sheet'}/>
 
                 {sheetLink === null ? <LoadingScreen/> : <div>
                     {loading ? <LoadingScreen/> : null}

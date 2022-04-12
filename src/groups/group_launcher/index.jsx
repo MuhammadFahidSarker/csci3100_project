@@ -56,7 +56,7 @@ export default class GroupLauncher extends Component {
         if (view === this.state.viewGroupOf) {
             return;
         }
-        this.setState({loginRequired:null, viewGroupOf: view});
+        this.setState({viewGroupOf: view});
         let groups = view === 'joined' ? await getJoinedGroups(this.state.user.userID) : await getAllGroups();
         if (groups.success) {
             groups = groups.groups
@@ -64,9 +64,8 @@ export default class GroupLauncher extends Component {
             groups = [];
         }
 
-        console.log(groups);
 
-        this.setState({loginRequired:false, groups});
+        this.setState({groups});
 
     }
 

@@ -6,11 +6,14 @@ import useDarkMode from "../home_screen/hooks/useDarkMode";
 import {useEffect, useState} from "react";
 import {getJoinedGroups, getUserDetails} from "../repository/repo";
 import {Navigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 export function ProfileScreen({}) {
     const [groups, setGroups] = useState([]);
     const [user, setUser] = useState(null);
     const [signedIn, setSignedIn] = useState(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -19,7 +22,7 @@ export function ProfileScreen({}) {
             if (res.success === true) {
                 getJoinedGroups(res.userID).then(res => {
                     if (res.success === true) {
-                        setGroups(res.response);
+                        setGroups(res.groups);
                     }
                 });
                 setUser(res);
@@ -32,11 +35,13 @@ export function ProfileScreen({}) {
 
     const height = window.innerHeight - 64 + 'px';
 
+    console.log(groups)
+
 
     return <div className={'content-container'}>
         {
             signedIn === null ?
-                <div className={'loader'}/> :
+                <div className={'center'}><div className={'loader'}/></div> :
                 signedIn === false ?
                     <Navigate to={'/login'}/> :
                 [<TopNavigation/>,
@@ -59,7 +64,7 @@ export function ProfileScreen({}) {
                                      style={{width: '240px', height: '240px', borderRadius: '500px'}}/>
                             </div>
                             <ul className={'group-tag-group'}>
-                                {groups.map(group => <li className={'group-tag'}>{group.name}</li>)}
+                                {groups.map(group => <li className={'group-tag'} onClick={()=> navigate('/groups/'+group.groupid)}>{group.name}</li>)}
                             </ul>
                         </div>
                     </div>]

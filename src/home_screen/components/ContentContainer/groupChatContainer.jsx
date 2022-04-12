@@ -1,24 +1,15 @@
 import TopNavigation from '../TopNavigation'
 import {BsPlusCircleFill} from 'react-icons/bs'
-import {Component, useEffect, useRef, useState} from 'react'
-import React from 'react'
-import {LoadingScreen} from '../../../common/loading'
-import {getGroupChats, sendMessage} from '../../../repository/repo'
+import React, {useState} from 'react'
 import {AiFillCloseCircle, BiSend, FiFile} from 'react-icons/all'
-import ScrollToBottom from 'react-scroll-to-bottom'
 import firebase from 'firebase/compat'
 
-import { useCollectionData } from 'react-firebase-hooks/firestore'
-import { firebaseConfig } from '../../../repository/firebase_auth' 
+import {useCollectionData} from 'react-firebase-hooks/firestore'
+import {firebaseConfig} from '../../../repository/firebase_auth'
 import 'firebase/compat/firestore'
 import 'firebase/compat/auth'
-import {
-  getDownloadURL,
-  getStorage,
-  uploadBytesResumable,
-  ref,
-} from 'firebase/storage'
-import { v4 as uuidv4 } from 'uuid'
+import {getDownloadURL, getStorage, ref, uploadBytesResumable,} from 'firebase/storage'
+import {v4 as uuidv4} from 'uuid'
 import './groupchat.css'
 
 
@@ -53,6 +44,8 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
     const [messages] = useCollectionData(query, {idField: 'id'})
     var url= null
 
+    const [searchField, setSearchField] = useState('')
+
     const sendMessage = async (text, file) => {
         if(text === '' && file === null) return
         console.log(user, text, file)
@@ -74,13 +67,20 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
         })
     }
 
+    function getFilteredMessages(){
+      if(searchField === '') return messages
+        if(messages === null || messages === undefined) return [];
+        return messages.filter(message => {
+          return message.text.toLowerCase().includes(searchField.toLowerCase())
+      })
+    }
+
 
     return (
         <div className={'content-container'}>
-            <TopNavigation user={user} group={group} toolbarHidden={toolbarHidden}/>
-            <div className={'content-list'}>
-                {messages &&
-                    messages.map((message, index) => {
+            <TopNavigation onSearch={setSearchField} showAllGroup={true} user={user} group={group} toolbarHidden={toolbarHidden}/>
+            <div className={'content-list'} style={{marginBottom:'40px',  padding:'20px', paddingBottom:'40px'}}>
+                {messages && getFilteredMessages().map((message, index) => {
                         return <Message key={index} userID={user.userID} message={message}/>
                     })}
             </div>
@@ -95,14 +95,18 @@ function Message({message, userID}) {
     return (
         <div className={'message-container message-' + type}>
             {type === 'other' ? <img className={'message-avatar'} src={photoURL} alt={'avatar'}/> : null}
-            {attachedF && <img className={'message-image'} src={attachedF}/>}
-            <div className={'message-text'}>{text}</div>
+            {/*{attachedF && <img className={'message-image'} src={attachedF}/>}*/}
+            <div>
+                <div className={'message-text'}>{text}</div>
+                {attachedF ? <div className={'url-container'}>
+                    <FiFile size={20}/>
+                    <a href={attachedF} download>Download</a>
+                </div> : null}
+            </div>
             {type === 'self' ? <img className={'message-avatar'} src={photoURL} alt={'avatar'}/> : null}
-            {attachedF ? <div style={{display:'flex', alignItems:'center'}}>
-                <FiFile size={20}/>
-                <a href={attachedF} download>Download</a>
-            </div> : null}
+
         </div>
+
     )
 }
 
@@ -150,29 +154,7 @@ const BottomBar = ({onSend}) => {
 
 }
 
-const Post = ({
-                  name,
-                  timestamp,
-                  text,
-                  photoURL = 'https://avatars.dicebear.com/api/open-peeps/1.svg',
-              }) => {
-    const seed = Math.round(Math.random() * 100)
-    return (
-        <div className={'post'}>
-            <div className="avatar-wrapper">
-                <img src={photoURL} alt="" className="avatar"/>
-            </div>
 
-            <div className="post-content">
-                <p className="post-owner">
-                    {name}
-                    <small className="timestamp">{timestamp}</small>
-                </p>
-                <p className="post-text">{text}</p>
-            </div>
-        </div>
-    )
-}
 
 
 const PlusIcon = ({onFileUploaded}) => {

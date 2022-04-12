@@ -36,6 +36,7 @@ class App extends Component {
                     <Route path={'/profile'} element={<ProfileScreen />}/>
                     <Route path={'/create-group'} element={<CreateGroup/>}/>
                     <Route path={'/admin'} element={<AdminScreen/>}/>
+                    <Route path={'/admin-login'} element={<LoginScreen adminLogin={true}/>}/>
                     <Route path={'/verify-user'} element={<VerifyUser/>}/>
                 </Routes>
             </Router>
