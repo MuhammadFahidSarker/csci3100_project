@@ -67,6 +67,7 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
       })
   }
 
+
   function startMeeting(signature, user, meetingNumber) {
     client.join({
       apiKey: 'CyxAFmRCQWeCyu4eGFC0IQ',
@@ -86,44 +87,3 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
     </div>
   )
 }
-
-// export class DEBUG extends Component{
-//     constructor(props) {
-//         super(props);
-//         this.state={
-//             sheetLink:null,
-//             loading: true,
-
-//         }
-//     }
-
-//     componentDidMount() {
-//         getGoogleSheetLink(this.props.group.groupid).then(res => {
-//             console.log('sheet link recieved:',res.content)
-//             if (res.success === true) {
-//                 this.setState({
-//                     sheetLink: res.content.sheetLink,
-//                     loading: false,
-//                 })
-//             }else{
-//                 console.log(res.error)
-//             }
-//         })
-//     }
-
-//     render() {
-//         const {sheetLink, loading} = this.state;
-//         const {toolbarHidden, group} = this.props;
-
-//         return (
-//             <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}}  id={'doc-container'} className="content-container">
-//                 <TopNavigation group={group} toolbarHidden={toolbarHidden} url={sheetLink} type={'- Zoom'}/>
-
-//                 {sheetLink === null ? <LoadingScreen/> : <div>
-//                     {loading ? <LoadingScreen/> : null}
-//                     <div id="meetingSDKElement">zoom here</div>
-//                 </div>}
-//             </div>
-//         );
-//     }
-// }

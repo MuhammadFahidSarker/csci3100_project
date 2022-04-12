@@ -7,12 +7,43 @@ import {getGroupChats, sendMessage} from '../../../repository/repo'
 import {AiFillCloseCircle, BiSend, FiFile} from 'react-icons/all'
 import ScrollToBottom from 'react-scroll-to-bottom'
 import firebase from 'firebase/compat'
-import {useCollectionData} from 'react-firebase-hooks/firestore'
-import {firebaseConfig} from '../../../repository/firebase_auth'
+
+import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { firebaseConfig } from '../../../repository/firebase_auth' 
+import 'firebase/compat/firestore'
+import 'firebase/compat/auth'
+import {
+  getDownloadURL,
+  getStorage,
+  uploadBytesResumable,
+  ref,
+} from 'firebase/storage'
+import { v4 as uuidv4 } from 'uuid'
 import './groupchat.css'
+
 
 firebase.initializeApp(firebaseConfig)
 const firestore = firebase.firestore()
+const storage = getStorage()
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+const uploadFiles = async (file) => {
+  // if there is no file, return null
+  console.log('upload file')
+  if (!file) return null
+  console.log('uploading file')
+  // newfilename is a random string
+  const newFileName = uuidv4()
+  // creates a reference to a new file
+  const storageRef = ref(storage, `/images/${newFileName}`)
+  // uploads file to the given reference
+  const uploadTask = await uploadBytesResumable(storageRef, file)
+  const url = await getDownloadURL(uploadTask.ref)
+  console.log('finished upload')
+  return url
+}
+
 
 export function GroupChatContainer({group, toolbarHidden, user}) {
     const groupId = group.groupid
@@ -107,6 +138,7 @@ const BottomBar = ({onSend}) => {
             />
         </div>
     )
+
 }
 
 const Post = ({
@@ -132,6 +164,7 @@ const Post = ({
         </div>
     )
 }
+
 
 const PlusIcon = ({onFileUploaded}) => {
 
