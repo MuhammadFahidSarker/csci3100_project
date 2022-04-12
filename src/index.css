@@ -36,9 +36,10 @@
   .top-navigation {
     @apply flex flex-row items-center justify-evenly 
     bg-gray-300 dark:bg-gray-700 bg-opacity-90 
-    w-full h-16 
+    w-full h-16
     m-0 
     shadow-lg;
+    align-items: center;
   }
 
   .top-navigation-icon {
@@ -49,10 +50,19 @@
     cursor-pointer;
   }
 
+
   .top-navigation-icon:first {
     @apply ml-auto mr-4;
   }
 
+  .admin-icon {
+    @apply text-blue-500
+    mr-3 ml-4
+    transition duration-300 ease-in-out
+    hover:text-blue-900
+    dark:hover:text-blue-200
+    cursor-pointer mr-4;
+  }
   .title-hashtag {
     @apply text-lg tracking-wider font-semibold text-gray-500 
     ml-2 my-auto;
@@ -131,10 +141,12 @@
 
   .avatar {
     @apply flex-none
-    w-12 h-full 
+    w-8 h-8
     rounded-full shadow-md
-    object-cover bg-gray-100 
-    mb-auto mt-0 mx-0 
+    object-cover bg-gray-100
+    mr-3 ml-4
+    transition duration-300 ease-in-out
+    hover:text-pink-400
     cursor-pointer;
   }
 
@@ -167,7 +179,7 @@
   }
 
   .channel-bar {
-    @apply w-80 h-auto m-0 ml-16 bg-gray-200 dark:bg-gray-800
+    @apply w-80 h-auto  bg-gray-200 dark:bg-gray-800
      overflow-hidden;
   }
 
@@ -227,7 +239,7 @@
 }
 
 button {
-  @apply bg-blue-500 hover:bg-blue-700 text-white dark:bg-gray-800 dark:hover:bg-gray-900;
+  @apply text-white bg-blue-500 hover:bg-blue-700 dark:text-white dark:bg-gray-800 dark:hover:bg-gray-900;
   border: none;
   padding: 10px;
   border-radius: 5px;
@@ -263,6 +275,16 @@ button {
 
 div {
   @apply text-gray-800 dark:text-white;
+}
+
+.row{
+  @apply flex flex-row items-center justify-center;
+  width: 100%;
+}
+.center{
+  @apply flex items-center justify-center;
+  width: 100%;
+  height: 100%;
 }
 
 @tailwind utilities;

@@ -18,9 +18,13 @@ const SideBar = ({onClick, user, group}) => {
 
         <SideBarIcon icon={<FaFire size="32" onClick={()=> onClick('hide_show')}/>} text={'Show Hide Toolbar'} />
         <Divider />
-        <SideBarIcon text={'View/Edit Profile - '+user.name} icon={user?.photoURL === null ? <BiSearch size="32" /> : <img src={user.photoURL} className='avatar'/> } />
-        <SideBarIcon icon={<BiGroup size="32" />} text={'Groups'} onClick={()=> navigate("/groups", { replace: true })}/>
-        <SideBarIcon icon={<BsGearFill size="32" />} text={'Edit '+group.name} onClick={(_)=>navigate('/groups/'+group.groupid+'/edit')}/>
+        <SideBarIcon text={'View/Edit Profile - '+user.name} icon={user?.photoURL === null ? <BiSearch size="32" /> : <img src={user.photoURL} className='avatar'/> } />,
+        {(group === null || group === undefined)? null
+        : [
+                <SideBarIcon icon={<BiGroup size="32" />} text={'Groups'} onClick={()=> navigate("/groups", { replace: true })}/>,
+                <SideBarIcon icon={<BsGearFill size="32" />} text={'Edit '+group.name} onClick={(_)=>navigate('/groups/'+group.groupid+'/edit')}/>,
+            ]}
+
         <Divider />
 
         <SideBarIcon icon={<FiLogOut size="22" />} text={'Log Out'} onClick={(e) => {
@@ -31,7 +35,7 @@ const SideBar = ({onClick, user, group}) => {
   );
 };
 
-const SideBarIcon = ({ icon, text = 'tooltip 💡' , onClick}) => (
+export const SideBarIcon = ({ icon, text = 'tooltip 💡' , onClick}) => (
   <div className="sidebar-icon group"  onClick={() => onClick?.()}>
     {icon}
     <span class="sidebar-tooltip group-hover:scale-100">

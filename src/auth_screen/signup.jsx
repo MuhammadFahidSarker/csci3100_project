@@ -1,46 +1,85 @@
-import {Component} from 'react';
-import {Login, Signup} from 'next-gen-ui'
+import {useEffect, useState} from "react";
+import {TextInput} from "../common/input/textinput";
+import {Link} from "react-router-dom";
 import './auth.css'
-import {signIn, signUp} from "../repository/repo";
-import {Navigate} from "react-router-dom";
+import {getUserDetails, logout, signIn, signUp} from "../repository/repo";
+import {useNavigate} from "react-router-dom";
 
-export  default class SignupScreen extends Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: false,
-            loginSuccess:null,
+export default function SignupScreen({}) {
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [password2, setPassword2] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+
+    useEffect(
+        () => {
+            getUserDetails().then(user => {
+                if (user.success === true) {
+                    navigate('/');
+                }
+            })
+        }, []
+    )
+
+
+    function performSignUp(){
+        if(name.length === 0 || email.length === 0 || password.length === 0){
+            setError('Please fill all the fields');
+            return;
         }
+
+        if(password !== password2){
+            setError('Passwords do not match');
+            return;
+        }
+
+        setLoading(true);
+
+        signUp(name, email, password).then(response => {
+            setLoading(false);
+            if(response.success === true){
+                navigate('/');
+            }else{
+                setError(response.message);
+            }
+        })
+
     }
 
-    handleSignUp = async ({email, password}) => {
-        this.setState({loading: true});
-        const res = await signUp(email, password);
-        
-        if(!res.success){
-            // TODO: pop error to user
-            console.log(res.error)            
-        }
 
-        this.setState({loginSuccess: res.success === true, loading: false});
-    }
-
-    render() {
-        const {loading, loginSuccess} = this.state;
-
-        //if(loading) return <div>Loading...</div>
-
-        if(loginSuccess) {
-            return <Navigate to={'/'}/>
-        }
-
-        return (
-            <div>
-                <div style={{fontSize:'80px', textAlign:'center', width:'100%',}}>Union</div>
-                <div className={'auth'}>
-                    <Signup registerLink={'/login'} onSubmit={this.handleSignUp} loading={loading} />
-                </div>
+    return <div className={'content-container'}>
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignContent: 'center',
+            height: '100%'
+        }}>
+            <div className={'auth-container'}>
+                {
+                    loading ? <div className={'loader'}/>
+                        : <div>
+                            <div style={{
+                                textAlign: 'center',
+                                fontSize: '60px',
+                                fontWeight: '200'
+                            }}>Sign Up</div>
+                            <TextInput label={'Name'} placeHolder={'Full Name'} onChange={setName}/>
+                            <TextInput label={'Email'} placeHolder={'Email'} onChange={setEmail}/>
+                            <TextInput hideCnt={true} label={'Password'} placeHolder={'Account Password'} onChange={setPassword}/>
+                            <TextInput hideCnt={true} label={'Re-Password'} placeHolder={'Re Type Password'}  onChange={setPassword2}/>
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                <button onClick={() => performSignUp()}>Sign Up</button>
+                                <Link to={'/login'}>Sign in Instead</Link>
+                            </div>
+                            <div style={{color: 'red'}}>{error}</div>
+                        </div>
+                }
             </div>
-        );
-    }
+        </div>
+    </div>
 }

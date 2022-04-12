@@ -81,12 +81,16 @@ export default class GroupLauncher extends Component {
             return <Navigate to={'/login'}/>
         }
 
+        if(user.isVerified === false){
+            return <Navigate to={'/verify-user'}/>
+        }
+
         return (
-            <div>
+            <div style={{display:'flex'}}>
 
                 <div className={'content-container'} style={{height: window.innerHeight, width: window.innerWidth}}>
 
-                    <TopNavigation showCreateGroup={true} onSearch={(search)=>this.setState({searchTerm:search})}/>
+                    <TopNavigation user={user} showCreateGroup={true} onSearch={(search)=>this.setState({searchTerm:search})}/>
 
                     <div style={{display: 'flex', gap: '20px', marginTop: '10px'}}>
                         <button className={viewGroupOf === 'joined' ? 'selected-btn' : 'un-selected-btn'}
@@ -99,7 +103,11 @@ export default class GroupLauncher extends Component {
 
                     <div className={'content-list'} style={{display: 'flex'}}>
                         {this.filteredGroup().map(group => {
-                            return <GroupPreview group={group} userID={user.userID}/>
+                            return <GroupPreview group={group} userID={user.userID} onGroupLeaved={() => {
+                                if(viewGroupOf === 'joined'){
+                                    this.setState({groups: groups.filter(g => g.groupID !== group.groupID)})
+                                }
+                            }}/>
                         })}
                     </div>
                 </div>

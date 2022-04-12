@@ -7,11 +7,13 @@ import {getGroupDetails, getUserDetails, isUserLoggedIn} from "../repository/rep
 import { Navigate } from 'react-router-dom';
 import {LoadingScreen} from "../common/loading";
 import { useLocation } from 'react-router-dom'
+import {useNavigate} from "react-router-dom";
 
 function Home (props) {
     const location = useLocation();
+    const navigate = useNavigate();
 
-    return <HomeComponent {...props} groupID={location.pathname.split('/')[2]}/>
+    return <HomeComponent {...props} onNavigate={navigate} groupID={location.pathname.split('/')[2]}/>
 }
 
 const GROUP_NOT_FOUND = 'Group Not Found!';
@@ -31,6 +33,8 @@ class HomeComponent extends Component {
         }
     }
 
+
+
     async componentDidMount() {
         let user, error, group;
 
@@ -39,6 +43,9 @@ class HomeComponent extends Component {
             this.setState({loginRequired: true});
         }
 
+        if(user.isVerified === false){
+            this.props.onNavigate('/verify-user');
+        }
 
 
         group = await getGroupDetails(this.props.groupID);
@@ -52,6 +59,8 @@ class HomeComponent extends Component {
         this.setState({user: user, group: group.content, loginRequired: false});
     }
 
+
+
     handleMainBarOnclick = (type) => {
         if(type === 'hide_show'){
             this.setState({toolbarHidden: !this.state.toolbarHidden});
@@ -64,12 +73,17 @@ class HomeComponent extends Component {
         const {type, loginRequired, toolbarHidden, user, error, group} = this.state;
         const {groupID} = this.props;
 
+
         if(loginRequired === null){
             return <LoadingScreen withTopNav={false}/>
         }
 
         if(loginRequired === true || user === null){
             return <Navigate to={'/login'}/>
+        }
+
+        if(user.isVerified === false){
+            return <Navigate to={'/verify-user'}/>
         }
 
         if(group === null && error === GROUP_NOT_FOUND){
@@ -80,7 +94,7 @@ class HomeComponent extends Component {
 
         return (
             <div className="flex">
-                <SideBar onClick={this.handleMainBarOnclick} group={group} user={user}/>
+                {/*<SideBar onClick={this.handleMainBarOnclick} group={group} user={user}/>*/}
                 {toolbarHidden ? null : <Channelbar changeType = {this.setType} /> }
                 <ContentContainer group={group} toolbarHidden={toolbarHidden} user={user} type = {this.state.type} />
             </div>

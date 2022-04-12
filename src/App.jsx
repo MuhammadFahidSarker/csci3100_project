@@ -11,6 +11,8 @@ import {ProfileScreen} from "./profile/profile";
 import {user} from "./repository/firebase_auth";
 import {CreateGroup} from "./groups/create_group/create_group";
 import {EditGroup} from "./groups/edit_group/edit_group";
+import {AdminScreen} from "./admin/admin";
+import {VerifyUser} from "./varification/not_verified";
 
 class App extends Component {
 
@@ -33,6 +35,8 @@ class App extends Component {
                     <Route path={'/signup'} element={<SignupScreen/>}/>
                     <Route path={'/profile'} element={<ProfileScreen />}/>
                     <Route path={'/create-group'} element={<CreateGroup/>}/>
+                    <Route path={'/admin'} element={<AdminScreen/>}/>
+                    <Route path={'/verify-user'} element={<VerifyUser/>}/>
                 </Routes>
             </Router>
         );

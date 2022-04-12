@@ -51,7 +51,7 @@ export async function getUserDetails(userID = null) {
     console.log('debug get UserDetails\n', resBody)
     return {
       success: true,
-      isVerified: resBody.isVerified, //whether the user being queried is verified
+      isVerified: resBody.Succeed.isVerified, //whether the user being queried is verified
       name: resBody.Content.name,
       userID: userID || user.uid,
       isAdmin: resBody.Content.role === 'admin',
@@ -140,7 +140,7 @@ export async function signIn(userName, password) {
  * returns true if successful
  *
  * */
-export async function signUp(userName, password) {
+export async function signUp(fullName, userName, password) {
   await waitAuthObject()
   console.log('Sign up with: ', userName, password)
   try {

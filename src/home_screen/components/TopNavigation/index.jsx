@@ -1,36 +1,80 @@
 import {
-    FaSearch, FaHashtag, FaRegBell, FaUserCircle, FaMoon, FaSun,
+    FaSearch, FaHashtag, FaRegBell, FaUserCircle, FaMoon, FaSun, FaFire,
 } from 'react-icons/fa';
 import useDarkMode from '../../hooks/useDarkMode';
-import {BiGroup, FiPlusCircle, GoLinkExternal} from "react-icons/all";
-import { useNavigate } from 'react-router-dom';
+import {BiGroup, BiSearch, FiLogOut, FiPlusCircle, FiUser, GoLinkExternal, RiAdminFill} from "react-icons/all";
+import {useNavigate} from 'react-router-dom';
+import {SideBarIcon} from "../SideBar";
+import {logout} from "../../../repository/repo";
 
-const TopNavigation = ({toolbarHidden, showAllGroup=false, showCreateGroup=false, group, url = null, onSearch=null, type=''}) => {
+const TopNavigation = ({
+    hideAdminIcon, forceName,
+                           toolbarHidden,
+                           user,
+                           showAllGroup = false,
+                           showCreateGroup = false,
+                           group,
+                           url = null,
+                           onSearch = null,
+                           type = ''
+                       }) => {
+    console.log(user)
     return (<div className='top-navigation'>
+        {((user !== null || user !== undefined) && (user.isAdmin === true) && hideAdminIcon === false) ?  <AdminIcon/> : null}
         <HashtagIcon toolbarHidden={toolbarHidden}/>
-        <Title groupName={group?.name} type={type}/>
+        <Title groupName={forceName ? forceName : group?.name} type={type}/>
+        {onSearch === null ? null : <Search onSearch={onSearch}/>}
         {showCreateGroup === true ? <CreateGroupIcon group={group}/> : null}
         {showAllGroup === true ? <AllGroups/> : null}
         <ThemeIcon/>
         {url === null ? null : <Expand url={url}/>}
-        {onSearch === null ? null : <Search onSearch={onSearch}/>}
-        <BellIcon/>
+        {(user === null || user === undefined) ? null
+            : [<UserIcon user={user}/>, <LogoutIcon/>]}
+
+
     </div>);
 };
 
-
-const CreateGroupIcon = ({}) =>{
+const AdminIcon =() =>{
     const navigate = useNavigate();
-    return <FiPlusCircle size={'24px'} className={'top-navigation-icon'} onClick={(_)=> {
-        navigate('/create-group');
+
+    return <RiAdminFill  size={'24px'} className={'admin-icon'} onClick={(_) => {
+        navigate('/admin');
     }} />
 }
 
-const AllGroups = ({}) =>{
+const UserIcon = ({user}) => {
     const navigate = useNavigate();
-    return <BiGroup size={'24px'} className={'top-navigation-icon'} onClick={(_)=> {
+    return <div onClick={() => navigate('/profile')}>
+        <img  src={user.photoURL} className='avatar'/>
+    </div>
+}
+
+const LogoutIcon = ({user}) => {
+    const navigate = useNavigate();
+    return <div >
+        <FiLogOut onClick={() => {
+            logout().then(
+                () => {
+                    navigate('/login')
+                }
+            )
+        }} size={'24px'} className={'top-navigation-icon'}/>
+    </div>
+}
+
+const CreateGroupIcon = ({}) => {
+    const navigate = useNavigate();
+    return <FiPlusCircle size={'24px'} className={'top-navigation-icon'} onClick={(_) => {
+        navigate('/create-group');
+    }}/>
+}
+
+const AllGroups = ({}) => {
+    const navigate = useNavigate();
+    return <BiGroup size={'24px'} className={'top-navigation-icon'} onClick={(_) => {
         navigate('/groups');
-    }} />
+    }}/>
 }
 
 const ThemeIcon = () => {
@@ -39,9 +83,9 @@ const ThemeIcon = () => {
     return (
         <span onClick={handleMode}>
       {darkTheme ? (
-          <FaSun size='24' className='top-navigation-icon' />
+          <FaSun size='24' className='top-navigation-icon'/>
       ) : (
-          <FaMoon size='24' className='top-navigation-icon' />
+          <FaMoon size='24' className='top-navigation-icon'/>
       )}
     </span>
     );
@@ -53,7 +97,7 @@ const Search = ({onSearch}) => (<div className='search'>
 const BellIcon = () => <FaRegBell size='24' className='top-navigation-icon'/>;
 const HashtagIcon = ({toolbarHidden}) => <FaHashtag size='20' className='title-hashtag'
                                                     style={{}}/>;
-const Title = ({groupName, type}) => <h5 className='title-text'>{(groupName ?? 'UNION')+' '+type}</h5>;
+const Title = ({groupName, type}) => <h5 className='title-text'>{(groupName ?? 'UNION') + ' ' + type}</h5>;
 const Expand = ({url}) => <GoLinkExternal size='24' className='top-navigation-icon' onClick={(e) => {
     e.preventDefault();
     window.open(url, '_blank');

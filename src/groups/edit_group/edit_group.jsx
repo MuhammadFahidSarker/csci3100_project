@@ -4,7 +4,15 @@ import {getGroupDetails, getGroupMembers} from "../../repository/repo";
 import {LoadingScreen} from "../../common/loading";
 import TopNavigation from "../../home_screen/components/TopNavigation";
 import {TextInput} from "../../common/input/textinput";
-import {AiFillBackward, AiFillDelete, BiArrowBack, FiDelete, FiEdit} from "react-icons/all";
+import {
+    AiFillBackward, AiFillCloseCircle,
+    AiFillDelete,
+    AiFillRightCircle,
+    AiFillWarning, AiOutlineClose, AiOutlineCloseCircle,
+    BiArrowBack,
+    FiDelete,
+    FiEdit, GiConfirmed, IoClose, RiAdminFill
+} from "react-icons/all";
 import {useNavigate} from "react-router-dom";
 import './edit_grp.css'
 
@@ -35,7 +43,7 @@ export function EditGroup({}) {
     return (
         <div className={'content-container'}>
             <TopNavigation showAllGroup={true}/>
-            <div className={'content-list'} style={{height:height}}>
+            <div className={'content-list'} style={{height: height}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', padding: '40px'}}>
                     <div>
                         <TextInput label={'Name'} value={group.name} placeHolder={'Group name'}/>
@@ -48,10 +56,16 @@ export function EditGroup({}) {
 
                     </div>
                 </div>
-                <div style={{display:'flex', gap:'30px'}}>
+                <div style={{display: 'flex', gap: '30px'}}>
 
-                    <button><div style={{display:'flex', alignItems:'center'}} onClick={(_)=> navigate('/groups/'+groupId)}><BiArrowBack/>Back</div></button>
-                    <button><div style={{display:'flex', alignItems:'center'}}><FiEdit/> Update</div></button>
+                    <button>
+                        <div style={{display: 'flex', alignItems: 'center'}}
+                             onClick={(_) => navigate('/groups/' + groupId)}><BiArrowBack/>Back
+                        </div>
+                    </button>
+                    <button>
+                        <div style={{display: 'flex', alignItems: 'center'}}><FiEdit/> Update</div>
+                    </button>
 
                 </div>
                 <div className={'hr-line'}/>
@@ -63,7 +77,7 @@ export function EditGroup({}) {
     );
 }
 
-function GroupMembers({groupID}){
+function GroupMembers({groupID}) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [members, setMembers] = useState(null);
     useEffect(
@@ -78,21 +92,40 @@ function GroupMembers({groupID}){
         }, [],
     )
 
+    function removeMember(member) {
+        setMembers(members.filter(m => m.uid !== member.uid))
+
+    }
+
     if (members === null) {
         return <div></div>
     }
 
-    if(members.length === 0)
+    if (members.length === 0)
         return <div>No members</div>
 
     return <ul className={'group-tag-group'}>
-        {members.map(member => <li ><Member member={member}/> </li>)}
+        {members.map(member => <li><Member member={member}/></li>)}
     </ul>
 }
 
-function Member({member}){
+function Member({member, removeMember}) {
+    const [shouldDel, setShouldDel] = useState(false);
+    const isAdmin = member.role === 'admin';
+
     return <div className={'member-tag'}>
         {member.name}
-        <AiFillDelete style={{color:'red', fontSize:24, cursor:'pointer',}}/>
+        {isAdmin ? <div style={{display: 'flex', alignItems: 'center'}}>
+                <RiAdminFill style={{fontSize: '20px', color: '#ff4907'}}/>
+                <div style={{fontSize: '20px', color: '#ff4107'}}>Admin</div>
+            </div>
+            : shouldDel === true ?
+            [
+                <GiConfirmed style={{color: 'red', fontSize: 24, cursor: 'pointer',}} onClick={removeMember}/>,
+                <AiOutlineCloseCircle style={{color: 'red', fontSize: 24, cursor: 'pointer',}}
+                                      onClick={() => setShouldDel(false)}/>
+            ]
+            :
+            <AiFillDelete style={{color: 'red', fontSize: 24, cursor: 'pointer',}} onClick={() => setShouldDel(true)}/>}
     </div>
 }

@@ -71,14 +71,13 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
 
     return (
         <div className={'content-container'}>
-            <TopNavigation group={group} toolbarHidden={toolbarHidden}/>
+            <TopNavigation user={user} group={group} toolbarHidden={toolbarHidden}/>
             <div className={'content-list'}>
                 {messages &&
                     messages.map((message, index) => {
                         return <Message key={index} userID={user.userID} message={message}/>
                     })}
             </div>
-
             <BottomBar onSend={(message, file) => sendMessage(message, file)}/>
         </div>
     )
@@ -92,7 +91,10 @@ function Message({message, userID}) {
             {type === 'other' ? <img className={'message-avatar'} src={photoURL} alt={'avatar'}/> : null}
             <div className={'message-text'}>{text}</div>
             {type === 'self' ? <img className={'message-avatar'} src={photoURL} alt={'avatar'}/> : null}
-
+            {attachedF ? <div style={{display:'flex', alignItems:'center'}}>
+                <FiFile size={20}/>
+                <a href={attachedF} download>Download</a>
+            </div> : null}
         </div>
     )
 }

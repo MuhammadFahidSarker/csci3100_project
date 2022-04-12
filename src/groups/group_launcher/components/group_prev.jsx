@@ -3,15 +3,15 @@ import {Button} from "next-gen-ui";
 import useDarkMode from "../../../home_screen/hooks/useDarkMode";
 import {useNavigate} from "react-router-dom";
 import {BiArrowBack, FcLeave, FiEdit, RiAdminFill} from "react-icons/all";
-import {joinGroup} from "../../../repository/repo";
+import {joinGroup, leaveGroup} from "../../../repository/repo";
 import {useState} from "react";
 import {LoadingScreen} from "../../../common/loading";
 
-export default function GroupPreview({group, userID}) {
+export default function GroupPreview({onGroupLeaved, group, userID}) {
     let navigate = useNavigate();
     const gMembers = group.members;
     const members = gMembers?.length | 0;
-    const action = gMembers ? gMembers.includes(userID) ? 'Launch' : 'Join' : 'Join';
+    const [action, setAction] = useState(gMembers ? gMembers.includes(userID) ? 'Launch' : 'Join' : 'Join');
     const admins = group.admins;
     const isAdmin = admins?.includes(userID);
     const [error, setError] = useState('');
@@ -32,6 +32,19 @@ export default function GroupPreview({group, userID}) {
         navigate('/groups/' + group.groupid)
     }
 
+    async function leaveTheGroup() {
+        setLoading(true);
+        const res = await leaveGroup(group.groupid);
+        if (res.success) {
+            setAction('Join');
+            setLoading(false);
+            onGroupLeaved();
+        } else {
+            setLoading(false);
+            setError('Could not leave group: Unknown Error!');
+        }
+    }
+
     return <div className={'prev'} style={{
         display: 'flex', fontSize: '40px',
         margin: '5px', marginLeft: '80px', marginRight: '80px',
@@ -49,9 +62,9 @@ export default function GroupPreview({group, userID}) {
                     <button onClick={isAdmin ? (_) => navigate('/groups/' + group.groupid + '/edit') : null}>
                         <div style={{display: 'flex', alignItems: 'center'}}><FiEdit/>Edit</div>
                     </button>
-                    <RiAdminFill style={{fontSize: '20px', color: '#ffc107'}}/>
-                    <div style={{fontSize: '20px', color: '#ffc107'}}>Admin</div>
-                </div> : action === 'Launch' ? <button onClick={(_) => navigate('/groups/' + group.groupid + '/edit')}>
+                    <RiAdminFill style={{fontSize: '20px', color: '#ff4907'}}/>
+                    <div style={{fontSize: '20px', color: '#ff4107'}}>Admin</div>
+                </div> : (action === 'Launch' && loading === false) ? <button onClick={(_) => leaveTheGroup()} >
                     <div style={{display: 'flex', alignItems: 'center'}}><BiArrowBack/>Leave Group</div>
                 </button> : null}
                 {error === '' ? null : <div style={{color: 'red'}}>{error}</div>}

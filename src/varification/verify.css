@@ -1,4 +1,4 @@
-.auth-container{
+.verify-container{
     @apply bg-gray-200 dark:bg-gray-600;
     border-radius: 10px;
     margin: 20px;

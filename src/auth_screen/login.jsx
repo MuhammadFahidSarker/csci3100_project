@@ -1,46 +1,84 @@
-import {Component} from 'react';
-import {Login} from 'next-gen-ui'
+import {useEffect, useState} from "react";
+import {TextInput} from "../common/input/textinput";
+import {Link} from "react-router-dom";
 import './auth.css'
-import {signIn} from "../repository/repo";
-import {Navigate} from "react-router-dom";
+import {getUserDetails, logout, signIn} from "../repository/repo";
+import {useNavigate} from "react-router-dom";
 
-class LoginScreen extends Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: false,
-            loginSuccess:null,
+export default function LoginScreen({adminLogin = false}) {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+
+    useEffect(
+        () => {
+            getUserDetails().then(user => {
+                if (user.success === true) {
+                    navigate('/');
+                }
+            })
+        }, []
+    )
+
+
+    function executeLogin() {
+        if (email === '' || password === '') {
+            setError('Please enter email and password');
+            return;
         }
+        setLoading(true);
+        setError('');
+        signIn(email, password, adminLogin)
+            .then((res) => {
+                setLoading(false);
+                if (res.success) {
+                    if (adminLogin === true && res.isAdmin === false) {
+                        setError('Not an admin account!');
+                        logout();
+                    }
+                    navigate('/');
+                } else {
+                    setError('Invalid email or password');
+                }
+            })
+            .catch(error => {
+                setLoading(false);
+                setError(error.message);
+            });
+
     }
 
-    handleSignIn = async ({email, password}) => {
-        this.setState({loading: true});
-        const res = await signIn(email, password);
-        if(!res.success){
-            // TODO: pop error to user
-            console.log(res.error)            
-        }
-        this.setState({loginSuccess: res.success === true, loading: false});
-    }
 
-    render() {
-        const {loading, loginSuccess} = this.state;
-
-        //if(loading) return <div>Loading...</div>
-
-        if(loginSuccess) {
-            return <Navigate to={'/'}/>
-        }
-
-        return (
-            <div>
-                <div style={{fontSize:'80px', textAlign:'center', width:'100%',}}>Union</div>
-                <div className={'auth'}>
-                    <Login registerLink={'/signup'} onSubmit={this.handleSignIn} loading={loading} />
-                </div>
+    return <div className={'content-container'}>
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignContent: 'center',
+            height: '100%'
+        }}>
+            <div className={'auth-container'}>
+                {
+                    loading ? <div className={'loader'}/>
+                        : <div>
+                            <div style={{
+                                textAlign: 'center',
+                                fontSize: '60px',
+                                fontWeight: '200'
+                            }}>{adminLogin === true ? 'Admin Log In' : 'Sign In'}</div>
+                            <TextInput label={'Email'} value={email} placeHolder={'Email'} onChange={setEmail}/>
+                            <TextInput hideCnt={true} label={'Password'} placeHolder={'Account Password'} value={password} onChange={setPassword}/>
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                <button onClick={() => executeLogin()}>Sign in</button>
+                                {adminLogin === false ? <Link to={'/signup'}>Create Account</Link> : null}
+                            </div>
+                            <div style={{color: 'red'}}>{error}</div>
+                        </div>
+                }
             </div>
-        );
-    }
+        </div>
+    </div>
 }
-
-export default LoginScreen;
