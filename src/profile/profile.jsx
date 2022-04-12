@@ -63,7 +63,7 @@ export function ProfileScreen({}) {
                                         <div className={'name'}>{user.name}</div>
                                         <div className={'logout-button'}><BiLogOut/> Logout</div>
                                     </div>
-                                    <ProfilePhoto user={user} updateProfilePhoto={updateProfilePhoto}/>
+                                    <ProfilePhoto user={user} onFileUploaded={updateProfilePhoto}/>
                                 </div>
                                 <ul className={'group-tag-group'}>
                                     {groups.map(group => <li className={'group-tag'}
