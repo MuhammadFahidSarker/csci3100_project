@@ -9,7 +9,7 @@ export default function LoginScreen({adminLogin = false}) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -17,7 +17,17 @@ export default function LoginScreen({adminLogin = false}) {
         () => {
             getUserDetails().then(user => {
                 if (user.success === true) {
-                    navigate('/');
+                    if(user.isAdmin === false && adminLogin === true){
+                        logout().then(()=>{
+                                setLoading(false);
+                                setError('You are not an admin');
+                            }
+                        )
+                    }else if (adminLogin === true){
+                        navigate('/admin');
+                    }else{
+                        navigate('/');
+                    }
                 }
             })
         }, []
