@@ -6,7 +6,7 @@ import {BiLinkExternal, GoLinkExternal} from "react-icons/all";
 
 const chats = ['Group Chat']
 const googleTools = ['Google Docs', 'Google Sheets', 'Google Drive']
-const zoomTools = ['Join Meeting', 'Create Meeting']
+const zoomTools = ['Join Meeting', 'Zoom']
 
 const ChannelBar = ({changeType}) => {
   return (
@@ -59,7 +59,8 @@ const TopicSelection = ({ selection, changeType}) => (
             getJoinAbleZoomMeetingLink().then(link => {
                 window.open(link, '_blank');
             })
-        }else if (selection === 'Create Meeting'){
+        }else if (selection === 'Zoom'){
+            changeType(selection)
             // Create meeting
         }else {
             changeType(selection)

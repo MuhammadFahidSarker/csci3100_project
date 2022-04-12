@@ -34,12 +34,10 @@ export function GroupChatContainer ({group, toolbarHidden, user}){
             // attached file string (url from uploadFiles)
             attachedF: url,
         })
-
     }
 
 
     const height = window.innerHeight - 64+'px';
-
     return <div className={'content-container'}>
         <TopNavigation group={group} toolbarHidden={toolbarHidden}/>
         <div className={'content-list'} style={{height: height}}>

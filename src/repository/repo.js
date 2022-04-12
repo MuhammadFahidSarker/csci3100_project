@@ -800,3 +800,34 @@ export async function kickUser(userID, groupID) {
     return { success: false, error: e }
   }
 }
+
+/**
+ * get zoom signature
+ * 
+ * params: meetingID
+ */
+export async function getZoomSignature(meetingID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch('http://localhost:8080/getzoomsignature', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({meetingNumber:meetingID,role:0}),
+    })
+    let resBody = await res.json()
+
+    if (res.status === 200) {
+      return { success: true, signature:resBody.signature , name:user}
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}

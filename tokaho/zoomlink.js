@@ -1,7 +1,10 @@
 // Library
 const jwt = require('jsonwebtoken')
+const nJwt = require('njwt');
 const config = require('./SDK/config')
 const rp = require('request-promise')
+const crypto = require('crypto') // for zoom signature
+//import { KJUR } from 'jsrsasign';
 // import ZoomMtgEmbedded from '@zoomus/websdk/embedded';
 
 // const client = ZoomMtgEmbedded.createClient();
@@ -11,6 +14,22 @@ const payload = {
   exp: new Date().getTime() + 5000,
 }
 const token = jwt.sign(payload, config.APISecret)
+
+const generateSignature = async(req, res, next) => {
+  const apiKey = "CyxAFmRCQWeCyu4eGFC0IQ";
+  const apiSecret = "V0vb2sbkmoaEP5DaWZFrq8Eq7FWB0ixsx1wc";
+  const meetingNumber = req.body.meetingNumber;
+  console.log(meetingNumber)
+  const role = 0;
+  // Prevent time sync issue between client signature generation and zoom 
+  const timestamp = new Date().getTime() - 30000
+  const msg = Buffer.from(apiKey + meetingNumber + timestamp + role).toString('base64')
+  const hash = crypto.createHmac('sha256', apiSecret).update(msg).digest('base64')
+  const signature = Buffer.from(`${apiKey}.${meetingNumber}.${timestamp}.${role}.${hash}`).toString('base64')
+  return res
+    .status(200)
+    .json({signature: signature})
+}
 
 const retrieveZoomLink = async (req, res, next) => {
   const options = {
@@ -78,4 +97,5 @@ const retrieveZoomLink = async (req, res, next) => {
 
 module.exports = {
   retrieveZoomLink: retrieveZoomLink,
+  getZoomSignature: generateSignature,
 }

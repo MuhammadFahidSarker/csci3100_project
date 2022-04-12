@@ -4,6 +4,7 @@ import {GroupChatContainer, groupChatContainer} from "./groupChatContainer";
 import {DocsContainer} from "./docsContainer";
 import {DriveContainer} from "./driveContainer";
 import {SheetsContainer} from "./sheetsContainer";
+import {ZoomContainer} from "./zoomContainer";
 // import { useState } from 'react';
 
 const ContentContainer = (props) => {
@@ -16,6 +17,8 @@ const ContentContainer = (props) => {
             return <SheetsContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user}/>
         case 'Google Drive':
             return <DriveContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user} />
+        case 'Zoom':
+            return <ZoomContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user} />
         default: <div/>
     }
 };

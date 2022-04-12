@@ -79,10 +79,12 @@ app.use('/verify', registration.verify_email)
 app.use('/queryuser', groupfunctions.queryuser)
 app.use('/scandocument', scanfile.scanfile)
 app.use('/getzoom', zoomlink.retrieveZoomLink)
+app.use('/getzoomsignature', zoomlink.getZoomSignature)
 app.use('/getgoogledoc', googlelinks.createDoc)
 app.use('/getgooglesheet', googlelinks.createSheet)
 app.use('/getgooglePres', googlelinks.createPres)
 app.use('/banuser', groupfunctions.banuser) //!!!!!
+
 
 //Gateway - centralAuth
 app.use('/apis', central_auth.central_auth)
