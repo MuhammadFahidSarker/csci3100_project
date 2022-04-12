@@ -48,14 +48,20 @@ const uploadFiles = async (file) => {
 export function GroupChatContainer({group, toolbarHidden, user}) {
     const groupId = group.groupid
     const messagesRef = firestore.collection(`groups/${groupId}/messages`)
-    const query = messagesRef.orderBy('createdAt').limit(25)
+    const query = messagesRef.orderBy('createdAt')//.limit(25)
     // Hook for input value (send message)
     const [messages] = useCollectionData(query, {idField: 'id'})
+    var url= null
 
     const sendMessage = async (text, file) => {
         if(text === '' && file === null) return
         console.log(user, text, file)
         // retrieves uid and photo from the current user
+
+        //upload file
+        if(file!==null){
+          url = await uploadFiles(file)
+        }
         const {userID, photoURL} = user
         // Post Message Data into Firestore
         await messagesRef.add({
@@ -64,7 +70,7 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
             uid: userID,
             photoURL,
             // attached file string (url from uploadFiles)
-            //attachedF: url,
+            attachedF: url,
         })
     }
 
@@ -89,6 +95,7 @@ function Message({message, userID}) {
     return (
         <div className={'message-container message-' + type}>
             {type === 'other' ? <img className={'message-avatar'} src={photoURL} alt={'avatar'}/> : null}
+            {attachedF && <img className={'message-image'} src={attachedF}/>}
             <div className={'message-text'}>{text}</div>
             {type === 'self' ? <img className={'message-avatar'} src={photoURL} alt={'avatar'}/> : null}
             {attachedF ? <div style={{display:'flex', alignItems:'center'}}>
