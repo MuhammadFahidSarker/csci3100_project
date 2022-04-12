@@ -22,6 +22,7 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
     const [messages] = useCollectionData(query, {idField: 'id'})
 
     const sendMessage = async (text, file) => {
+        if(text === '' && file === null) return
         console.log(user, text, file)
         // retrieves uid and photo from the current user
         const {userID, photoURL} = user
