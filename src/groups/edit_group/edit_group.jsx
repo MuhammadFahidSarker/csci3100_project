@@ -1,11 +1,12 @@
 import {useLocation} from 'react-router-dom'
 import {useEffect, useState} from "react";
-import {getGroupDetails} from "../../repository/repo";
+import {getGroupDetails, getGroupMembers} from "../../repository/repo";
 import {LoadingScreen} from "../../common/loading";
 import TopNavigation from "../../home_screen/components/TopNavigation";
 import {TextInput} from "../../common/input/textinput";
-import {AiFillBackward, BiArrowBack, FiEdit} from "react-icons/all";
+import {AiFillBackward, AiFillDelete, BiArrowBack, FiDelete, FiEdit} from "react-icons/all";
 import {useNavigate} from "react-router-dom";
+import './edit_grp.css'
 
 export function EditGroup({}) {
     const location = useLocation();
@@ -55,13 +56,43 @@ export function EditGroup({}) {
                 </div>
                 <div className={'hr-line'}/>
                 <div className={'content-list'}>
-
+                    <GroupMembers groupID={groupId}/>
                 </div>
             </div>
         </div>
     );
 }
 
-function groupMembers({groupID}){
+function GroupMembers({groupID}){
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [members, setMembers] = useState(null);
+    useEffect(
+        () => {
+            getGroupMembers(groupID).then(grp => {
+                if (grp.success === true) {
+                    setMembers(grp.members);
+                } else {
+                    console.log(grp.error);
+                }
+            })
+        }, [],
+    )
 
+    if (members === null) {
+        return <div></div>
+    }
+
+    if(members.length === 0)
+        return <div>No members</div>
+
+    return <ul className={'group-tag-group'}>
+        {members.map(member => <li ><Member member={member}/> </li>)}
+    </ul>
+}
+
+function Member({member}){
+    return <div className={'member-tag'}>
+        {member.name}
+        <AiFillDelete style={{color:'red', fontSize:24, cursor:'pointer',}}/>
+    </div>
 }
