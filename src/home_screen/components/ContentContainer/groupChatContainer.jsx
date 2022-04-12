@@ -1,3 +1,5 @@
+import {useRef, useEffect  } from 'react';
+
 import TopNavigation from '../TopNavigation'
 import {BsPlusCircleFill} from 'react-icons/bs'
 import React, {useState} from 'react'
@@ -11,6 +13,8 @@ import 'firebase/compat/auth'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable,getMetadata } from 'firebase/storage'
 import {v4 as uuidv4} from 'uuid'
 import './groupchat.css'
+
+
 
 
 firebase.initializeApp(firebaseConfig)
@@ -46,6 +50,17 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
     var metadata = null
 
     const [searchField, setSearchField] = useState('')
+
+    //bottom hook
+    const divRef = useRef(null);
+
+    //onUpdate
+    useEffect(() => {
+      console.log('scroll down ')
+      divRef.current.scrollIntoView({ behavior: 'smooth' ,block:'center'});
+    });
+
+
 
     const sendMessage = async (text, file) => {
         if(text === '' && file === null) return
@@ -86,8 +101,11 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
                 {messages && getFilteredMessages().map((message, index) => {
                         return <Message key={index} userID={user.userID} message={message}/>
                     })}
+                <div id='bottomHook' ref={divRef} />
             </div>
+            
             <BottomBar onSend={(message, file) => sendMessage(message, file)}/>
+            
         </div>
     )
 }
