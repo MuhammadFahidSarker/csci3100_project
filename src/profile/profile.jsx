@@ -4,7 +4,7 @@ import '../index.css'
 import {BiError, BiLogOut, BiWindowClose} from "react-icons/all";
 import useDarkMode from "../home_screen/hooks/useDarkMode";
 import React, {useEffect, useState} from "react";
-import {getJoinedGroups, getUserDetails, uploadUserIcon} from "../repository/repo";
+import {getJoinedGroups, getUserDetails, logout, uploadUserIcon} from "../repository/repo";
 import {Navigate} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import {BsPlusCircleFill} from "react-icons/bs";
@@ -101,7 +101,12 @@ export function ProfileScreen({}) {
                                 <div className={'profile'}>
                                     <div>
                                         <div className={'name'}>{user.name}</div>
-                                        <div className={'logout-button'}><BiLogOut/> Logout</div>
+                                        <div className={'logout-button'} onClick={()=>{
+                                            logout().then(()=> {
+                                                    setSignedIn(false);
+                                                }
+                                            )
+                                        }}><BiLogOut/> Logout</div>
                                     </div>
                                     <ProfilePhoto user={user} onFileUploaded={updateProfilePhoto}/>
                                 </div>
