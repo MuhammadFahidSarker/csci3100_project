@@ -121,7 +121,6 @@ const getZoomLink = async (req, res, next) => {
 }
 
 module.exports = {
-  retrieveZoomLink: retrieveZoomLink,
   getZoomSignature: generateSignature,
   createZoomLink: createZoomLink,
   getZoomLink: getZoomLink,

@@ -22,7 +22,7 @@ class App extends Component {
         return (
             
             <Router history={history}>
-                <div id="meetingSDKElement"/>
+                <div id="meetingSDKElement" style={{height: "0px"}}/>
                 <Routes>
                     <Route path={'/'} element={<Navigate to={'/groups'}/>}/>
                     <Route path={'/groups'} element={<GroupLauncher/>}/>
