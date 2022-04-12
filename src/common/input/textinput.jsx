@@ -4,8 +4,8 @@ export function TextInput({hideCnt, label, value, multiline = false, onChange, p
     return <div>
         <div className={'label'}>{label}</div>
         {multiline === true ?
-            <textarea className={'inp-ml'} value={value} onChange={(e) => onChange?.(e.target.value)} placeholder={placeHolder}/> :
-            <input className={'inp'}  value={value} type={hideCnt === true ? 'password' : 'text'} onChange={(e) => onChange?.(e.target.value)}
+            <textarea className={'inp-ml'} defaultValue={value} onChange={(e) => onChange?.(e.target.value)} placeholder={placeHolder}/> :
+            <input className={'inp'}  defaultValue={value} type={hideCnt === true ? 'password' : 'text'} onChange={(e) => onChange?.(e.target.value)}
                    placeholder={placeHolder}/>
         }
     </div>
