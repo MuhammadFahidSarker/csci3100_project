@@ -115,9 +115,11 @@ function AdminUser({user}) {
     const [banned, setBanned] = useState(user.isBanned);
     const [loading, setLoading] = useState(false);
 
+
     function banThisUser(){
         setLoading(true);
         banUser(user.userid).then(res => {
+            console.log(res);
             if (res.success === true) {
                 setBanned(true);
             }
