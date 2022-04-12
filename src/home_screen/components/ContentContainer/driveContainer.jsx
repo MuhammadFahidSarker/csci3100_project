@@ -1,7 +1,7 @@
 import Iframe from "react-iframe";
 import {Component} from "react";
 import {LoadingScreen} from "../../../common/loading";
-import {getGoogleDriveLink} from "../../../repository/repo";
+import {getGoogleDriveLink, getGooglePresLink, getGoogleSheetLink} from "../../../repository/repo";
 import {getGoogleToolWidth, getGoogleToolHeight, GOOGLE_TOOL_MARGIN_LEFT} from "./etc";
 import TopNavigation from "../TopNavigation";
 
@@ -16,11 +16,11 @@ export class DriveContainer extends Component{
     }
 
     componentDidMount() {
-        console.log(this.props.group)
-        getGoogleDriveLink(this.props.group.groupid).then(res => {
+        getGooglePresLink(this.props.group.groupid).then(res => {
+            console.log(res);
             if (res.success === true) {
                 this.setState({
-                    driveLink: res.content,
+                    driveLink: res.content.presLink.Succeed,
                     loading: false,
                 })
             }else{
@@ -37,7 +37,7 @@ export class DriveContainer extends Component{
 
         return (
             <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}}  className="content-container">
-                <TopNavigation group={group} toolbarHidden={toolbarHidden} url={driveLink} type={'- Google Drive'}/>
+                <TopNavigation group={group} toolbarHidden={toolbarHidden} url={driveLink} type={'- Presentation'}/>
 
                 {driveLink === null ? <LoadingScreen/> : <div>
                     {loading ? <LoadingScreen/> : null}

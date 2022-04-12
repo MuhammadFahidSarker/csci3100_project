@@ -98,7 +98,7 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
     return (
         <div className={'content-container'}>
             <TopNavigation onSearch={setSearchField} showAllGroup={true} user={user} group={group}
-                           toolbarHidden={toolbarHidden}/>
+                           toolbarHidden={toolbarHidden} type={' - Chat'}/>
             <div className={'content-list'} style={{marginBottom: '40px', padding: '20px', paddingBottom: '40px'}}>
                 {messages && getFilteredMessages().map((message, index) => {
                     return <Message key={index} userID={user.userID} message={message}/>
@@ -113,9 +113,16 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
 }
 
 function Message({message, userID}) {
-    const {text, uid, createdAt, photoURL, attachedF} = message
+    const {text, uid, createdAt, photoURL, metadata, attachedF} = message
     const type = uid === userID ? 'self' : 'other';
+    const supportedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp', 'image/webp', 'image/svg+xml']
 
+
+    const mtd = metadata ? JSON.parse(metadata) : null;
+
+    const showImage = mtd ? supportedTypes.includes(mtd.contentType) : false;
+
+    console.log(mtd?.contentType, showImage)
 
     return (
         <div className={'message-container message-' + type}>
@@ -125,8 +132,13 @@ function Message({message, userID}) {
                 <div className={'message-text'}>{text}</div>
                 {attachedF ? [
                     <div className={'url-container'}>
-                        <FiFile size={20}/>
-                        <a href={attachedF} download>Download</a>
+                        {mtd === null
+                        ? <FiFile size={20}/> :
+                            showImage ?
+                                <img className={'url-image'} src={attachedF} width={'120px'} height={'120px'}/> :
+                                <FiFile size={20}/>
+                        }
+                        <a href={attachedF} target={'_blank'} download>Download</a>
                     </div>,
                 ] : null}
             </div>

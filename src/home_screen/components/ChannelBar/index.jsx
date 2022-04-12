@@ -5,7 +5,7 @@ import {getJoinAbleZoomMeetingLink} from "../../../repository/repo";
 import {BiLinkExternal, GoLinkExternal} from "react-icons/all";
 
 const chats = ['Group Chat']
-const googleTools = ['Google Docs', 'Google Sheets', 'Google Drive']
+const googleTools = ['Google Docs', 'Google Sheets', 'Google Presentation']
 const zoomTools = ['Join Meeting', 'Zoom']
 
 const ChannelBar = ({changeType}) => {
