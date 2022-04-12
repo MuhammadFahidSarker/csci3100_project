@@ -37,7 +37,7 @@ export class DocsContainer extends Component {
 
         return (
             <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}} id={'doc-container'} className="content-container">
-                <TopNavigation user={user} group={group} toolbarHidden={toolbarHidden} url={docLink} type={'- Google Doc'}/>
+                <TopNavigation showAllGroup={true} user={user} group={group} toolbarHidden={toolbarHidden} url={docLink} type={'- Google Doc'}/>
                 {docLink === null ? <LoadingScreen/> : <div>
                     {loading ? <LoadingScreen/> : null}
                     <Iframe onLoad={() => {

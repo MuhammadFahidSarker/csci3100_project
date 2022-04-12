@@ -1,14 +1,18 @@
 .message-container{
+    @apply bg-white text-black dark:bg-black dark:text-white;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    gap: 10px;
 }
 
 .message-avatar{
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin: 10px;
 }
 
 .message-text{
@@ -28,4 +32,14 @@
     align-items: center;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.url-container{
+    @apply bg-gray-400 text-black dark:bg-gray-600 dark:text-white hover:bg-gray-600 dark:hover:bg-gray-800;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 20px;
 }
