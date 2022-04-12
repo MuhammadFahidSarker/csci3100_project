@@ -8,7 +8,7 @@ import {useCollectionData} from 'react-firebase-hooks/firestore'
 import {firebaseConfig} from '../../../repository/firebase_auth'
 import 'firebase/compat/firestore'
 import 'firebase/compat/auth'
-import {getDownloadURL, getStorage, ref, uploadBytesResumable,} from 'firebase/storage'
+import {getDownloadURL, getStorage, ref, uploadBytesResumable,getMetadata } from 'firebase/storage'
 import {v4 as uuidv4} from 'uuid'
 import './groupchat.css'
 
@@ -31,8 +31,8 @@ const uploadFiles = async (file) => {
   // uploads file to the given reference
   const uploadTask = await uploadBytesResumable(storageRef, file)
   const url = await getDownloadURL(uploadTask.ref)
-  console.log('finished upload:',newFileName)
-  return url
+  const metadata = await getMetadata(uploadTask.ref)
+  return [url,metadata]
 }
 
 
@@ -43,6 +43,7 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
     // Hook for input value (send message)
     const [messages] = useCollectionData(query, {idField: 'id'})
     var url= null
+    var metadata = null
 
     const [searchField, setSearchField] = useState('')
 
@@ -53,7 +54,8 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
 
         //upload file
         if(file!==null){
-          url = await uploadFiles(file)
+          [url,metadata] = await uploadFiles(file)
+          console.log('finished upload:',url,metadata)
         }
         const {userID, photoURL} = user
         // Post Message Data into Firestore
@@ -64,6 +66,7 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
             photoURL,
             // attached file string (url from uploadFiles)
             attachedF: url,
+            metadata: JSON.stringify(metadata)
         })
     }
 
