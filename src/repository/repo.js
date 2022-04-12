@@ -1,9 +1,11 @@
 import {
   getAuth,
   sendEmailVerification,
+  sendPasswordResetEmail,
   signOut,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updatePassword,
 } from 'firebase/auth'
 import { auth, user, waitAuthObject } from './firebase_auth'
 
@@ -1028,3 +1030,46 @@ export async function getZoomSignature(meetingID) {
     return { success: false, error: e }
   }
 }
+
+
+
+/**
+ * send resent password email 
+ *  params: email (the email of the user who will recieve a password reset email) 
+ *        or by default, it will send to the current logined user's email
+ * 
+ */
+ export async function resetPasswordEmail(email) {
+  await waitAuthObject()
+  try {
+    let res = await sendPasswordResetEmail(auth, email||user.email)
+    return{ success: true}
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+
+/**
+ * set current user's password 
+ *  params: password
+ * 
+ */
+ export async function setPassword(password) {
+  await waitAuthObject()
+  try {
+    const newPassword = password;
+    let res = await updatePassword(user, newPassword)
+    return{ success: true}
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+
+
+
+
+
+
+
