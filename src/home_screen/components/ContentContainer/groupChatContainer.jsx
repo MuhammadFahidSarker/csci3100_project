@@ -1,43 +1,45 @@
-import {useRef, useEffect  } from 'react';
+import {useRef, useEffect} from 'react';
 
 import TopNavigation from '../TopNavigation'
 import {BsPlusCircleFill} from 'react-icons/bs'
 import React, {useState} from 'react'
-import {AiFillCloseCircle, BiSend, FiFile} from 'react-icons/all'
+import {AiFillCloseCircle, BiSend, FiFile, FiLoader} from 'react-icons/all'
 import firebase from 'firebase/compat'
 
 import {useCollectionData} from 'react-firebase-hooks/firestore'
 import {firebaseConfig} from '../../../repository/firebase_auth'
 import 'firebase/compat/firestore'
 import 'firebase/compat/auth'
-import {getDownloadURL, getStorage, ref, uploadBytesResumable,getMetadata } from 'firebase/storage'
+import {getDownloadURL, getStorage, ref, uploadBytesResumable, getMetadata} from 'firebase/storage'
 import {v4 as uuidv4} from 'uuid'
 import './groupchat.css'
-
-
+import {scanDocument} from "../../../repository/repo";
 
 
 firebase.initializeApp(firebaseConfig)
 const firestore = firebase.firestore()
 const storage = getStorage()
+
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 const uploadFiles = async (file) => {
-  // if there is no file, return null
-  console.log('upload file')
-  if (!file) return null
-  console.log('uploading file')
-  // newfilename is a random string
-  const newFileName = uuidv4()+'.'+file.name.split('.').pop()
-  // creates a reference to a new file
-  const storageRef = ref(storage, `/images/${newFileName}`)
-  // uploads file to the given reference
-  const uploadTask = await uploadBytesResumable(storageRef, file)
-  const url = await getDownloadURL(uploadTask.ref)
-  const metadata = await getMetadata(uploadTask.ref)
-  return [url,metadata]
+    // if there is no file, return null
+    console.log('upload file')
+    if (!file) return null
+    console.log('uploading file')
+    // newfilename is a random string
+    const newFileName = uuidv4() + '.' + file.name.split('.').pop()
+    // creates a reference to a new file
+    const storageRef = ref(storage, `/images/${newFileName}`)
+    // uploads file to the given reference
+    const uploadTask = await uploadBytesResumable(storageRef, file)
+    const url = await getDownloadURL(uploadTask.ref)
+    const metadata = await getMetadata(uploadTask.ref)
+    return [url, metadata, newFileName];
 }
+
 
 
 export function GroupChatContainer({group, toolbarHidden, user}) {
@@ -46,7 +48,7 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
     const query = messagesRef.orderBy('createdAt')//.limit(25)
     // Hook for input value (send message)
     const [messages] = useCollectionData(query, {idField: 'id'})
-    var url= null
+    var url = null
     var metadata = null
 
     const [searchField, setSearchField] = useState('')
@@ -56,21 +58,20 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
 
     //onUpdate
     useEffect(() => {
-      console.log('scroll down ')
-      divRef.current.scrollIntoView({ behavior: 'smooth' ,block:'center'});
+        console.log('scroll down ')
+        divRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
     });
 
 
-
     const sendMessage = async (text, file) => {
-        if(text === '' && file === null) return
+        if (text === '' && file === null) return
         console.log(user, text, file)
         // retrieves uid and photo from the current user
 
         //upload file
-        if(file!==null){
-          [url,metadata] = await uploadFiles(file)
-          console.log('finished upload:',url,metadata)
+        if (file !== null) {
+            [url, metadata] = await uploadFiles(file)
+            console.log('finished upload:', url, metadata)
         }
         const {userID, photoURL} = user
         // Post Message Data into Firestore
@@ -85,27 +86,28 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
         })
     }
 
-    function getFilteredMessages(){
-      if(searchField === '') return messages
-        if(messages === null || messages === undefined) return [];
+    function getFilteredMessages() {
+        if (searchField === '') return messages
+        if (messages === null || messages === undefined) return [];
         return messages.filter(message => {
-          return message.text.toLowerCase().includes(searchField.toLowerCase())
-      })
+            return message.text.toLowerCase().includes(searchField.toLowerCase())
+        })
     }
 
 
     return (
         <div className={'content-container'}>
-            <TopNavigation onSearch={setSearchField} showAllGroup={true} user={user} group={group} toolbarHidden={toolbarHidden}/>
-            <div className={'content-list'} style={{marginBottom:'40px',  padding:'20px', paddingBottom:'40px'}}>
+            <TopNavigation onSearch={setSearchField} showAllGroup={true} user={user} group={group}
+                           toolbarHidden={toolbarHidden}/>
+            <div className={'content-list'} style={{marginBottom: '40px', padding: '20px', paddingBottom: '40px'}}>
                 {messages && getFilteredMessages().map((message, index) => {
-                        return <Message key={index} userID={user.userID} message={message}/>
-                    })}
-                <div id='bottomHook' ref={divRef} />
+                    return <Message key={index} userID={user.userID} message={message}/>
+                })}
+                <div id='bottomHook' ref={divRef}/>
             </div>
-            
+
             <BottomBar onSend={(message, file) => sendMessage(message, file)}/>
-            
+
         </div>
     )
 }
@@ -113,16 +115,20 @@ export function GroupChatContainer({group, toolbarHidden, user}) {
 function Message({message, userID}) {
     const {text, uid, createdAt, photoURL, attachedF} = message
     const type = uid === userID ? 'self' : 'other';
+
+
     return (
         <div className={'message-container message-' + type}>
             {type === 'other' ? <img className={'message-avatar'} src={photoURL} alt={'avatar'}/> : null}
             {/*{attachedF && <img className={'message-image'} src={attachedF}/>}*/}
             <div>
                 <div className={'message-text'}>{text}</div>
-                {attachedF ? <div className={'url-container'}>
-                    <FiFile size={20}/>
-                    <a href={attachedF} download>Download</a>
-                </div> : null}
+                {attachedF ? [
+                    <div className={'url-container'}>
+                        <FiFile size={20}/>
+                        <a href={attachedF} download>Download</a>
+                    </div>,
+                ] : null}
             </div>
             {type === 'self' ? <img className={'message-avatar'} src={photoURL} alt={'avatar'}/> : null}
 
@@ -134,12 +140,35 @@ function Message({message, userID}) {
 const BottomBar = ({onSend}) => {
 
     const [file, setFile] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [text, setText] = useState('')
 
+    const supportedFormat = ['jpg', 'png', 'jpeg', 'gif', 'bmp', 'svg', 'webp'];
+
+    if(loading){
+        return <div className={'bottom-bar'}>
+            ...
+        </div>
+    }
+
+    async function scanDoc(){
+        setLoading(true)
+        const [url, metadata, newFileName] = await uploadFiles(file)
+        const scannedText = await scanDocument(newFileName);
+        if(scannedText.success){
+            setLoading(false);
+            setText(scannedText.content);
+            setFile(null);
+        }else{
+            setLoading(false);
+        }
+    }
 
     return (
         <div className={file === null ? 'bottom-bar' : 'bottom-bar-with-file'}>
             <PlusIcon onFileUploaded={(file) => setFile(file)}/>
-
+            {(file !== null && supportedFormat.includes(file.name.split('.')[1])) ?
+                <button style={{marginRight: '10px'}} onClick={scanDoc}>Scan</button> : null}
             <div style={{justifyItems: 'left', width: '100%'}}>
                 {file === null ? null :
                     <div className={'chat-file-container'}>
@@ -152,6 +181,7 @@ const BottomBar = ({onSend}) => {
                     type="text"
                     id={'chatInput'}
                     placeholder="Enter message..."
+                    defaultValue={text}
                     className="bottom-bar-input"
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
@@ -174,8 +204,6 @@ const BottomBar = ({onSend}) => {
     )
 
 }
-
-
 
 
 const PlusIcon = ({onFileUploaded}) => {
