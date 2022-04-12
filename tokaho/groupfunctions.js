@@ -771,4 +771,36 @@ module.exports = {
       return res.status(401).json({ Error: err })
     }
   },
+
+  uploadgroupicon: async function uploadgroupicon(req, res, next) {
+    console.log('uploadusericon')
+    console.log(req.body)
+    try {
+      if (!req.body.url) return res.status(401).json('No URL appended')
+      await group_table.doc(req.body.groupid).update({
+        group_icon: req.body.url,
+      })
+      return res.status(200).json({ Succeed: true })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
+
+  updategroupprofile: async function updategroupprofile(req, res, next) {
+    console.log('updategroupprofile!!!',req.body.groupid)
+    console.log(req.body)
+    try {
+      if (!req.body.description || !req.body.name || !req.body.groupid) 
+        return res.status(401).json('no description/name/groupid')
+      console.log('updating')
+      await group_table.doc(req.body.groupid).update({
+        description: req.body.description,
+        name: req.body.name,
+      })
+      //await groupSnapshot.ref.update({ members: FieldValue.arrayRemove(uid) })
+      return res.status(200).json({ Succeed: true })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
 }

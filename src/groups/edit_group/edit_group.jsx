@@ -1,6 +1,6 @@
 import {useLocation} from 'react-router-dom'
 import React, {useEffect, useState} from "react";
-import {deleteGroup, getGroupDetails, getGroupMembers, kickUser} from "../../repository/repo";
+import {deleteGroup, getGroupDetails, getGroupMembers, kickUser, uploadGroupIcon, updateGroupNameDescription} from "../../repository/repo";
 import {LoadingScreen} from "../../common/loading";
 import TopNavigation from "../../home_screen/components/TopNavigation";
 import {TextInput} from "../../common/input/textinput";
@@ -15,6 +15,35 @@ import {
 } from "react-icons/all";
 import {useNavigate} from "react-router-dom";
 import './edit_grp.css'
+
+
+import firebase from 'firebase/compat'
+import {firebaseConfig} from '../../repository/firebase_auth'
+import 'firebase/compat/firestore'
+import 'firebase/compat/auth'
+import {getDownloadURL, getStorage, ref, uploadBytesResumable,getMetadata } from 'firebase/storage'
+import {v4 as uuidv4} from 'uuid'
+
+firebase.initializeApp(firebaseConfig)
+const firestore = firebase.firestore()
+const storage = getStorage()
+
+const uploadFiles = async (file) => {
+  // if there is no file, return null
+  console.log('upload file')
+  if (!file) return null
+  console.log('uploading file')
+  // newfilename is a random string
+  const newFileName = uuidv4()+'.'+file.name.split('.').pop()
+  // creates a reference to a new file
+  const storageRef = ref(storage, `/groupPhoto/${newFileName}`)
+  // uploads file to the given reference
+  const uploadTask = await uploadBytesResumable(storageRef, file)
+  const url = await getDownloadURL(uploadTask.ref)
+  const metadata = await getMetadata(uploadTask.ref)
+  return [url,metadata]
+}
+
 
 export function EditGroup({}) {
     const location = useLocation();
@@ -32,6 +61,8 @@ export function EditGroup({}) {
             getGroupDetails(groupId).then(grp => {
                 if (grp.success === true) {
                     setGroup(grp.content);
+                    setName(grp.content.name)
+                    setDescription(grp.content.description)
                 } else {
                     console.log(grp.error);
                 }
@@ -49,13 +80,41 @@ export function EditGroup({}) {
         })
     }
 
-    function updateGroupDetails(){
-        //todo implement user globale name and description
 
+    //TODO refresh after update
+    function updateGroupDetails(){
+        console.log('updateGroupDetails to',name,description)
+        
+        updateGroupNameDescription(name,description,groupId).then(
+            getGroupDetails(groupId).then(grp => {
+                if (grp.success === true) {
+                    console.log('after update group profile', grp)
+                    setGroup(grp.content)
+                    setName(grp.content.name)
+                    setDescription(grp.content.description)
+                } else {
+                    console.log(grp.error);
+                }
+            })
+        )
     }
 
-    function updateGroupPhoto(file){
-        //todo implement user globale name and description
+    //TODO refresh after update
+    async function updateGroupPhoto(file){
+        let [url,metadata] = await uploadFiles(file)
+        console.log('uploaded photo,',url)
+        uploadGroupIcon(url,groupId).then(
+            getGroupDetails(groupId).then(grp => {
+                if (grp.success === true) {
+                    console.log('after upload photo', grp)
+                    setGroup(grp.content)
+                    setName(grp.content.name)
+                    setDescription(grp.content.description)
+                } else {
+                    console.log(grp.error);
+                }
+            })
+        )
     }
 
     if (group === null) {
@@ -89,12 +148,12 @@ export function EditGroup({}) {
             <div className={'content-list'} style={{height: height}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', padding: '40px'}}>
                     <div>
-                        <TextInput label={'Name'} value={group.name} placeHolder={'Group name'} onChange={setName}/>
-                        <TextInput label={'Description'} multiline={true} value={group.description}
-                                   placeHolder={'Group name'} onChange={setDescription}/>
+                        <TextInput label={'Name'} value={name} placeHolder={'Group name'} onChange={setName}/>
+                        <TextInput label={'Description'} multiline={true} value={description}
+                                   placeHolder={'Description'} onChange={setDescription}/>
                     </div>
                     <div>
-                        <GroupPhoto group={group} onFileUploaded={setPhoto}/>
+                        <GroupPhoto group={group} onFileUploaded={updateGroupPhoto}/>
 
                     </div>
                 </div>
@@ -106,7 +165,7 @@ export function EditGroup({}) {
                         </div>
                     </button>
                     <button>
-                        <div style={{display: 'flex', alignItems: 'center'}}><FiEdit/> Update</div>
+                        <div style={{display: 'flex', alignItems: 'center'}} onClick={()=>updateGroupDetails()}><FiEdit /> Update</div>
                     </button>
 
                     <button style={{backgroundColor: 'red'}} onClick={()=> setConfirmDel(true)}>

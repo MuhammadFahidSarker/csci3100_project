@@ -741,6 +741,73 @@ export async function uploadUserIcon(url) {
 }
 
 /**
+ * uploadGroupIcon
+ * 
+ * input: url from Front END
+ */
+ export async function uploadGroupIcon(url,groupID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/uploadgroupicon', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ url: url ,groupid:groupID}),
+    })
+    let resBody = await res.json()
+    console.log('debug get uploadGroupIcon\n', resBody)
+
+    if (res.status === 200) {
+      return {
+        success: true,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * update group name + description
+ * 
+ */
+ export async function updateGroupNameDescription(name,description,groupID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/updategroupprofile', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ name: name , description:description,groupid:groupID}),
+    })
+    let resBody = await res.json()
+    console.log('debug get uploadGroupIcon\n', resBody)
+
+    if (res.status === 200) {
+      return {
+        success: true,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
  * scanDocument
  * remark: it will scan document and return text from it
  * input: filename from Front END

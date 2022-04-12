@@ -20,10 +20,6 @@ firebase.initializeApp(firebaseConfig)
 const firestore = firebase.firestore()
 const storage = getStorage()
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 const uploadFiles = async (file) => {
     // if there is no file, return null
     console.log('upload file')
