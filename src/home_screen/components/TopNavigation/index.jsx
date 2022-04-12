@@ -8,9 +8,9 @@ import {SideBarIcon} from "../SideBar";
 import {logout} from "../../../repository/repo";
 
 const TopNavigation = ({
-    hideAdminIcon, forceName,
+    hideAdminIcon = false, forceName,
                            toolbarHidden,
-                           user,
+                           user = null,
                            showAllGroup = false,
                            showCreateGroup = false,
                            group,
@@ -20,7 +20,7 @@ const TopNavigation = ({
                        }) => {
     console.log(user)
     return (<div className='top-navigation'>
-        {((user !== null || user !== undefined) && (user.isAdmin === true) && hideAdminIcon === false) ?  <AdminIcon/> : null}
+        {(hideAdminIcon === false && (user !== null  && user.isAdmin === true)) ?  <AdminIcon/> : null}
         <HashtagIcon toolbarHidden={toolbarHidden}/>
         <Title groupName={forceName ? forceName : group?.name} type={type}/>
         {onSearch === null ? null : <Search onSearch={onSearch}/>}
