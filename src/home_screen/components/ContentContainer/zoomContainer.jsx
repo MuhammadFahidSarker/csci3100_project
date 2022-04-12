@@ -6,13 +6,33 @@ import {getGoogleToolWidth, getGoogleToolHeight, GOOGLE_TOOL_MARGIN_LEFT} from "
 import TopNavigation from "../TopNavigation";
 import ZoomMtgEmbedded from '@zoomus/websdk/embedded';
 const client = ZoomMtgEmbedded.createClient();
+const meetingSDKElement = document.getElementById('meetingSDKElement');
+//init zoomClient
+try{
+  client.init({
+    debug: true,
+    zoomAppRoot: meetingSDKElement,
+    language: 'en-US',
+    customize: {
+      meetingInfo: ['topic', 'host', 'mn', 'pwd', 'telPwd', 'invite', 'participant', 'dc', 'enctype'],
+      toolbar: {
+        buttons: [
+          {
+            text: 'Custom Button',
+            className: 'CustomButton',
+            onClick: () => {
+              console.log('custom button');
+            }
+          }
+        ]
+      }
+    }
+  });
+}catch(e){
+  console.log(e)
+}
 
 export function ZoomContainer() {
-
-
-
-    const client = ZoomMtgEmbedded.createClient();
-  
     // setup your signature endpoint here: https://github.com/zoom/meetingsdk-sample-signature-node.js
     var signatureEndpoint = 'http://localhost:8080/getzoomsignature'
     // This Sample App has been updated to use SDK App type credentials https://marketplace.zoom.us/docs/guides/build/sdk-app
@@ -35,27 +55,8 @@ export function ZoomContainer() {
     }
   
     function startMeeting(signature, user) {
-  
-      let meetingSDKElement = document.getElementById('meetingSDKElement');
-      client.init({
-        debug: true,
-        zoomAppRoot: meetingSDKElement,
-        language: 'en-US',
-        customize: {
-          meetingInfo: ['topic', 'host', 'mn', 'pwd', 'telPwd', 'invite', 'participant', 'dc', 'enctype'],
-          toolbar: {
-            buttons: [
-              {
-                text: 'Custom Button',
-                className: 'CustomButton',
-                onClick: () => {
-                  console.log('custom button');
-                }
-              }
-            ]
-          }
-        }
-      });
+
+      
   
       client.join({
           apiKey: 'CyxAFmRCQWeCyu4eGFC0IQ',
