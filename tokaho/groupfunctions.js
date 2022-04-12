@@ -717,6 +717,7 @@ module.exports = {
             role: admins.includes(memberID) ? 'admin' : 'member',
           }
           memberProfiles.push(profile)
+          memberProfiles[memberProfiles.length - 1].memberid = memberID
         }
         return res.status(200).json({
           Succeed: true,
