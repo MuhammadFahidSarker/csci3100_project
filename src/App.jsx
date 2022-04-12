@@ -20,7 +20,9 @@ class App extends Component {
 
     render() {
         return (
+            
             <Router history={history}>
+                <div id="meetingSDKElement"/>
                 <Routes>
                     <Route path={'/'} element={<Navigate to={'/groups'}/>}/>
                     <Route path={'/groups'} element={<GroupLauncher/>}/>
