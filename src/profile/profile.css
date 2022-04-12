@@ -21,6 +21,7 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    text-align: right;
 }
 
 .not-verified{
@@ -84,4 +85,19 @@ li a:hover {
 
 .group-tag-group{
     margin: 20px;
+}
+
+.profile-photo-container{
+    position: relative;
+}
+
+.profile-photo{
+    width: 240px;
+    height: 240px;
+    border-radius: 500px;
+}
+
+.profile-uploader{
+    position: absolute;
+    size: 240px;
 }

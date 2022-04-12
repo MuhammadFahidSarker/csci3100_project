@@ -198,14 +198,6 @@ const PlusIcon = ({onFileUploaded}) => {
             />
 
         </div>
-        /* <div >
-             {/!*<BsPlusCircleFill*!/}
-             {/!*    size="22"*!/}
-             {/!*    className="text-green-500 dark:shadow-lg mx-2 dark:text-primary"*!/}
-             {/!*    onClick={handleUpload}*!/}
-             {/!*    style={{cursor: 'pointer'}}*!/}
-             {/!*!/>*!/}
-         </div>*/
     )
 }
 

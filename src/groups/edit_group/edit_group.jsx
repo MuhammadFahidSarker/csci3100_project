@@ -1,5 +1,5 @@
 import {useLocation} from 'react-router-dom'
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {deleteGroup, getGroupDetails, getGroupMembers, kickUser} from "../../repository/repo";
 import {LoadingScreen} from "../../common/loading";
 import TopNavigation from "../../home_screen/components/TopNavigation";
@@ -50,7 +50,12 @@ export function EditGroup({}) {
     }
 
     function updateGroupDetails(){
+        //todo implement user globale name and description
 
+    }
+
+    function updateGroupPhoto(file){
+        //todo implement user globale name and description
     }
 
     if (group === null) {
@@ -89,8 +94,7 @@ export function EditGroup({}) {
                                    placeHolder={'Group name'} onChange={setDescription}/>
                     </div>
                     <div>
-                        <img title={'Edit'} src={group.photoURL} alt={'Group image'} width={'240px'} height={'240px'}
-                             style={{cursor: 'pointer', borderRadius: '500px'}}/>
+                        <GroupPhoto group={group} onFileUploaded={setPhoto}/>
 
                     </div>
                 </div>
@@ -117,6 +121,32 @@ export function EditGroup({}) {
             </div>
         </div>
     );
+}
+
+const GroupPhoto = ({group, onFileUploaded}) => {
+
+    function fileUploadButton() {
+        document.getElementById('fileButton').click();
+        document.getElementById('fileButton').onchange = () => {
+            onFileUploaded(document.getElementById('fileButton').files[0]);
+        }
+    }
+
+    console.log(group);
+
+    return (
+        <div>
+            <input id="fileButton" type="file" accept="image/png, image/gif, image/jpeg" hidden/>
+            <img className={'profile-photo'} src={group.photoURL}
+                 style={{
+                     width: '240px',
+                     height: '240px',
+                     borderRadius: '500px',
+                     cursor: 'pointer'
+                 }} onClick={fileUploadButton}/>
+
+        </div>
+    )
 }
 
 function GroupMembers({groupID}) {
