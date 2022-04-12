@@ -22,45 +22,38 @@ import { v4 as uuidv4 } from 'uuid'
 firebase.initializeApp(firebaseConfig)
 const firestore = firebase.firestore()
 const storage = getStorage()
-
-const uploadFiles = (file) => {
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+const uploadFiles = async (file) => {
   // if there is no file, return null
+  console.log('upload file')
   if (!file) return null
+  console.log('uploading file')
   // newfilename is a random string
   const newFileName = uuidv4()
   // creates a reference to a new file
   const storageRef = ref(storage, `/images/${newFileName}`)
   // uploads file to the given reference
-  const uploadTask = uploadBytesResumable(storageRef, file)
-
-  // basically shows the progress of file uploading
-  uploadTask.on(
-    'state_changed',
-    (snapshot) => {
-      const progress = Math.round(
-        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-      )
-      console.log(progress)
-    },
-    (err) => {
-      console.log(err)
-    },
-    () => {
-      // after successful end, passes file url to sendMessage function
-      getDownloadURL(uploadTask.snapshot.ref).then((url) => sendMessage(url))
-    },
-  )
+  const uploadTask = await uploadBytesResumable(storageRef, file)
+  const url = await getDownloadURL(uploadTask.ref)
+  console.log('finished upload')
+  return url
 }
 
 export function GroupChatContainer({ group, toolbarHidden, user }) {
   const groupId = group.groupid
   const messagesRef = firestore.collection(`groups/${groupId}/messages`)
-  const query = messagesRef.orderBy('createdAt').limit(25)
+  const query = messagesRef.orderBy('createdAt')//.limit(25)
   // Hook for input value (send message)
   const [messages] = useCollectionData(query, { idField: 'id' })
 
   const sendMessage = async (text, url) => {
-    console.log('sendMessage', text, url)
+    if(url){
+      url = await uploadFiles(url.target.files[0])
+      console.log('uploaded url:',url)
+    }
+    console.log('sendMessage', text)
     console.log(user)
     // retrieves uid and photo from the current user
     const { userID, photoURL } = user
@@ -95,16 +88,24 @@ export function GroupChatContainer({ group, toolbarHidden, user }) {
 function Message({ message }) {
   return (
     <div className={'message-container'}>
+      <img className={'message-image'} src={message.attachedF} />
       <div className={'message-text'}>{message.text}</div>
     </div>
   )
 }
 
 const BottomBar = ({ onSend }) => {
-  const file=null
+  var file=null
+  function onFileUploaded(fileObj){
+    file=fileObj
+    checkFile()
+  }
+  function checkFile(){
+    console.log(file.target.files[0])
+  }
   return (
     <div className="bottom-bar">
-      <PlusIcon onFileUploaded/ >
+      <PlusIcon onFileUploaded={(f)=>onFileUploaded(f)} />
       <input
         type="text"
         id={'chatInput'}
@@ -112,7 +113,8 @@ const BottomBar = ({ onSend }) => {
         className="bottom-bar-input"
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
-            onSend(e.target.value, 'func1')
+            onSend(e.target.value, file)
+            file=null
             e.target.value = ''
           }
         }}
@@ -120,7 +122,8 @@ const BottomBar = ({ onSend }) => {
       <SendIcon
         onClick={(e) => {
           //get the value of input from chatInput and send it to onSend
-          onSend(document.getElementById('chatInput').value,'func2')
+          onSend(document.getElementById('chatInput').value, file)
+          file=null
           document.getElementById('chatInput').value = ''
         }}
       />
@@ -155,6 +158,7 @@ const Post = ({
 const PlusIcon = ({ onFileUploaded }) => {
   const fileUpload = useRef(null)
   const uploadProfilePic = (e) => {
+    onFileUploaded(e)
     console.log(e)
   }
 
