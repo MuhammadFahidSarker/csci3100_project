@@ -8,10 +8,49 @@ import { BiSend } from 'react-icons/all'
 import ScrollToBottom from 'react-scroll-to-bottom'
 import firebase from 'firebase/compat'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
-import { firebaseConfig } from '../../../repository/firebase_auth'
+import { firebaseConfig } from '../../../repository/firebase_auth' 
+import 'firebase/compat/firestore'
+import 'firebase/compat/auth'
+import {
+  getDownloadURL,
+  getStorage,
+  uploadBytesResumable,
+  ref,
+} from 'firebase/storage'
+import { v4 as uuidv4 } from 'uuid'
 
 firebase.initializeApp(firebaseConfig)
 const firestore = firebase.firestore()
+const storage = getStorage()
+
+const uploadFiles = (file) => {
+  // if there is no file, return null
+  if (!file) return null
+  // newfilename is a random string
+  const newFileName = uuidv4()
+  // creates a reference to a new file
+  const storageRef = ref(storage, `/images/${newFileName}`)
+  // uploads file to the given reference
+  const uploadTask = uploadBytesResumable(storageRef, file)
+
+  // basically shows the progress of file uploading
+  uploadTask.on(
+    'state_changed',
+    (snapshot) => {
+      const progress = Math.round(
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+      )
+      console.log(progress)
+    },
+    (err) => {
+      console.log(err)
+    },
+    () => {
+      // after successful end, passes file url to sendMessage function
+      getDownloadURL(uploadTask.snapshot.ref).then((url) => sendMessage(url))
+    },
+  )
+}
 
 export function GroupChatContainer({ group, toolbarHidden, user }) {
   const groupId = group.groupid
@@ -21,6 +60,7 @@ export function GroupChatContainer({ group, toolbarHidden, user }) {
   const [messages] = useCollectionData(query, { idField: 'id' })
 
   const sendMessage = async (text, url) => {
+    console.log('sendMessage', text, url)
     console.log(user)
     // retrieves uid and photo from the current user
     const { userID, photoURL } = user
@@ -47,7 +87,7 @@ export function GroupChatContainer({ group, toolbarHidden, user }) {
           })}
       </div>
 
-      <BottomBar onSend={(message) => sendMessage(message, null)} />
+      <BottomBar onSend={(message,photoURL) => sendMessage(message, photoURL)} />
     </div>
   )
 }
@@ -61,9 +101,10 @@ function Message({ message }) {
 }
 
 const BottomBar = ({ onSend }) => {
+  const file=null
   return (
     <div className="bottom-bar">
-      <PlusIcon />
+      <PlusIcon onFileUploaded/ >
       <input
         type="text"
         id={'chatInput'}
@@ -71,7 +112,7 @@ const BottomBar = ({ onSend }) => {
         className="bottom-bar-input"
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
-            onSend(e.target.value)
+            onSend(e.target.value, 'func1')
             e.target.value = ''
           }
         }}
@@ -79,7 +120,7 @@ const BottomBar = ({ onSend }) => {
       <SendIcon
         onClick={(e) => {
           //get the value of input from chatInput and send it to onSend
-          onSend(document.getElementById('chatInput').value)
+          onSend(document.getElementById('chatInput').value,'func2')
           document.getElementById('chatInput').value = ''
         }}
       />
