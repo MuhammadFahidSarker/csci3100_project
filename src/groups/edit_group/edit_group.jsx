@@ -54,8 +54,8 @@ export function EditGroup({}) {
     const [photo, setPhoto] = useState(null);
 
     const navigate = useNavigate();
-
     const [group, setGroup] = useState(null);
+
     useEffect(
         () => {
             getGroupDetails(groupId).then(grp => {
@@ -63,6 +63,7 @@ export function EditGroup({}) {
                     setGroup(grp.content);
                     setName(grp.content.name)
                     setDescription(grp.content.description)
+                    setPhoto(grp.content.photoURL)
                 } else {
                     console.log(grp.error);
                 }
@@ -92,6 +93,7 @@ export function EditGroup({}) {
                     setGroup(grp.content)
                     setName(grp.content.name)
                     setDescription(grp.content.description)
+                    setPhoto(grp.content.photoURL)
                 } else {
                     console.log(grp.error);
                 }
@@ -101,6 +103,8 @@ export function EditGroup({}) {
 
     //TODO refresh after update
     async function updateGroupPhoto(file){
+        if(!file) return
+        
         let [url,metadata] = await uploadFiles(file)
         console.log('uploaded photo,',url)
         uploadGroupIcon(url,groupId).then(
@@ -110,6 +114,7 @@ export function EditGroup({}) {
                     setGroup(grp.content)
                     setName(grp.content.name)
                     setDescription(grp.content.description)
+                    setPhoto(grp.content.photoURL)
                 } else {
                     console.log(grp.error);
                 }
@@ -153,7 +158,7 @@ export function EditGroup({}) {
                                    placeHolder={'Description'} onChange={setDescription}/>
                     </div>
                     <div>
-                        <GroupPhoto group={group} onFileUploaded={updateGroupPhoto}/>
+                        <GroupPhoto groupPhotoUrl={photo} onFileUploaded={updateGroupPhoto}/>
 
                     </div>
                 </div>
@@ -182,7 +187,7 @@ export function EditGroup({}) {
     );
 }
 
-const GroupPhoto = ({group, onFileUploaded}) => {
+const GroupPhoto = ({groupPhotoUrl, onFileUploaded}) => {
 
     function fileUploadButton() {
         document.getElementById('fileButton').click();
@@ -191,12 +196,12 @@ const GroupPhoto = ({group, onFileUploaded}) => {
         }
     }
 
-    console.log(group);
+    console.log(groupPhotoUrl);
 
     return (
         <div>
             <input id="fileButton" type="file" accept="image/png, image/gif, image/jpeg" hidden/>
-            <img className={'profile-photo'} src={group.photoURL}
+            <img className={'profile-photo'} src={groupPhotoUrl}
                  style={{
                      width: '240px',
                      height: '240px',

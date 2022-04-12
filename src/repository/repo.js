@@ -677,6 +677,7 @@ export async function getAllGroups() {
  *
  */
 export async function getAllUsers() {
+  console.log('getAllUsers')
   await waitAuthObject()
   try {
     let token = await user.getIdToken()

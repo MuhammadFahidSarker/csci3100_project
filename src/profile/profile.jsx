@@ -64,7 +64,10 @@ export function ProfileScreen({}) {
 
 
     async function updateProfilePhoto(file){
+        if(!file) return
+        console.log('debug-updateProfilePhoto:', file)
         let [url,metadata] = await uploadFiles(file)
+
         console.log('uploaded photo,',url)
         uploadUserIcon(url).then(getUserDetails().then(res => {
             if (res.success === true) {
