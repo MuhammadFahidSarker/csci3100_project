@@ -931,7 +931,7 @@ export async function getGroupMembers(groupID) {
 
 /**
  * get zoom signature
- * 
+ *
  * params: meetingID
  */
 export async function getZoomSignature(meetingID) {
@@ -946,12 +946,12 @@ export async function getZoomSignature(meetingID) {
         Authorization: token,
       },
       // current userID => user.uid
-      body: new URLSearchParams({meetingNumber:meetingID,role:0}),
+      body: new URLSearchParams({ meetingNumber: meetingID, role: 0 }),
     })
     let resBody = await res.json()
 
     if (res.status === 200) {
-      return { success: true, signature:resBody.signature , name:user}
+      return { success: true, signature: resBody.signature, name: user }
     } else {
       return { success: false, error: resBody }
     }
