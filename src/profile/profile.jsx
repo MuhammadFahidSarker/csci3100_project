@@ -4,10 +4,38 @@ import '../index.css'
 import {BiError, BiLogOut, BiWindowClose} from "react-icons/all";
 import useDarkMode from "../home_screen/hooks/useDarkMode";
 import React, {useEffect, useState} from "react";
-import {getJoinedGroups, getUserDetails} from "../repository/repo";
+import {getJoinedGroups, getUserDetails, uploadUserIcon} from "../repository/repo";
 import {Navigate} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import {BsPlusCircleFill} from "react-icons/bs";
+
+import firebase from 'firebase/compat'
+import {firebaseConfig} from '../repository/firebase_auth'
+import 'firebase/compat/firestore'
+import 'firebase/compat/auth'
+import {getDownloadURL, getStorage, ref, uploadBytesResumable,getMetadata } from 'firebase/storage'
+import {v4 as uuidv4} from 'uuid'
+
+firebase.initializeApp(firebaseConfig)
+const firestore = firebase.firestore()
+const storage = getStorage()
+
+const uploadFiles = async (file) => {
+  // if there is no file, return null
+  console.log('upload file')
+  if (!file) return null
+  console.log('uploading file')
+  // newfilename is a random string
+  const newFileName = uuidv4()+'.'+file.name.split('.').pop()
+  // creates a reference to a new file
+  const storageRef = ref(storage, `/userPhoto/${newFileName}`)
+  // uploads file to the given reference
+  const uploadTask = await uploadBytesResumable(storageRef, file)
+  const url = await getDownloadURL(uploadTask.ref)
+  const metadata = await getMetadata(uploadTask.ref)
+  return [url,metadata]
+}
+
 
 export function ProfileScreen({}) {
     const [groups, setGroups] = useState([]);
@@ -17,8 +45,6 @@ export function ProfileScreen({}) {
     const navigate = useNavigate();
 
     useEffect(() => {
-
-
         getUserDetails().then(res => {
             if (res.success === true) {
                 getJoinedGroups(res.userID).then(res => {
@@ -37,8 +63,22 @@ export function ProfileScreen({}) {
     const height = window.innerHeight - 64 + 'px';
 
 
-    function updateProfilePhoto(file){
-        //todo implement
+    async function updateProfilePhoto(file){
+        let [url,metadata] = await uploadFiles(file)
+        console.log('uploaded photo,',url)
+        uploadUserIcon(url).then(getUserDetails().then(res => {
+            if (res.success === true) {
+                getJoinedGroups(res.userID).then(res => {
+                    if (res.success === true) {
+                        setGroups(res.groups);
+                    }
+                });
+                setUser(res);
+                setSignedIn(true);
+            } else {
+                setSignedIn(false);
+            }
+        }))
     }
 
     return <div className={'content-container'}>
