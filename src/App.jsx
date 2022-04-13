@@ -13,6 +13,8 @@ import {CreateGroup} from "./groups/create_group/create_group";
 import {EditGroup} from "./groups/edit_group/edit_group";
 import {AdminScreen} from "./admin/admin";
 import {VerifyUser} from "./varification/not_verified";
+import {ForgotPassword} from "./auth_screen/forgot_pass";
+import {BannedUser} from "./banned_user/banned_user";
 
 class App extends Component {
 
@@ -38,6 +40,8 @@ class App extends Component {
                     <Route path={'/admin'} element={<AdminScreen/>}/>
                     <Route path={'/admin-login'} element={<LoginScreen adminLogin={true}/>}/>
                     <Route path={'/verify-user'} element={<VerifyUser/>}/>
+                    <Route path={'/reset-password'} element={<ForgotPassword/>}/>
+                    <Route path={'/banned'} element={<BannedUser/>}/>
                 </Routes>
             </Router>
         );

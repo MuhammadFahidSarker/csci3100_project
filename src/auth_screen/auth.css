@@ -4,3 +4,9 @@
     margin: 20px;
     padding: 20px;
 }
+
+.success-label{
+    @apply text-green-500;
+    font-size: 2rem;
+    font-weight: 100;
+}

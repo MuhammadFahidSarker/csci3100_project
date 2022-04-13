@@ -290,6 +290,10 @@ div {
   height: 100%;
 }
 
+Link{
+  @apply text-gray-800 dark:text-white hover:text-blue-500 dark:hover:text-blue-500;
+}
+
 @tailwind utilities;
 
 ::-webkit-scrollbar {

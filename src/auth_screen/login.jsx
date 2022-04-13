@@ -5,6 +5,8 @@ import './auth.css'
 import {getUserDetails, logout, signIn} from "../repository/repo";
 import {useNavigate} from "react-router-dom";
 
+import logo from '../images/logo.png';
+
 export default function LoginScreen({adminLogin = false}) {
 
     const [email, setEmail] = useState('');
@@ -71,14 +73,17 @@ export default function LoginScreen({adminLogin = false}) {
 
 
     return <div className={'content-container'}>
+
         <div style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             alignContent: 'center',
-            height: '100%'
+            height:'100%'
         }}>
             <div className={'auth-container'}>
+                <div className={'center'}>                <img src={logo} style={{width: '120px', height: '120px'}}/>
+                </div>
                 {
                     loading ? <div className={'loader'}/>
                         : <div>
@@ -90,10 +95,15 @@ export default function LoginScreen({adminLogin = false}) {
                             <TextInput label={'Email'} value={email} placeHolder={'Email'} onChange={setEmail}/>
                             <TextInput hideCnt={true} label={'Password'} placeHolder={'Account Password'} value={password}
                                        onChange={setPassword}/>
-                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                            <div style={{
+                                display: 'flex',
+                                margin: '20px',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}>
                                 <button onClick={() => executeLogin()}>Sign in</button>
-                                <div style={{display:'flex', gap:'10px'}}>
-                                    <Link to={'/forgot-password'}>Forgot Password?</Link>
+                                <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                                    <Link to={'/reset-password'}>Forgot Password?</Link>
                                     {adminLogin === false ? <Link to={'/signup'}>Create Account</Link> : null}
                                     {adminLogin === false ? <Link to={'/admin-login'}>Admin Login</Link> : null}
                                 </div>

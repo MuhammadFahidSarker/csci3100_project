@@ -82,6 +82,10 @@ class HomeComponent extends Component {
             return <Navigate to={'/login'}/>
         }
 
+        if(user.isBanned === true){
+            return <Navigate to={'/banned'}/>
+        }
+
         if(user.isVerified === false){
             return <Navigate to={'/verify-user'}/>
         }
