@@ -518,6 +518,10 @@ module.exports = {
   banuser: async function banuser(req, res, next) {
     console.log('banuser')
     try {
+      let isadmin = await isAdmin(req.header.verified.uid, req)
+      if (!isadmin) {
+        return res.status(401).json('unauthorized')
+      }
       if (!req.body.userid) {
         throw new Assert('no userID provided')
       }
@@ -529,10 +533,7 @@ module.exports = {
       await docu.ref.update({ isBanned: true })
 
       return res.status(200).json({
-        Succeed: {
-          isVerified: isVerified,
-        },
-        Content: docu.data(),
+        Succeed: true,
       })
     } catch (e) {
       console.log(e)
@@ -787,10 +788,10 @@ module.exports = {
   },
 
   updategroupprofile: async function updategroupprofile(req, res, next) {
-    console.log('updategroupprofile!!!',req.body.groupid)
+    console.log('updategroupprofile!!!', req.body.groupid)
     console.log(req.body)
     try {
-      if (!req.body.description || !req.body.name || !req.body.groupid) 
+      if (!req.body.description || !req.body.name || !req.body.groupid)
         return res.status(401).json('no description/name/groupid')
       console.log('updating')
       await group_table.doc(req.body.groupid).update({
