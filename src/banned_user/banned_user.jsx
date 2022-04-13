@@ -1,9 +1,10 @@
 import './banned.css'
-import {useEffect, useState} from "react";
-import {getUserDetails} from "../repository/repo";
+import React, {useEffect, useState} from "react";
+import {getUserDetails, logout} from "../repository/repo";
 import {useNavigate} from "react-router-dom";
 import {LoadingScreen} from "../common/loading";
 import {Navigate} from "react-router-dom";
+import {BiLogOut} from "react-icons/all";
 
 export function BannedUser({}){
 
@@ -43,6 +44,14 @@ export function BannedUser({}){
             <div className={'banned-container'}>
                 <h1>You are banned</h1>
                 <p>from using UNION for violating our policy!</p>
+                <button onClick={()=>{
+                    logout().then(res=>{
+                        navigate('/login')
+                    })
+                }}><div className={'row'}>
+                    <BiLogOut/>
+                    Logout
+                </div></button>
             </div>
         </div>
     </div>
