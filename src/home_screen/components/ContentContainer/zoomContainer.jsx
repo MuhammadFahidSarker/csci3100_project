@@ -1,5 +1,5 @@
 import Iframe from 'react-iframe'
-import { Component } from 'react'
+import {Component, useEffect, useState} from 'react'
 import { LoadingScreen } from '../../../common/loading'
 import {
   getJoinAbleZoomMeetingLink,
@@ -10,12 +10,29 @@ import {
   getGoogleToolHeight,
   GOOGLE_TOOL_MARGIN_LEFT,
 } from './etc'
+
+import zoom from '../../../images/zoom.png'
 import TopNavigation from '../TopNavigation'
 import ZoomMtgEmbedded from '@zoomus/websdk/embedded'
 
 export function ZoomContainer({ group, toolbarHidden, user }) {
   const client = ZoomMtgEmbedded.createClient()
   const meetingSDKElement = document.getElementById('meetingSDKElement')
+  const [existingMeeting, setExistingMeeting] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [success, setSuccess] = useState('')
+
+  useEffect(()=>{
+    if(!group) return
+    getJoinAbleZoomMeetingLink(group.id)
+      .then(data=>{
+        if(data.success){
+          setExistingMeeting(data.response)
+        }
+        setLoading(false)
+      })
+  })
+
   //init zoomClient
   try {
     client.init({
@@ -78,12 +95,48 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
     })
   }
 
+  async function joinMeeting(){
+    setLoading(true)
+
+    // start the meeting
+
+    // if(success){
+    //   setSuccess('Meeting started Successfully!')
+    // }
+
+    setLoading(false)
+
+  }
+
+  async function createMeeting(){
+    setLoading(true)
+
+    // create and start the meeting
+
+    // if(success){
+    //   setSuccess('Meeting started successfully!')
+    // }
+
+    setLoading(false)
+
+  }
+
+  if(loading === true){
+    return <LoadingScreen withTopNav={false}/>
+  }
+
   return (
-    <div className="App">
-      <main>
-        <h1>Zoom Meeting</h1>
-        <button onClick={getSignature}>Join Meeting</button>
-      </main>
+    <div className={'content-container'}>
+      <TopNavigation />
+      <div className={'center'}>
+        {success === '' ? <div>
+          <img src={'http://assets.stickpng.com/images/5e8cde66664eae0004085457.png'} alt={'zoom'} width={'540px'} />
+          <div className={'row'} style={{margin:'40px'}}>
+            <button>Create New Meeting</button>
+            {existingMeeting ? <button>Join Meeting</button> : null}
+          </div>
+        </div> : <div>{success}</div>}
+      </div>
     </div>
   )
 }

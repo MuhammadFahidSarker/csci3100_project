@@ -17,6 +17,8 @@ export default function GroupPreview({onGroupLeaved, group, userID}) {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+
+
     async function joinNewGroup() {
         setLoading(true);
         const res = await joinGroup(group.groupid);
@@ -45,6 +47,8 @@ export default function GroupPreview({onGroupLeaved, group, userID}) {
         }
     }
 
+    console.log(group);
+
     return <div className={'prev'} style={{
         display: 'flex', fontSize: '40px',
         margin: '5px', marginLeft: '80px', marginRight: '80px',
@@ -52,22 +56,25 @@ export default function GroupPreview({onGroupLeaved, group, userID}) {
         justifyContent: 'space-between', alignItems: 'center',
         borderRadius: '10px', width: '80%',
     }}>
-        <div>
-            {group.name}
-            <div style={{fontSize: '20px', gap: '20px'}}>
-                <div style={{marginTop: '10px'}}>{group.description}</div>
-                <p>&nbsp;</p>
-                <div>{members === 0 ? 'No Members' : members === 1 ? '1 Member' : `${members} Members`}</div>
-                {isAdmin ? <div style={{display: 'flex', alignItems: 'center'}}>
-                    <button onClick={isAdmin ? (_) => navigate('/groups/' + group.groupid + '/edit') : null}>
-                        <div style={{display: 'flex', alignItems: 'center'}}><FiEdit/>Edit</div>
-                    </button>
-                    <RiAdminFill style={{fontSize: '20px', color: '#ff4907'}}/>
-                    <div style={{fontSize: '20px', color: '#ff4107'}}>Admin</div>
-                </div> : (action === 'Launch' && loading === false) ? <button onClick={(_) => leaveTheGroup()} >
-                    <div style={{display: 'flex', alignItems: 'center'}}><BiArrowBack/>Leave Group</div>
-                </button> : null}
-                {error === '' ? null : <div style={{color: 'red'}}>{error}</div>}
+        <div style={{display:'flex', gap:'20px'}}>
+            <img src={group.group_icon}  style={{borderRadius:'500px', width:'120px', height:'120px'}} />
+            <div>
+                {group.name}
+                <div style={{fontSize: '20px', gap: '20px'}}>
+                    <div style={{marginTop: '10px'}}>{group.description}</div>
+                    <p>&nbsp;</p>
+                    <div>{members === 0 ? 'No Members' : members === 1 ? '1 Member' : `${members} Members`}</div>
+                    {isAdmin ? <div style={{display: 'flex', alignItems: 'center'}}>
+                        <button onClick={isAdmin ? (_) => navigate('/groups/' + group.groupid + '/edit') : null}>
+                            <div style={{display: 'flex', alignItems: 'center'}}><FiEdit/>Edit</div>
+                        </button>
+                        <RiAdminFill style={{fontSize: '20px', color: '#ff4907'}}/>
+                        <div style={{fontSize: '20px', color: '#ff4107'}}>Admin</div>
+                    </div> : (action === 'Launch' && loading === false) ? <button onClick={(_) => leaveTheGroup()} >
+                        <div style={{display: 'flex', alignItems: 'center'}}><BiArrowBack/>Leave Group</div>
+                    </button> : null}
+                    {error === '' ? null : <div style={{color: 'red'}}>{error}</div>}
+                </div>
             </div>
         </div>
         {loading === true ? <div className={'loader'}/> :
