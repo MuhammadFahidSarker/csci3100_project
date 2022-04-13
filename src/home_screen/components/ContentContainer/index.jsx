@@ -17,7 +17,7 @@ const ContentContainer = (props) => {
             return <SheetsContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user}/>
         case 'Google Presentation':
             return <DriveContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user} />
-        case 'Zoom':
+        case 'Meeting':
             return <ZoomContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user} />
         default: <div/>
     }

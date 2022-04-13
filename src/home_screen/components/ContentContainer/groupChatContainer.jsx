@@ -148,6 +148,7 @@ function Message({ message, userID }) {
       ) : null}
       {/*{attachedF && <img className={'message-image'} src={attachedF}/>}*/}
       <div>
+
         <div className={'message-text'}>{text}</div>
         {attachedF
           ? [
@@ -164,13 +165,12 @@ function Message({ message, userID }) {
                 ) : (
                   <FiFile size={20} />
                 )}
-                <a href={attachedF} target={'_blank'} download>
-                  Download
-                </a>
+                <div>Download</div>
               </div>,
             ]
           : null}
-          {name ? <div className={'message-sender'}>{name}</div> : null}
+        {name ? <div className={'message-sender'}>{name}</div> : null}
+
       </div>
       {type === 'self' ? (
         <img className={'message-avatar'} src={photoURL} alt={'avatar'} />

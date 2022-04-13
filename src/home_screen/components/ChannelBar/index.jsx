@@ -6,7 +6,7 @@ import {BiLinkExternal, GoLinkExternal} from "react-icons/all";
 
 const chats = ['Group Chat']
 const googleTools = ['Google Docs', 'Google Sheets', 'Google Presentation']
-const zoomTools = ['Join Meeting', 'Zoom']
+const zoomTools = ['Meeting']
 
 const ChannelBar = ({changeType}) => {
   return (
@@ -14,7 +14,7 @@ const ChannelBar = ({changeType}) => {
       <ChannelBlock />
       <div className='channel-container'>
         <Dropdown header = 'Chat' setType = {changeType} selections={chats}/>
-        <Dropdown header = 'Google Docs' setType = {changeType} selections={googleTools} />
+        <Dropdown header = 'Google Tools' setType = {changeType} selections={googleTools} />
         <Dropdown header = 'Zoom' selections = {zoomTools} setType={changeType}/>
       </div>
     </div>

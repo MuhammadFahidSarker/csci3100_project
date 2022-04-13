@@ -2,7 +2,6 @@
     @apply bg-white text-black dark:bg-black dark:text-white;
     display: flex;
     align-items: center;
-    justify-content: center;
     padding: 10px;
     margin: 10px;
     border-radius: 10px;
@@ -20,14 +19,17 @@
 }
 
 .message-sender{
-    @apply text-gray-400 dark:text-gray-700;
+    @apply text-gray-500 dark:text-gray-600;
 }
 
 .message-self{
+    margin-top: 10px;
     margin-left: auto;
 }
 
 .message-other{
+    margin-top: 10px;
+
     margin-right: auto;
 }
 
@@ -42,8 +44,9 @@
     @apply bg-gray-400 text-black dark:bg-gray-600 dark:text-white hover:bg-gray-600 dark:hover:bg-gray-800;
     display: flex;
     align-items: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: auto;
+    cursor: pointer;
     padding: 10px;
+    gap: 10px;
     border-radius: 20px;
 }

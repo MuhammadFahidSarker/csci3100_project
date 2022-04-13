@@ -11,12 +11,14 @@ export default function GroupPreview({onGroupLeaved, group, userID}) {
     let navigate = useNavigate();
     const gMembers = group.members;
     const members = gMembers?.length | 0;
-    const [action, setAction] = useState(gMembers ? gMembers.includes(userID) ? 'Launch' : 'Join' : 'Join');
+    const isMember = gMembers?.includes(userID);
+    const [action, setAction] = useState(isMember ? 'Launch' : 'Join');
+    console.log(gMembers, userID, action, gMembers.includes(userID));
+
     const admins = group.admins;
     const isAdmin = admins?.includes(userID);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
 
 
     async function joinNewGroup() {
@@ -56,8 +58,8 @@ export default function GroupPreview({onGroupLeaved, group, userID}) {
         justifyContent: 'space-between', alignItems: 'center',
         borderRadius: '10px', width: '80%',
     }}>
-        <div style={{display:'flex', gap:'20px'}}>
-            <img src={group.group_icon}  style={{borderRadius:'500px', width:'120px', height:'120px'}} />
+        <div style={{display: 'flex', gap: '20px'}}>
+            <img src={group.group_icon} style={{borderRadius: '500px', width: '120px', height: '120px'}}/>
             <div>
                 {group.name}
                 <div style={{fontSize: '20px', gap: '20px'}}>
@@ -70,7 +72,7 @@ export default function GroupPreview({onGroupLeaved, group, userID}) {
                         </button>
                         <RiAdminFill style={{fontSize: '20px', color: '#ff4907'}}/>
                         <div style={{fontSize: '20px', color: '#ff4107'}}>Admin</div>
-                    </div> : (action === 'Launch' && loading === false) ? <button onClick={(_) => leaveTheGroup()} >
+                    </div> : (action === 'Launch' && loading === false) ? <button onClick={(_) => leaveTheGroup()}>
                         <div style={{display: 'flex', alignItems: 'center'}}><BiArrowBack/>Leave Group</div>
                     </button> : null}
                     {error === '' ? null : <div style={{color: 'red'}}>{error}</div>}

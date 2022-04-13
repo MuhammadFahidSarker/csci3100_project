@@ -123,11 +123,12 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
 
   return (
     <div className={'content-container'}>
-      <TopNavigation />
+      <TopNavigation user={user} showAllGroup={true} group={group} toolbarHidden={toolbarHidden} type={'- Presentation'}/>
+
       <div className={'center'}>
         {success === '' ? <div>
-          <img src={'http://assets.stickpng.com/images/5e8cde66664eae0004085457.png'} alt={'zoom'} width={'540px'} />
-          <div className={'row'} style={{margin:'40px'}}>
+          <img src={zoom} alt={'UNION'} width={'240px'} style={{borderRadius:'50%'}} />
+          <div className={'row'} style={{marginTop:'40px'}}>
             <button onClick={createMeeting}>Create New Meeting</button>
             {(existingMeeting!==null && existingMeeting!==undefined)? <button onClick={joinMeeting}>Join Meeting{existingMeeting===undefined}</button> : null}
           </div>

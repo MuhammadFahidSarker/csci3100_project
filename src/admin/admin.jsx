@@ -77,7 +77,7 @@ export function AdminScreen({}) {
 
 
     return <div className={'content-container'}>
-        <TopNavigation hideAdminIcon={true} forceName={'Admin Mode'} user={user}/>
+        <TopNavigation showNormalModeIcon={true} hideAdminIcon={true} forceName={'Admin Mode'} user={user}/>
         <div className={'content-list'}>
             <div className={'row'} style={{marginTop: '20px'}}>
                 <button className={viewMode === 'groups' ? 'selected-btn' : 'un-selected-btn'}

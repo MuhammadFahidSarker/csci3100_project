@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 
 export  function ForgotPassword(){
     const [email, setEmail] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [user, setUser] = useState(null)
@@ -20,6 +20,8 @@ export  function ForgotPassword(){
                 (user) => {
                     if(user.success){
                         navigate('/')
+                    }else{
+                        setLoading(false)
                     }
                 }
             )
@@ -77,7 +79,12 @@ export  function ForgotPassword(){
                             </div>
                             <div style={{color: 'red'}}>{error}</div>
                         </div>
-                        : <div className={'success-label'}>{success}</div>
+                        : <div className={'center'}>
+                            <div>
+                                <div className={'success-label'}>{success}</div>
+                                <button onClick={() => navigate('/login')}>Sign In</button>
+                            </div>
+                        </div>
                 }
             </div>
         </div>

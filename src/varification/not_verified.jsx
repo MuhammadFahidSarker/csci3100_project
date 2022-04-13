@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
 import {LoadingScreen} from "../common/loading";
 import {useNavigate} from "react-router-dom";
-import {AiFillCloseCircle, FiCheckCircle, FiHome, FiLoader, FiRefreshCw, FiRepeat} from "react-icons/all";
-import {getUserDetails, sendVerificationEmail} from "../repository/repo";
+import {AiFillCloseCircle, FiCheckCircle, FiHome, FiLoader, FiLogOut, FiRefreshCw, FiRepeat} from "react-icons/all";
+import {getUserDetails, logout, sendVerificationEmail} from "../repository/repo";
 import {Navigate} from 'react-router-dom';
 
 export function VerifyUser() {
@@ -54,8 +54,14 @@ export function VerifyUser() {
                         <div>You are already verified!</div>
                     </div>
                     <div className={'row'}>
-                        <button onClick={() => navigate('/')}>
-                            <div className={'row'}><FiHome/>Home</div>
+                        <button onClick={() => {
+                            logout().then(res=>{
+                                if(res.success === true){
+                                    navigate('/login')
+                                }
+                            })
+                        }}>
+                            <div className={'row'}><FiLogOut/>Logout</div>
                         </button>
                     </div>
                 </div>

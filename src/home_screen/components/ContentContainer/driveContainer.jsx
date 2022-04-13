@@ -31,13 +31,13 @@ export class DriveContainer extends Component{
 
     render() {
         const {driveLink, loading} = this.state;
-        const {toolbarHidden, group} = this.props;
+        const {toolbarHidden, group, user} = this.props;
 
 
 
         return (
             <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}}  className="content-container">
-                <TopNavigation group={group} toolbarHidden={toolbarHidden} url={driveLink} type={'- Presentation'}/>
+                <TopNavigation user={user} showAllGroup={true} group={group} toolbarHidden={toolbarHidden} url={driveLink} type={'- Presentation'}/>
 
                 {driveLink === null ? <LoadingScreen/> : <div>
                     {loading ? <LoadingScreen/> : null}

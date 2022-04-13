@@ -14,8 +14,8 @@ export default class GroupLauncher extends Component {
         this.state = {
             loginRequired: null,
             user: null,
-            groups: [],
-            searchTerm:'',
+            groups: null,
+            searchTerm: '',
             viewGroupOf: 'joined',
         }
     }
@@ -35,7 +35,7 @@ export default class GroupLauncher extends Component {
             if (groups.success) {
                 groups = groups.groups
             } else {
-                groups = [];
+                groups = null;
             }
         } catch (e) {
             groups = [];
@@ -46,7 +46,7 @@ export default class GroupLauncher extends Component {
 
     filteredGroup = () => {
         const {groups, searchTerm} = this.state;
-        if(searchTerm === ''){
+        if (searchTerm === '') {
             return groups;
         }
         return groups.filter(group => group.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -56,7 +56,7 @@ export default class GroupLauncher extends Component {
         if (view === this.state.viewGroupOf) {
             return;
         }
-        this.setState({viewGroupOf: view});
+        this.setState({groups: null, viewGroupOf: view});
         let groups = view === 'joined' ? await getJoinedGroups(this.state.user.userID) : await getAllGroups();
         if (groups.success) {
             groups = groups.groups
@@ -80,20 +80,21 @@ export default class GroupLauncher extends Component {
             return <Navigate to={'/login'}/>
         }
 
-        if(user.isBanned === true){
+        if (user.isBanned === true) {
             return <Navigate to={'/banned'}/>
         }
 
-        if(user.isVerified === false){
+        if (user.isVerified === false) {
             return <Navigate to={'/verify-user'}/>
         }
 
         return (
-            <div style={{display:'flex'}}>
+            <div style={{display: 'flex'}}>
 
                 <div className={'content-container'} style={{height: window.innerHeight, width: window.innerWidth}}>
 
-                    <TopNavigation user={user} showCreateGroup={true} onSearch={(search)=>this.setState({searchTerm:search})}/>
+                    <TopNavigation user={user} showCreateGroup={true}
+                                   onSearch={(search) => this.setState({searchTerm: search})}/>
 
                     <div style={{display: 'flex', gap: '20px', marginTop: '10px'}}>
                         <button className={viewGroupOf === 'joined' ? 'selected-btn' : 'un-selected-btn'}
@@ -104,15 +105,23 @@ export default class GroupLauncher extends Component {
                         </button>
                     </div>
 
-                    <div className={'content-list'} style={{display: 'flex'}}>
-                        {this.filteredGroup().map(group => {
-                            return <GroupPreview group={group} userID={user.userID} onGroupLeaved={() => {
-                                if(viewGroupOf === 'joined'){
-                                    this.setState({groups: groups.filter(g => g.groupid !== group.groupid)})
-                                }
-                            }}/>
-                        })}
-                    </div>
+                    {
+                        groups === null ? <div className={'center'}>
+                                <div className={'loader'}/>
+                            </div>
+                            : groups.length === 0 ? <div className={'center'}>
+                                <div className={'no-group-found'}>No Group Found</div>
+                                </div>
+                                : <div className={'content-list'} style={{display: 'flex'}}>
+                                    {this.filteredGroup().map(group => {
+                                        return <GroupPreview group={group} userID={user.userID} onGroupLeaved={() => {
+                                            if (viewGroupOf === 'joined') {
+                                                this.setState({groups: groups.filter(g => g.groupid !== group.groupid)})
+                                            }
+                                        }}/>
+                                    })}
+                                </div>
+                    }
                 </div>
             </div>
         );

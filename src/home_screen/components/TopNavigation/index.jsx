@@ -2,12 +2,22 @@ import {
     FaSearch, FaHashtag, FaRegBell, FaUserCircle, FaMoon, FaSun, FaFire,
 } from 'react-icons/fa';
 import useDarkMode from '../../hooks/useDarkMode';
-import {BiGroup, BiSearch, FiLogOut, FiPlusCircle, FiUser, GoLinkExternal, RiAdminFill} from "react-icons/all";
+import {
+    BiGroup,
+    BiSearch,
+    FiLogOut,
+    FiPlusCircle,
+    FiUser,
+    GoLinkExternal,
+    RiAdminFill,
+    RiUser2Fill
+} from "react-icons/all";
 import {useNavigate} from 'react-router-dom';
 import {SideBarIcon} from "../SideBar";
 import {logout} from "../../../repository/repo";
 
 const TopNavigation = ({
+                           showNormalModeIcon = false,
     hideAdminIcon = false, forceName,
                            toolbarHidden,
                            user = null,
@@ -20,6 +30,7 @@ const TopNavigation = ({
                        }) => {
     console.log(user)
     return (<div className='top-navigation'>
+        {showNormalModeIcon ? <NormalUserIcon/> : null}
         {(hideAdminIcon === false && (user !== null  && user.isAdmin === true)) ?  <AdminIcon/> : null}
         <HashtagIcon toolbarHidden={toolbarHidden}/>
         <Title groupName={forceName ? forceName : group?.name} type={type}/>
@@ -35,6 +46,13 @@ const TopNavigation = ({
     </div>);
 };
 
+const NormalUserIcon =() =>{
+    const navigate = useNavigate();
+
+    return <RiUser2Fill  size={'24px'} className={'admin-icon'} onClick={(_) => {
+        navigate('/groups');
+    }} />
+}
 
 
 const AdminIcon =() =>{
