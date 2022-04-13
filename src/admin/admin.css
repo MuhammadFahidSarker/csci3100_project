@@ -12,7 +12,7 @@
     padding: 10px;
     border-radius: 5px;
     display: flex;
-    height: 600px;
+    height: 500px;
     gap: 10px;
     flex-direction: column;
 }
@@ -62,8 +62,8 @@
 }
 
 .grp-img{
-    width: 250px;
-    height: 250px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
 }
 

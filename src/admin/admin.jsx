@@ -1,7 +1,7 @@
 import TopNavigation from "../home_screen/components/TopNavigation";
 import {LoadingScreen} from "../common/loading";
 import {useEffect, useState} from "react";
-import {Navigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import {banUser, getAllGroups, getAllUsers, getUserDetails, resetPasswordEmail} from "../repository/repo";
 import './admin.css'
 
@@ -118,6 +118,8 @@ function AdminUser({user}) {
     const [loading, setLoading] = useState(false);
     const [resetEmailSent, setResetEmailSent] = useState(false);
 
+    const navigate = useNavigate();
+
     function banThisUser() {
         setLoading(true);
         banUser(user.userid).then(res => {
@@ -156,11 +158,12 @@ function AdminUser({user}) {
             </div> : banned ? <div className={'banned'}>Banned</div> :
                 <div className={'ban-button'} onClick={banThisUser}>Ban User</div>
             }
-            {loading ? null : resetEmailSent ? <div>
+            {(loading || banned) ? null : resetEmailSent ? <div>
                 <div className={'center'}>
                     <div className={'success-label'}>Reset Email Sent</div>
                 </div>
             </div> : <div className={'reset-button'} onClick={resetPass}>Reset Password</div>}
+            {(loading || banned) ? null :  <div className={'reset-button'} onClick={()=>navigate('/admin/users/'+user.userid+'/change-password')}>Change Password</div>}
         </div>
     </li>
 }

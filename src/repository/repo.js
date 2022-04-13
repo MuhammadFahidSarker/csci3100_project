@@ -1071,7 +1071,7 @@ export async function resetPasswordEmail(email) {
  *
  */
 
-export async function updateuserpassword(userID, password) {
+export async function updateUserPassword(userID, password) {
   await waitAuthObject()
   try {
     let user = await getAuth().getUser(userID)

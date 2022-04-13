@@ -15,6 +15,7 @@ import {AdminScreen} from "./admin/admin";
 import {VerifyUser} from "./varification/not_verified";
 import {ForgotPassword} from "./auth_screen/forgot_pass";
 import {BannedUser} from "./banned_user/banned_user";
+import {ChangePassword} from "./auth_screen/change_pass";
 
 class App extends Component {
 
@@ -42,6 +43,8 @@ class App extends Component {
                     <Route path={'/verify-user'} element={<VerifyUser/>}/>
                     <Route path={'/reset-password'} element={<ForgotPassword/>}/>
                     <Route path={'/banned'} element={<BannedUser/>}/>
+                    <Route path={'/admin/users/:id/change-password'} element={<ChangePassword/>}/>
+                    <Route path={'*'} element={<Navigate to={'/groups'}/>}/>
                 </Routes>
             </Router>
         );

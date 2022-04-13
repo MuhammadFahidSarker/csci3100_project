@@ -82,8 +82,8 @@ export default function LoginScreen({adminLogin = false}) {
             height: '100%'
         }}>
             <div className={'auth-container'}>
-                <div className={'center'}><img className={'logo'} src={logo}/>
-                </div>
+                {loading ? null : <div className={'center'}><img className={'logo'} src={logo}/>
+                </div>}
                 {
                     loading ? <div className={'loader'}/>
                         : <div>

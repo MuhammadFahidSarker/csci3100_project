@@ -1,16 +1,31 @@
 import './auth.css'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {TextInput} from "../common/input/textinput";
 import {Link} from "react-router-dom";
-import {resetPasswordEmail} from "../repository/repo";
+import {getUserDetails, resetPasswordEmail} from "../repository/repo";
 import logo from "../images/logo.png";
-
+import {useNavigate} from "react-router-dom";
 
 export  function ForgotPassword(){
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
+    const [user, setUser] = useState(null)
+    const navigate = useNavigate()
+
+    useEffect(
+        () => {
+            getUserDetails().then(
+                (user) => {
+                    if(user.success){
+                        navigate('/')
+                    }
+                }
+            )
+        },
+        [user]
+    )
 
     async function resetPass() {
         if (email === '') {
@@ -43,8 +58,8 @@ export  function ForgotPassword(){
             height: '100%'
         }}>
             <div className={'auth-container'}>
-                <div className={'center'}><img className={'logo'} src={logo}/>
-                </div>
+                {loading ? null : <div className={'center'}><img className={'logo'} src={logo}/>
+                </div>}
                 {
                     success === '' ?
                     loading ? <div className={'loader'}/>
