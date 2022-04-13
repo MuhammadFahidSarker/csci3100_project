@@ -1,7 +1,8 @@
 import './auth.css'
+import {useState} from "react";
 
 
 function ForgotPassword(){
-    const [email, s]
+    const [email, setEmail] = useState('')
 
 }
