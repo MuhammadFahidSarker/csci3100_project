@@ -43,7 +43,7 @@ const generateSignature = async (req, res, next) => {
 
 const createZoomLink = async (req, res, next) => {
   try {
-    let querySnapshot = await group_table.doc(req.body.groupID).get()
+    let querySnapshot = await group_table.doc(req.body.groupid).get()
     if (querySnapshot.data().zoomLink) {
       return res.status(200).json({
         Message: 'The meeting has already been created:',
@@ -93,22 +93,26 @@ const createZoomLink = async (req, res, next) => {
     rp(options)
       .then(function (response) {
         console.log(response)
-        group_table.doc(req.body.groupID).update({ zoomLink: response.id })
+        group_table.doc(req.body.groupid).update({ zoomLink: response.id })
         res.status(200).json({ JoinURL: response.id })
       })
       .catch(function (err) {
         // API call failed...
         //console.log('API call failed, reason ', err)
+        console.log(err)
         res.status(401).json({ Error: err })
       })
   } catch (err) {
+    console.log(err)
     return res.status(401).json({ Error: err })
   }
 }
 
 const getZoomLink = async (req, res, next) => {
+  console.log(req.body)
   try {
-    let querySnapshot = await group_table.doc(req.body.groupID).get()
+    let querySnapshot = await group_table.doc(req.body.groupid).get()
+    console.log('!!!!!',req.body.groupid,querySnapshot.data())
     if (!querySnapshot.data().zoomLink) {
       return res
         .status(401)
@@ -116,6 +120,7 @@ const getZoomLink = async (req, res, next) => {
     }
     return res.status(200).json({ JoinURL: querySnapshot.data().zoomLink })
   } catch (err) {
+    console.log(err)
     return res.status(401).json({ Error: err })
   }
 }

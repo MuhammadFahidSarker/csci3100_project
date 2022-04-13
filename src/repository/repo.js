@@ -307,11 +307,11 @@ export async function sendMessage(message, groupID, user) {
   await new Promise((resolve) => setTimeout(resolve, 1000))
 }
 
-export async function getJoinAbleZoomMeetingLink(userID, groupID) {
+export async function getJoinAbleZoomMeetingLink(groupID) {
   await waitAuthObject()
   try {
     //user === null if the user is not logged in
-    if (!userID) console.log('WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in')
+    // if (!userID) console.log('WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in')
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/getzoom', {
       method: 'POST',
@@ -320,13 +320,20 @@ export async function getJoinAbleZoomMeetingLink(userID, groupID) {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: token,
       },
-      body: new URLSearchParams({ groupID: groupID }),
+      body: new URLSearchParams({ groupid: groupID }),
     })
     let resBody = await res.json()
     console.log(resBody)
-    return {
-      success: true,
-      response: `${resBody.JoinURL}`,
+    if (res.status === 200) {
+      return {
+        success: true,
+        response: `${resBody.JoinURL}`,
+      }
+    }else{
+      return {
+        success: false,
+        response: resBody
+      }
     }
   } catch (e) {
     console.log('getJoinAbleZoomMeetingLink() failed:\n', e)
@@ -335,11 +342,11 @@ export async function getJoinAbleZoomMeetingLink(userID, groupID) {
   //return 'https://zoom.us/j/908724981'
 }
 
-export async function getCreateZoomMeetingLink(userID, groupID) {
+export async function getCreateZoomMeetingLink(groupID) {
   await waitAuthObject()
   try {
     //user === null if the user is not logged in
-    if (!userID) console.log('WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in')
+    //if (!userID) console.log('WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in')
     let token = await user.getIdToken()
     let res = await fetch(baseURL + '/createzoom', {
       method: 'POST',
@@ -348,13 +355,20 @@ export async function getCreateZoomMeetingLink(userID, groupID) {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: token,
       },
-      body: new URLSearchParams({ groupID: groupID }),
+      body: new URLSearchParams({ groupid: groupID }),
     })
     let resBody = await res.json()
     console.log(resBody)
-    return {
-      success: true,
-      response: `${resBody.JoinURL}`,
+    if (res.status === 200) {
+      return {
+        success: true,
+        response: `${resBody.JoinURL}`,
+      }
+    }else{
+      return {
+        success: false,
+        response: resBody
+      }
     }
   } catch (e) {
     console.log('getCreateZoomMeetingLink() failed:\n', e)

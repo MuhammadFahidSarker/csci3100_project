@@ -3,6 +3,7 @@ import {Component, useEffect, useState} from 'react'
 import { LoadingScreen } from '../../../common/loading'
 import {
   getJoinAbleZoomMeetingLink,
+  getCreateZoomMeetingLink,
   getZoomSignature,
 } from '../../../repository/repo'
 import {
@@ -24,8 +25,9 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
 
   useEffect(()=>{
     if(!group) return
-    getJoinAbleZoomMeetingLink(group.id)
+    getJoinAbleZoomMeetingLink(group.groupid)
       .then(data=>{
+        console.log(data)
         if(data.success){
           setExistingMeeting(data.response)
         }
@@ -68,11 +70,12 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
     console.log(e)
   }
 
-  async function getSignature(e) {
-    e.preventDefault()
-    let resp = await getJoinAbleZoomMeetingLink(user.userID, group.groupid) // <-------------change this 81149079754
+  async function getSignature() {
+    //e.preventDefault()
+    let resp = await getJoinAbleZoomMeetingLink(group.groupid) 
     console.log('Resp: ' + resp)
     let meetingNumber = resp.response
+    console.log(resp)
     console.log('Meeting Number: ' + meetingNumber)
     getZoomSignature(meetingNumber)
       .then((response) => {
@@ -93,32 +96,25 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
       password: 'pass123',
       userName: user.displayName || user.email,
     })
+    //setLoading(false)
   }
 
   async function joinMeeting(){
     setLoading(true)
-
-    // start the meeting
-
-    // if(success){
-    //   setSuccess('Meeting started Successfully!')
-    // }
-
-    setLoading(false)
-
+    getSignature()
   }
 
   async function createMeeting(){
+    console.log('create meeting')
     setLoading(true)
-
-    // create and start the meeting
-
-    // if(success){
-    //   setSuccess('Meeting started successfully!')
-    // }
-
-    setLoading(false)
-
+    getCreateZoomMeetingLink(group.groupid)
+      .then(data=>{
+        console.log(data)
+        if(data.success){
+          setExistingMeeting(data.response)
+        }
+        setLoading(false)
+      })
   }
 
   if(loading === true){
@@ -132,8 +128,8 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
         {success === '' ? <div>
           <img src={'http://assets.stickpng.com/images/5e8cde66664eae0004085457.png'} alt={'zoom'} width={'540px'} />
           <div className={'row'} style={{margin:'40px'}}>
-            <button>Create New Meeting</button>
-            {existingMeeting ? <button>Join Meeting</button> : null}
+            <button onClick={createMeeting}>Create New Meeting</button>
+            {(existingMeeting!==null && existingMeeting!==undefined)? <button onClick={joinMeeting}>Join Meeting{existingMeeting===undefined}</button> : null}
           </div>
         </div> : <div>{success}</div>}
       </div>

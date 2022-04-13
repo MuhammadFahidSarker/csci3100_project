@@ -206,7 +206,7 @@ module.exports = {
         docsLink: null,
         sheetLink: null,
         presLink: null,
-        zoomLinl: null,
+        zoomLink: null,
         group_icon:
           'https://thumbs.dreamstime.com/b/linear-group-icon-customer-service-outline-collection-thin-line-vector-isolated-white-background-138644548.jpg',
         isPrivate: false,
