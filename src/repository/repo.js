@@ -10,7 +10,7 @@ import {
 import { auth, user, waitAuthObject } from './firebase_auth'
 
 //backend server url
-const baseURL = 'http://34.92.88.75:8080'
+const baseURL = 'http://localhost:8080'
 
 /*
  * Check if user is logged in
@@ -1073,21 +1073,28 @@ export async function resetPasswordEmail(email) {
  *  params: password
  *
  */
-
+ 
 export async function updateUserPassword(userID, password) {
   await waitAuthObject()
   try {
-    console.log(userID)
-    console.log(password)
-    let user = await auth.getUser(userID)
-    console.log(user)
-    await updatePassword(user, password)
-      .then(() => {
-        return { success: true, newPassword: password }
-      })
-      .catch((err) => {
-        return { success: false, error: err }
-      })
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + '/apis/updateuserpassword', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: token,
+      },
+      // current userID => user.uid
+      body: new URLSearchParams({ userid: userID, newpassword: password }),
+    })
+    let resBody = await res.json()
+
+    if (res.status === 200) {
+      return { success: true }
+    } else {
+      return { success: false, error: resBody }
+    }
   } catch (e) {
     return { success: false, error: e }
   }

@@ -812,15 +812,15 @@ module.exports = {
       if (!req.body.userid || !req.body.newpassword)
         return res.status(401).json('no userid/newpassword')
       let isadmin = await isAdmin(req.header.verified.uid, req)
-      if (!isadmin) return res.status.status(401).json('unauthorized')
-      let userRecord = await admin.auth().getUser(req.body.userid)
-      console.log(userRecord)
+      if (!isadmin) return res.status(401).json('unauthorized')
+      await admin.auth().updateUser(req.body.userid,{
+        password:req.body.newpassword
+      })
       return res.status(200).json({
-        Password: userRecord.password,
-        Hash: userRecord.passwordHash,
-        Salt: userRecord.passwordSalt,
+        Succeed:true
       })
     } catch (err) {
+      console.log(err)
       return res.status(401).json({ Error: err })
     }
   },
