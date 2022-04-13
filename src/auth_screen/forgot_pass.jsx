@@ -3,6 +3,7 @@ import {useState} from "react";
 import {TextInput} from "../common/input/textinput";
 import {Link} from "react-router-dom";
 import {resetPasswordEmail} from "../repository/repo";
+import logo from "../images/logo.png";
 
 
 export  function ForgotPassword(){
@@ -42,6 +43,8 @@ export  function ForgotPassword(){
             height: '100%'
         }}>
             <div className={'auth-container'}>
+                <div className={'center'}><img className={'logo'} src={logo}/>
+                </div>
                 {
                     success === '' ?
                     loading ? <div className={'loader'}/>

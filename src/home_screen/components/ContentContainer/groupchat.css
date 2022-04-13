@@ -19,6 +19,10 @@
     @apply text-black dark:text-white;
 }
 
+.message-sender{
+    @apply text-gray-400 dark:text-gray-700;
+}
+
 .message-self{
     margin-left: auto;
 }

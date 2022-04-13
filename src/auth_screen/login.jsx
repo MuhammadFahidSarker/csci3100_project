@@ -79,10 +79,10 @@ export default function LoginScreen({adminLogin = false}) {
             justifyContent: 'center',
             alignItems: 'center',
             alignContent: 'center',
-            height:'100%'
+            height: '100%'
         }}>
             <div className={'auth-container'}>
-                <div className={'center'}>                <img src={logo} style={{width: '120px', height: '120px'}}/>
+                <div className={'center'}><img className={'logo'} src={logo}/>
                 </div>
                 {
                     loading ? <div className={'loader'}/>

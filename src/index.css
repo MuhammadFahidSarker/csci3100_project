@@ -294,6 +294,12 @@ Link{
   @apply text-gray-800 dark:text-white hover:text-blue-500 dark:hover:text-blue-500;
 }
 
+.logo{
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
 @tailwind utilities;
 
 ::-webkit-scrollbar {

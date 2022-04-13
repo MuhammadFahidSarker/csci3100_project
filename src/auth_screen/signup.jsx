@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import './auth.css'
 import {getUserDetails, logout, signIn, signUp} from "../repository/repo";
 import {useNavigate} from "react-router-dom";
+import logo from "../images/logo.png";
 
 export default function SignupScreen({}) {
 
@@ -60,6 +61,8 @@ export default function SignupScreen({}) {
             height: '100%'
         }}>
             <div className={'auth-container'}>
+                <div className={'center'}><img className={'logo'} src={logo}/>
+                </div>
                 {
                     loading ? <div className={'loader'}/>
                         : <div>
