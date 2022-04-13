@@ -86,7 +86,6 @@ app.use('/createzoom', zoomlink.createZoomLink)
 app.use('/getgoogledoc', googlelinks.createDoc)
 app.use('/getgooglesheet', googlelinks.createSheet)
 app.use('/getgooglePres', googlelinks.createPres)
-app.use('/banuser', groupfunctions.banuser) //!!!!!
 
 //Gateway - centralAuth
 app.use('/apis', central_auth.central_auth)
@@ -105,8 +104,7 @@ app.use('/apis/getallusers', groupfunctions.getallusers)
 app.use('/apis/uploadusericon', groupfunctions.uploadusericon)
 app.use('/apis/uploadgroupicon', groupfunctions.uploadgroupicon)
 app.use('/apis/updategroupprofile', groupfunctions.updategroupprofile)
-
-
+app.use('/apis/banuser', groupfunctions.banuser)
 
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
