@@ -123,7 +123,7 @@ export function GroupChatContainer({ group, toolbarHidden, user }) {
 }
 
 function Message({ message, userID }) {
-  const { text, uid, createdAt, photoURL, metadata, attachedF } = message
+  const { text, uid, createdAt, name, photoURL, metadata, attachedF } = message
   const type = uid === userID ? 'self' : 'other'
   const supportedTypes = [
     'image/png',
@@ -135,11 +135,11 @@ function Message({ message, userID }) {
     'image/svg+xml',
   ]
 
+
   const mtd = metadata ? JSON.parse(metadata) : null
 
   const showImage = mtd ? supportedTypes.includes(mtd.contentType) : false
 
-  console.log(mtd?.contentType, showImage)
 
   return (
     <div className={'message-container message-' + type}>
@@ -170,6 +170,7 @@ function Message({ message, userID }) {
               </div>,
             ]
           : null}
+          {name ? <div className={'message-sender'}>{name}</div> : null}
       </div>
       {type === 'self' ? (
         <img className={'message-avatar'} src={photoURL} alt={'avatar'} />
