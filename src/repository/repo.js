@@ -10,7 +10,7 @@ import {
 import { auth, user, waitAuthObject } from './firebase_auth'
 
 //backend server url
-const baseURL = 'http://localhost:8080'
+const baseURL = 'http://34.92.88.75:8080'
 
 /*
  * Check if user is logged in
@@ -1030,7 +1030,7 @@ export async function getZoomSignature(meetingID) {
   await waitAuthObject()
   try {
     let token = await user.getIdToken()
-    let res = await fetch('http://localhost:8080/getzoomsignature', {
+    let res = await fetch(baseURL + '/getzoomsignature', {
       method: 'POST',
       mode: 'cors', // no-cors, *cors, same-origin
       headers: {
