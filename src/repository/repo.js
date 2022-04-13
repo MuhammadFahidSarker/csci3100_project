@@ -61,6 +61,7 @@ export async function getUserDetails(userID = null) {
       photoURL:
         resBody.Content.profile_icon ||
         'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80',
+      isBanned: resBody.Content.isBanned,
     }
   } catch (e) {
     return { success: false, error: e }
@@ -575,7 +576,7 @@ export async function banUser(userID = null) {
   }
   try {
     let token = await user.getIdToken()
-    let res = await fetch(baseURL + '/queryuser', {
+    let res = await fetch(baseURL + '/apis/banuser', {
       method: 'POST',
       mode: 'cors', // no-cors, *cors, same-origin
       headers: {
@@ -590,7 +591,6 @@ export async function banUser(userID = null) {
     if (res.status === 200) {
       return {
         success: true,
-        updatedProfile: resBody.Content,
       }
     } else {
       return { success: false, error: resBody }
@@ -745,10 +745,10 @@ export async function uploadUserIcon(url) {
 
 /**
  * uploadGroupIcon
- * 
+ *
  * input: url from Front END
  */
- export async function uploadGroupIcon(url,groupID) {
+export async function uploadGroupIcon(url, groupID) {
   await waitAuthObject()
   try {
     let token = await user.getIdToken()
@@ -760,7 +760,7 @@ export async function uploadUserIcon(url) {
         Authorization: token,
       },
       // current userID => user.uid
-      body: new URLSearchParams({ url: url ,groupid:groupID}),
+      body: new URLSearchParams({ url: url, groupid: groupID }),
     })
     let resBody = await res.json()
     console.log('debug get uploadGroupIcon\n', resBody)
@@ -779,9 +779,9 @@ export async function uploadUserIcon(url) {
 
 /**
  * update group name + description
- * 
+ *
  */
- export async function updateGroupNameDescription(name,description,groupID) {
+export async function updateGroupNameDescription(name, description, groupID) {
   await waitAuthObject()
   try {
     let token = await user.getIdToken()
@@ -793,7 +793,11 @@ export async function uploadUserIcon(url) {
         Authorization: token,
       },
       // current userID => user.uid
-      body: new URLSearchParams({ name: name , description:description,groupid:groupID}),
+      body: new URLSearchParams({
+        name: name,
+        description: description,
+        groupid: groupID,
+      }),
     })
     let resBody = await res.json()
     console.log('debug get uploadGroupIcon\n', resBody)
