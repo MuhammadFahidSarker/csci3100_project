@@ -12,6 +12,8 @@
     padding: 10px;
     border-radius: 5px;
     display: flex;
+    height: 600px;
+    gap: 10px;
     flex-direction: column;
 }
 
@@ -21,6 +23,17 @@
     font-size: 24px;
     font-weight: bold;
     @apply bg-white dark:bg-black hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.reset-button{
+    margin-top: auto;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    @apply bg-white dark:bg-black hover:bg-green-500 hover:text-white dark:hover:bg-green-500 dark:hover:text-white;
     border-radius: 5px;
     padding: 10px;
     cursor: pointer;
@@ -52,4 +65,16 @@
     width: 250px;
     height: 250px;
     border-radius: 50%;
+}
+
+.admin-label{
+    @apply text-gray-700 dark:text-gray-300;
+    font-size: 1.5rem;
+    font-weight: 100;
+}
+
+.success-label{
+    @apply text-green-700 dark:text-green-500;
+    font-size: 1.5rem;
+    font-weight: 100;
 }

@@ -104,7 +104,7 @@ export default class GroupLauncher extends Component {
                         {this.filteredGroup().map(group => {
                             return <GroupPreview group={group} userID={user.userID} onGroupLeaved={() => {
                                 if(viewGroupOf === 'joined'){
-                                    this.setState({groups: groups.filter(g => g.groupID !== group.groupID)})
+                                    this.setState({groups: groups.filter(g => g.groupid !== group.groupid)})
                                 }
                             }}/>
                         })}

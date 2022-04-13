@@ -2,7 +2,7 @@ import TopNavigation from "../home_screen/components/TopNavigation";
 import {LoadingScreen} from "../common/loading";
 import {useEffect, useState} from "react";
 import {Navigate} from "react-router-dom";
-import {banUser, getAllGroups, getAllUsers, getUserDetails} from "../repository/repo";
+import {banUser, getAllGroups, getAllUsers, getUserDetails, resetPasswordEmail} from "../repository/repo";
 import './admin.css'
 
 export function AdminScreen({}) {
@@ -39,7 +39,7 @@ export function AdminScreen({}) {
     }
 
 
-    function loadData(mode){
+    function loadData(mode) {
         setDataLoading(true);
         if (mode === 'groups') {
             getAllGroups().then((grps => {
@@ -88,7 +88,9 @@ export function AdminScreen({}) {
                 </button>
             </div>
             {
-                dataLoading ? <div className={'center'}><div className={'loader'}/> </div>
+                dataLoading ? <div className={'center'}>
+                        <div className={'loader'}/>
+                    </div>
                     : <ul className={'group-user-container'}>
                         {viewMode === 'groups' ?
                             groups.map(grp => <AdminGroup group={grp}/>)
@@ -114,9 +116,9 @@ function AdminGroup({group}) {
 function AdminUser({user}) {
     const [banned, setBanned] = useState(user.isBanned);
     const [loading, setLoading] = useState(false);
+    const [resetEmailSent, setResetEmailSent] = useState(false);
 
-
-    function banThisUser(){
+    function banThisUser() {
         setLoading(true);
         banUser(user.userid).then(res => {
             console.log(res);
@@ -128,6 +130,16 @@ function AdminUser({user}) {
 
     }
 
+    function resetPass(){
+        setLoading(true);
+        resetPasswordEmail(user.email).then(res => {
+            if (res.success === true) {
+                setResetEmailSent(true);
+            }
+            setLoading(false);
+        })
+    }
+
     return <li>
         <div className={'user-container'}>
             <div className={'center'}>
@@ -135,9 +147,20 @@ function AdminUser({user}) {
             </div>
             <div className={'name'}>{user.name}</div>
             <div>{user.email}</div>
-            {
-                loading ? <div className={'loader'}/> : banned ? <div className={'banned'}>Banned</div> : <div className={'ban-button'} onClick={banThisUser}>Ban User</div>
+            {user.role === 'admin' ?
+                <div className={'center'}>
+                    <div className={'admin-label'}>Admin</div>
+                </div> :
+                loading ? <div className={'center'}>
+                <div className={'loader'} style={{height: '60px', width: '60px'}}/>
+            </div> : banned ? <div className={'banned'}>Banned</div> :
+                <div className={'ban-button'} onClick={banThisUser}>Ban User</div>
             }
+            {loading ? null : resetEmailSent ? <div>
+                <div className={'center'}>
+                    <div className={'success-label'}>Reset Email Sent</div>
+                </div>
+            </div> : <div className={'reset-button'} onClick={resetPass}>Reset Password</div>}
         </div>
     </li>
 }

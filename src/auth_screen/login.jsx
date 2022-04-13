@@ -17,16 +17,16 @@ export default function LoginScreen({adminLogin = false}) {
         () => {
             getUserDetails().then(user => {
                 if (user.success === true) {
-                    if(user.isAdmin === false && adminLogin === true){
-                        logout().then(()=>{
+                    if (user.isAdmin === false && adminLogin === true) {
+                        logout().then(() => {
                                 setLoading(false);
                                 setError('You are not an admin');
                                 return;
                             }
                         )
-                    }else if (adminLogin === true){
+                    } else if (adminLogin === true) {
                         navigate('/admin');
-                    }else{
+                    } else {
                         navigate('/');
                     }
 
@@ -54,7 +54,10 @@ export default function LoginScreen({adminLogin = false}) {
                         setError('Not an admin account!');
                         logout();
                     }
-                    navigate('/');
+
+                    if (adminLogin === true)
+                        navigate('/admin');
+                    else navigate('/');
                 } else {
                     setError('Invalid email or password');
                 }
@@ -85,10 +88,15 @@ export default function LoginScreen({adminLogin = false}) {
                                 fontWeight: '200'
                             }}>{adminLogin === true ? 'Admin Log In' : 'Sign In'}</div>
                             <TextInput label={'Email'} value={email} placeHolder={'Email'} onChange={setEmail}/>
-                            <TextInput hideCnt={true} label={'Password'} placeHolder={'Account Password'} value={password} onChange={setPassword}/>
+                            <TextInput hideCnt={true} label={'Password'} placeHolder={'Account Password'} value={password}
+                                       onChange={setPassword}/>
                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                 <button onClick={() => executeLogin()}>Sign in</button>
-                                {adminLogin === false ? <Link to={'/signup'}>Create Account</Link> : null}
+                                <div style={{display:'flex', gap:'10px'}}>
+                                    <Link to={'/forgot-password'}>Forgot Password?</Link>
+                                    {adminLogin === false ? <Link to={'/signup'}>Create Account</Link> : null}
+                                    {adminLogin === false ? <Link to={'/admin-login'}>Admin Login</Link> : null}
+                                </div>
                             </div>
                             <div style={{color: 'red'}}>{error}</div>
                         </div>
