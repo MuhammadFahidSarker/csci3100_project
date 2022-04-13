@@ -39,7 +39,7 @@ async function createDoc(req, res, next) {
       driveService.files.create(
         {
           requestBody: {
-            name: 'Union Test Doc File', //This can be name of your choice
+            name: 'Union Doc File', //This can be name of your choice
             mimeType: 'application/vnd.google-apps.document',
           },
           media: {
@@ -116,7 +116,7 @@ async function createSheet(req, res, next) {
       driveService.files.create(
         {
           requestBody: {
-            name: 'Union Test Sheet File', //This can be name of your choice
+            name: 'Union Sheet File', //This can be name of your choice
             mimeType: 'application/vnd.google-apps.spreadsheet',
           },
           media: {
@@ -193,7 +193,7 @@ async function createPres(req, res, next) {
       driveService.files.create(
         {
           requestBody: {
-            name: 'Union Test Presentation File', //This can be name of your choice
+            name: 'Union Presentation File', //This can be name of your choice
             mimeType: 'application/vnd.google-apps.presentation',
           },
           media: {

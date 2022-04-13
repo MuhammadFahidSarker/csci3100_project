@@ -190,7 +190,7 @@ async function groupsActions(req, res, next, custom_actions) {
 
 module.exports = {
   creategroup: async function creategroup(req, res, next) {
-    if (!req.body || !req.body.groupname)
+    if (!req.body || !req.body.groupname || !req.body.description)
       return res.status(402).json({
         Error: 'Missing groupname',
       })
@@ -202,7 +202,7 @@ module.exports = {
     } else {
       let group_info = {
         name: req.body.groupname,
-        description: 'Time to invite others to join',
+        description: req.body.description,
         docsLink: null,
         sheetLink: null,
         presLink: null,

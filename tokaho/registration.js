@@ -82,6 +82,7 @@ module.exports = {
           if (!user_info.exists) {
             verified.role = 'member'
             verified.preferences = []
+            verified.name = req.body.fullName
 
             if (await create_user(verified))
               return res.status(300).send(user_info)
@@ -138,7 +139,7 @@ module.exports = {
 async function create_user(user) {
   let user_info = {
     email: user.email,
-    name: user.name || user.email,
+    name: user.name,
     preferences: user.preferences,
     profile_icon: user.picture || null,
     role: user.role,

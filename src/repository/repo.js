@@ -60,7 +60,7 @@ export async function getUserDetails(userID = null) {
       isAdmin: resBody.Content.role === 'admin',
       photoURL:
         resBody.Content.profile_icon ||
-        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80',
+        'https://firebasestorage.googleapis.com/v0/b/test-96f35.appspot.com/o/userPhoto%2FdefaultProfileIcon.jpg?alt=media&token=e4f38e69-984e-41b2-a0fe-3164e06d36cb',
       isBanned: resBody.Content.isBanned,
     }
   } catch (e) {
@@ -74,7 +74,7 @@ export async function getUserDetails(userID = null) {
  * @returns success, (response or error)
  *
  */
-async function createUser() {
+async function createUser(fullName) {
   await waitAuthObject()
   console.log('userid:', await user.getIdToken())
   let token = await user.getIdToken()
@@ -86,7 +86,7 @@ async function createUser() {
       Authorization: token,
     },
     // empty body
-    body: JSON.stringify({}),
+    body: new URLSearchParams({ fullName: fullName }),
   })
   //DEBUG
   let resBody = await res.json()
@@ -162,7 +162,7 @@ export async function signUp(fullName, userName, password) {
         console.log('fail to send verification email', sent.error)
         return { success: false, error: 'fail to send verification email' }
       } else {
-        let create = await createUser()
+        let create = await createUser(fullName)
         if (create.success === false) {
           console.log('failed to create user profile')
           return { success: false, error: 'fail to create user profile' }
@@ -957,7 +957,7 @@ export async function kickUser(userID, groupID) {
  * params: groupName
  * returns: succ
  */
-export async function createGroup(groupName) {
+export async function createGroup(groupName, description) {
   await waitAuthObject()
   try {
     let token = await user.getIdToken()
@@ -969,7 +969,10 @@ export async function createGroup(groupName) {
         Authorization: token,
       },
       // current userID => user.uid
-      body: new URLSearchParams({ groupname: groupName }),
+      body: new URLSearchParams({
+        groupname: groupName,
+        description: description,
+      }),
     })
     let resBody = await res.json()
     if (res.status === 200) {
@@ -1074,7 +1077,9 @@ export async function resetPasswordEmail(email) {
 export async function updateUserPassword(userID, password) {
   await waitAuthObject()
   try {
-    let user = await getAuth().getUser(userID)
+    console.log(userID)
+    console.log(password)
+    let user = await auth.getUser(userID)
     console.log(user)
     await updatePassword(user, password)
       .then(() => {
