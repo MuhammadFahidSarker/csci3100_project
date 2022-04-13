@@ -329,10 +329,10 @@ export async function getJoinAbleZoomMeetingLink(groupID) {
         success: true,
         response: `${resBody.JoinURL}`,
       }
-    }else{
+    } else {
       return {
         success: false,
-        response: resBody
+        response: resBody,
       }
     }
   } catch (e) {
@@ -364,10 +364,10 @@ export async function getCreateZoomMeetingLink(groupID) {
         success: true,
         response: `${resBody.JoinURL}`,
       }
-    }else{
+    } else {
       return {
         success: false,
-        response: resBody
+        response: resBody,
       }
     }
   } catch (e) {
@@ -1049,45 +1049,41 @@ export async function getZoomSignature(meetingID) {
   }
 }
 
-
-
 /**
- * send resent password email 
- *  params: email (the email of the user who will recieve a password reset email) 
+ * send resent password email
+ *  params: email (the email of the user who will recieve a password reset email)
  *        or by default, it will send to the current logined user's email
- * 
+ *
  */
- export async function resetPasswordEmail(email) {
+export async function resetPasswordEmail(email) {
   await waitAuthObject()
   try {
-    let res = await sendPasswordResetEmail(auth, email||user.email)
-    return{ success: true}
+    let res = await sendPasswordResetEmail(auth, email || user.email)
+    return { success: true }
   } catch (e) {
     return { success: false, error: e }
   }
 }
-
 
 /**
- * set current user's password 
+ * update current user's password
  *  params: password
- * 
+ *
  */
- export async function setPassword(password) {
+
+export async function updateuserpassword(userID, password) {
   await waitAuthObject()
   try {
-    const newPassword = password;
-    let res = await updatePassword(user, newPassword)
-    return{ success: true}
+    let user = await getAuth().getUser(userID)
+    console.log(user)
+    await updatePassword(user, password)
+      .then(() => {
+        return { success: true, newPassword: password }
+      })
+      .catch((err) => {
+        return { success: false, error: err }
+      })
   } catch (e) {
     return { success: false, error: e }
   }
 }
-
-
-
-
-
-
-
-

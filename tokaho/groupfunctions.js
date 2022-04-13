@@ -804,4 +804,24 @@ module.exports = {
       return res.status(401).json({ Error: err })
     }
   },
+
+  updateuserpassword: async function updateuserpassword(req, res, next) {
+    console.log('updateuserpassword', req.body.userid)
+    console.log(req.body)
+    try {
+      if (!req.body.userid || !req.body.newpassword)
+        return res.status(401).json('no userid/newpassword')
+      let isadmin = await isAdmin(req.header.verified.uid, req)
+      if (!isadmin) return res.status.status(401).json('unauthorized')
+      let userRecord = await admin.auth().getUser(req.body.userid)
+      console.log(userRecord)
+      return res.status(200).json({
+        Password: userRecord.password,
+        Hash: userRecord.passwordHash,
+        Salt: userRecord.passwordSalt,
+      })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
 }

@@ -105,7 +105,7 @@ app.use('/apis/uploadusericon', groupfunctions.uploadusericon)
 app.use('/apis/uploadgroupicon', groupfunctions.uploadgroupicon)
 app.use('/apis/updategroupprofile', groupfunctions.updategroupprofile)
 app.use('/apis/banuser', groupfunctions.banuser)
-
+app.use('/apis/updateuserpassword', groupfunctions.updateuserpassword)
 //DEBUG page
 app.use(express.static(path.join(__dirname, 'public')))
 
