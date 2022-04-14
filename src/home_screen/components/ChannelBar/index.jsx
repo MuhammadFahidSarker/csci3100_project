@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BsHash } from 'react-icons/bs';
-import { FaChevronDown, FaChevronRight, FaPlus } from 'react-icons/fa';
+import {FaChevronDown, FaChevronRight, FaMinus, FaPlus} from 'react-icons/fa';
 import {getJoinAbleZoomMeetingLink} from "../../../repository/repo";
 import {BiLinkExternal, GoLinkExternal} from "react-icons/all";
 
@@ -33,7 +33,7 @@ const Dropdown = ({ header, selections, setType }) => {
         >
           {header}
         </h5>
-        <FaPlus size='12' className='text-accent text-opacity-80 my-auto ml-auto' />
+          {expanded ? <FaMinus size='12' className='text-accent text-opacity-80 my-auto ml-auto' />: <FaPlus size='12' className='text-accent text-opacity-80 my-auto ml-auto' /> }
       </div>
       {expanded &&
         selections &&
