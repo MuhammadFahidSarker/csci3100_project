@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 import {getUserDetails, resetPasswordEmail} from "../repository/repo";
 import logo from "../images/logo.png";
 import {useNavigate} from "react-router-dom";
+import {Loader} from "../common/loading_anim";
 
 export  function ForgotPassword(){
     const [email, setEmail] = useState('')
@@ -64,7 +65,7 @@ export  function ForgotPassword(){
                 </div>}
                 {
                     success === '' ?
-                    loading ? <div className={'loader'}/>
+                    loading ? <Loader/>
                         : <div>
                             <div style={{
                                 textAlign: 'center',

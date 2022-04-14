@@ -4,6 +4,7 @@ import {TextInput} from "../../common/input/textinput";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {createGroup} from "../../repository/repo";
+import {Loader} from "../../common/loading_anim";
 
 export function CreateGroup({}) {
 
@@ -43,7 +44,7 @@ export function CreateGroup({}) {
         <TopNavigation showAllGroup={true}/>
         <div className={'content-container'} style={{padding: '20px', height: contentHeight,}}>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                {loading ? <div className={'loader'}/> : [<div style={{justifyContent: 'center'}}>
+                {loading ? <Loader/> : [<div style={{justifyContent: 'center'}}>
                     <div className={'new-group-title'}>Create New Group!</div>
                     <div className={'new-group-desc'}>Lets Connect!</div>
                     <TextInput label={'Name'} placeHolder={'Group Name'} onChange={setName}/>

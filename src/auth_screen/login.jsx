@@ -6,6 +6,7 @@ import {getUserDetails, logout, signIn} from "../repository/repo";
 import {useNavigate} from "react-router-dom";
 
 import logo from '../images/logo.png';
+import {Loader} from "../common/loading_anim";
 
 export default function LoginScreen({adminLogin = false}) {
 
@@ -85,7 +86,7 @@ export default function LoginScreen({adminLogin = false}) {
                 {loading ? null : <div className={'center'}><img className={'logo'} src={logo}/>
                 </div>}
                 {
-                    loading ? <div className={'loader'}/>
+                    loading ? <Loader/>
                         : <div>
                             <div style={{
                                 textAlign: 'center',

@@ -15,6 +15,7 @@ import 'firebase/compat/firestore'
 import 'firebase/compat/auth'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable,getMetadata } from 'firebase/storage'
 import {v4 as uuidv4} from 'uuid'
+import {Loader} from "../common/loading_anim";
 
 firebase.initializeApp(firebaseConfig)
 const firestore = firebase.firestore()
@@ -88,7 +89,7 @@ export function ProfileScreen({}) {
         {
             signedIn === null ?
                 <div className={'center'}>
-                    <div className={'loader'}/>
+                    <Loader/>
                 </div> :
                 signedIn === false ?
                     <Navigate to={'/login'}/> :

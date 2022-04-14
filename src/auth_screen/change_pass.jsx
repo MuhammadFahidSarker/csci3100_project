@@ -6,6 +6,7 @@ import {getUserDetails, updateUserPassword} from "../repository/repo";
 import {useNavigate} from "react-router-dom";
 import logo from "../images/logo.png";
 import {TextInput} from "../common/input/textinput";
+import {Loader} from "../common/loading_anim";
 
 export function ChangePassword(){
     const path = useLocation().pathname;
@@ -71,7 +72,7 @@ export function ChangePassword(){
                 </div>}
                 {
                     success === '' ?
-                        loading ? <div className={'loader'}/>
+                        loading ? <Loader />
                             : <div>
                                 <div style={{
                                     textAlign: 'center',
@@ -87,7 +88,12 @@ export function ChangePassword(){
                                 </div>
                                 <div style={{color: 'red'}}>{error}</div>
                             </div>
-                        : <div className={'success-label'}>{success}</div>
+                        : <div className={'center'}>
+                            <div>
+                                <div className={'success-label'}>{success}</div>
+                                <button onClick={() => navigate('/admin')}>Back to Admin Panel</button>
+                            </div>
+                        </div>
                 }
             </div>
         </div>

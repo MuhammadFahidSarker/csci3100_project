@@ -6,6 +6,7 @@ import {BiArrowBack, FcLeave, FiEdit, RiAdminFill} from "react-icons/all";
 import {joinGroup, leaveGroup} from "../../../repository/repo";
 import {useState} from "react";
 import {LoadingScreen} from "../../../common/loading";
+import {Loader} from "../../../common/loading_anim";
 
 export default function GroupPreview({onGroupLeaved, group, userID}) {
     let navigate = useNavigate();
@@ -79,7 +80,7 @@ export default function GroupPreview({onGroupLeaved, group, userID}) {
                 </div>
             </div>
         </div>
-        {loading === true ? <div className={'loader'}/> :
+        {loading === true ? <Loader/> :
             <button onClick={(e) => action === 'Launch' ? launchGroup() : joinNewGroup()}>{action}</button>}
 
     </div>

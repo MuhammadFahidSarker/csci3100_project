@@ -1,5 +1,6 @@
 import './loading.css'
 import useDarkMode from "../home_screen/hooks/useDarkMode";
+import {Loader} from "./loading_anim";
 
 export function LoadingScreen({withTopNav = true}) {
     const [darkTheme, setDarkTheme] = useDarkMode();
@@ -11,6 +12,6 @@ export function LoadingScreen({withTopNav = true}) {
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}>
-        <div className={'loader'}/>
+        <Loader />
     </div>
 }

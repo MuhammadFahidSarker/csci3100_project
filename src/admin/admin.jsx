@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {Navigate, useNavigate} from "react-router-dom";
 import {banUser, getAllGroups, getAllUsers, getUserDetails, resetPasswordEmail} from "../repository/repo";
 import './admin.css'
+import {Loader} from "../common/loading_anim";
 
 export function AdminScreen({}) {
     const [user, setUser] = useState(null);
@@ -89,7 +90,7 @@ export function AdminScreen({}) {
             </div>
             {
                 dataLoading ? <div className={'center'}>
-                        <div className={'loader'}/>
+                        <Loader/>
                     </div>
                     : <ul className={'group-user-container'}>
                         {viewMode === 'groups' ?
@@ -154,7 +155,7 @@ function AdminUser({user}) {
                     <div className={'admin-label'}>Admin</div>
                 </div> :
                 loading ? <div className={'center'}>
-                <div className={'loader'} style={{height: '60px', width: '60px'}}/>
+                <Loader width={'60px'} height={'60px'}/>
             </div> : banned ? <div className={'banned'}>Banned</div> :
                 <div className={'ban-button'} onClick={banThisUser}>Ban User</div>
             }

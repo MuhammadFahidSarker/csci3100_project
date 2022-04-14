@@ -5,6 +5,7 @@ import './auth.css'
 import {getUserDetails, logout, signIn, signUp} from "../repository/repo";
 import {useNavigate} from "react-router-dom";
 import logo from "../images/logo.png";
+import {Loader} from "../common/loading_anim";
 
 export default function SignupScreen({}) {
 
@@ -64,7 +65,7 @@ export default function SignupScreen({}) {
                 {loading ? null : <div className={'center'}><img className={'logo'} src={logo}/>
                 </div>}
                 {
-                    loading ? <div className={'loader'}/>
+                    loading ? <Loader />
                         : <div>
                             <div style={{
                                 textAlign: 'center',

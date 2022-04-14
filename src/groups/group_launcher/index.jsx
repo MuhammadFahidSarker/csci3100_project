@@ -7,6 +7,7 @@ import Channelbar from "../../home_screen/components/ChannelBar";
 import ContentContainer from "../../home_screen/components/ContentContainer";
 import TopNavigation from "../../home_screen/components/TopNavigation";
 import GroupPreview from "./components/group_prev";
+import {Loader} from "../../common/loading_anim";
 
 export default class GroupLauncher extends Component {
     constructor(props) {
@@ -107,7 +108,7 @@ export default class GroupLauncher extends Component {
 
                     {
                         groups === null ? <div className={'center'}>
-                                <div className={'loader'}/>
+                                <Loader/>
                             </div>
                             : groups.length === 0 ? <div className={'center'}>
                                 <div className={'no-group-found'}>No Group Found</div>
