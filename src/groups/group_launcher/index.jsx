@@ -97,12 +97,12 @@ export default class GroupLauncher extends Component {
                     <TopNavigation user={user} showCreateGroup={true}
                                    onSearch={(search) => this.setState({searchTerm: search})}/>
 
-                    <div style={{display: 'flex', gap: '20px', marginTop: '10px'}}>
-                        <button className={viewGroupOf === 'My Groups' ? 'selected-btn' : 'un-selected-btn'}
-                                onClick={(_) => this.changeGroupView('joined')}>Joined
+                    <div style={{display: 'flex', gap: '20px', marginTop: '10px', marginBottom:'20px'}}>
+                        <button className={viewGroupOf === 'joined' ? 'selected-btn' : 'un-selected-btn'}
+                                onClick={(_) => this.changeGroupView('joined')}>My Groups
                         </button>
-                        <button className={viewGroupOf === 'All Groups' ? 'selected-btn' : 'un-selected-btn'}
-                                onClick={(_) => this.changeGroupView('public')}>Public
+                        <button className={viewGroupOf === 'public' ? 'selected-btn' : 'un-selected-btn'}
+                                onClick={(_) => this.changeGroupView('public')}>All Groups
                         </button>
                     </div>
 
