@@ -152,7 +152,9 @@ function Message({ message, userID }) {
         <div className={'message-text'}>{text}</div>
         {attachedF
           ? [
-              <div className={'url-container'}>
+              <div className={'url-container'} onClick={()=>{
+                window.open(attachedF, '_blank')
+              }} >
                 {mtd === null ? (
                   <FiFile size={20} />
                 ) : showImage ? (
