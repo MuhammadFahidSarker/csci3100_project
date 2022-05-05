@@ -1,0 +1,133 @@
+Date : 2022-05-05 23:25:05
+Directory : c:\Users\adikk\Documents\GitHub\csci3100_project
+Total : 75 files,  77849 codes, 683 comments, 704 blanks, all 79236 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| JSON             |          5 |     72,574 |          0 |          5 |     72,579 |
+| JavaScript       |         18 |      2,226 |        616 |        198 |      3,040 |
+| JavaScript React |         28 |      2,185 |         31 |        332 |      2,548 |
+| CSS              |         14 |        575 |         13 |        100 |        688 |
+| Markdown         |          2 |        128 |          0 |         61 |        189 |
+| HTML             |          2 |        125 |         23 |          8 |        156 |
+| XML              |          5 |         33 |          0 |          0 |         33 |
+| Batch            |          1 |          3 |          0 |          0 |          3 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                   |         75 |     77,849 |        683 |        704 |     79,236 |
+| .idea                                                                                                               |          4 |         32 |          0 |          0 |         32 |
+| .idea\inspectionProfiles                                                                                            |          1 |          6 |          0 |          0 |          6 |
+| public                                                                                                              |          2 |         45 |         23 |          2 |         70 |
+| src                                                                                                                 |         51 |      3,671 |        266 |        507 |      4,444 |
+| src\admin                                                                                                           |          2 |        220 |          0 |         30 |        250 |
+| src\auth_screen                                                                                                     |          5 |        373 |          0 |         40 |        413 |
+| src\banned_user                                                                                                     |          2 |         56 |          0 |         10 |         66 |
+| src\common                                                                                                          |          6 |         59 |         12 |          8 |         79 |
+| src\common\input                                                                                                    |          2 |         37 |          0 |          4 |         41 |
+| src\groups                                                                                                          |          8 |        505 |          7 |         80 |        592 |
+| src\groups\create_group                                                                                             |          2 |         68 |          0 |         11 |         79 |
+| src\groups\edit_group                                                                                               |          2 |        241 |          7 |         36 |        284 |
+| src\groups\group_launcher                                                                                           |          3 |        193 |          0 |         31 |        224 |
+| src\groups\group_launcher\components                                                                                |          2 |         83 |          0 |          9 |         92 |
+| src\groups\group_search                                                                                             |          1 |          3 |          0 |          2 |          5 |
+| src\home_screen                                                                                                     |         14 |        947 |         20 |        166 |      1,133 |
+| src\home_screen\components                                                                                          |         11 |        797 |         19 |        118 |        934 |
+| src\home_screen\components\ChannelBar                                                                               |          1 |         69 |          1 |         10 |         80 |
+| src\home_screen\components\ContentContainer                                                                         |          8 |        577 |         17 |         82 |        676 |
+| src\home_screen\components\SideBar                                                                                  |          1 |         39 |          1 |         12 |         52 |
+| src\home_screen\components\TopNavigation                                                                            |          1 |        112 |          0 |         14 |        126 |
+| src\home_screen\hooks                                                                                               |          1 |         33 |          0 |         10 |         43 |
+| src\profile                                                                                                         |          2 |        216 |          5 |         32 |        253 |
+| src\repository                                                                                                      |          2 |        867 |        218 |         62 |      1,147 |
+| src\varification                                                                                                    |          2 |         85 |          0 |         12 |         97 |
+| tokaho                                                                                                              |         13 |     31,643 |        394 |        158 |     32,195 |
+| tokaho\public                                                                                                       |          1 |        105 |          0 |          7 |        112 |
++---------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                                                                            | language         | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| c:\Users\adikk\Documents\GitHub\csci3100_project\.idea\csci3100_project.iml                                         | XML              |         12 |          0 |          0 |         12 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\.idea\inspectionProfiles\Project_Default.xml                       | XML              |          6 |          0 |          0 |          6 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\.idea\modules.xml                                                  | XML              |          8 |          0 |          0 |          8 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\.idea\vcs.xml                                                      | XML              |          6 |          0 |          0 |          6 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\README.md                                                          | Markdown         |         38 |          0 |         33 |         71 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\craco.config.js                                                    | JavaScript       |         10 |          0 |          0 |         10 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\package-lock.json                                                  | JSON             |     42,329 |          0 |          1 |     42,330 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\package.json                                                       | JSON             |         53 |          0 |          1 |         54 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\public\index.html                                                  | HTML             |         20 |         23 |          1 |         44 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\public\manifest.json                                               | JSON             |         25 |          0 |          1 |         26 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\App.css                                                        | CSS              |          0 |          0 |          1 |          1 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\App.jsx                                                        | JavaScript React |         49 |          0 |          8 |         57 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\App.test.js                                                    | JavaScript       |          7 |          0 |          2 |          9 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\admin\admin.css                                                | CSS              |         69 |          0 |         11 |         80 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\admin\admin.jsx                                                | JavaScript React |        151 |          0 |         19 |        170 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\auth.css                                           | CSS              |         11 |          0 |          1 |         12 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\change_pass.jsx                                    | JavaScript React |         93 |          0 |          8 |        101 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\forgot_pass.jsx                                    | JavaScript React |         87 |          0 |          6 |         93 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\login.jsx                                          | JavaScript React |        104 |          0 |         14 |        118 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\signup.jsx                                         | JavaScript React |         78 |          0 |         11 |         89 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\banned_user\banned.css                                         | CSS              |          7 |          0 |          1 |          8 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\banned_user\banned_user.jsx                                    | JavaScript React |         49 |          0 |          9 |         58 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\history.js                                              | JavaScript       |          2 |          0 |          1 |          3 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\input\textinput.jsx                                     | JavaScript React |         11 |          0 |          1 |         12 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\input\txtinput.css                                      | CSS              |         26 |          0 |          3 |         29 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\loading.css                                             | CSS              |          0 |         12 |          1 |         13 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\loading.jsx                                             | JavaScript React |         16 |          0 |          1 |         17 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\loading_anim.jsx                                        | JavaScript React |          4 |          0 |          1 |          5 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\create_group\create_group.jsx                           | JavaScript React |         54 |          0 |          9 |         63 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\create_group\creategroup.css                            | CSS              |         14 |          0 |          2 |         16 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\edit_group\edit_group.jsx                               | JavaScript React |        230 |          7 |         35 |        272 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\edit_group\edit_grp.css                                 | CSS              |         11 |          0 |          1 |         12 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\group_launcher\components\group_prev.css                | CSS              |          5 |          0 |          0 |          5 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\group_launcher\components\group_prev.jsx                | JavaScript React |         78 |          0 |          9 |         87 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\group_launcher\index.jsx                                | JavaScript React |        110 |          0 |         22 |        132 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\group_search\index.jsx                                  | JavaScript React |          3 |          0 |          2 |          5 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ChannelBar\index.jsx                    | JavaScript React |         69 |          1 |         10 |         80 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\docsContainer.jsx      | JavaScript React |         44 |          0 |          8 |         52 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\driveContainer.jsx     | JavaScript React |         44 |          0 |          8 |         52 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\etc.js                 | JavaScript       |         10 |          0 |          4 |         14 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\groupChatContainer.jsx | JavaScript React |        244 |         13 |         30 |        287 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\groupchat.css          | CSS              |         44 |          0 |          8 |         52 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\index.jsx              | JavaScript React |         23 |          1 |          3 |         27 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\sheetsContainer.jsx    | JavaScript React |         44 |          0 |          8 |         52 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\zoomContainer.jsx      | JavaScript React |        124 |          3 |         13 |        140 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\SideBar\index.jsx                       | JavaScript React |         39 |          1 |         12 |         52 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\TopNavigation\index.jsx                 | JavaScript React |        112 |          0 |         14 |        126 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\home.css                                           | CSS              |         33 |          0 |          6 |         39 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\home_screen.jsx                                    | JavaScript React |         84 |          1 |         32 |        117 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\hooks\useDarkMode.jsx                              | JavaScript React |         33 |          0 |         10 |         43 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\index.css                                                      | CSS              |        262 |          0 |         50 |        312 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\index.js                                                       | JavaScript       |         11 |          0 |          3 |         14 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\logo.svg                                                       | XML              |          1 |          0 |          0 |          1 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\profile\profile.css                                            | CSS              |         87 |          1 |         15 |        103 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\profile\profile.jsx                                            | JavaScript React |        129 |          4 |         17 |        150 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\reportWebVitals.js                                             | JavaScript       |         12 |          0 |          2 |         14 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\repository\firebase_auth.js                                    | JavaScript       |         31 |          4 |         10 |         45 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\repository\repo.js                                             | JavaScript       |        836 |        214 |         52 |      1,102 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\setupTests.js                                                  | JavaScript       |          1 |          4 |          1 |          6 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\varification\not_verified.jsx                                  | JavaScript React |         79 |          0 |         12 |         91 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\src\varification\verify.css                                        | CSS              |          6 |          0 |          0 |          6 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tailwind.config.js                                                 | JavaScript       |         28 |          0 |          2 |         30 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\app.js                                                      | JavaScript       |         79 |         56 |         35 |        170 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\centralAuth.js                                              | JavaScript       |         61 |         35 |          3 |         99 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\config.js                                                   | JavaScript       |         11 |          0 |          1 |         12 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\googlelinks.js                                              | JavaScript       |        229 |         50 |         22 |        301 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\groupfunctions.js                                           | JavaScript       |        638 |        154 |         36 |        828 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\package-lock.json                                           | JSON             |     30,133 |          0 |          1 |     30,134 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\package.json                                                | JSON             |         34 |          0 |          1 |         35 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\public\index.html                                           | HTML             |        105 |          0 |          7 |        112 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\readme.md                                                   | Markdown         |         90 |          0 |         28 |        118 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\registration.js                                             | JavaScript       |        114 |         54 |          9 |        177 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\run.bat                                                     | Batch            |          3 |          0 |          0 |          3 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\scanfile.js                                                 | JavaScript       |         42 |         26 |          5 |         73 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\zoomlink.js                                                 | JavaScript       |        104 |         19 |         10 |        133 |
+| Total                                                                                                               |                  |     77,849 |        683 |        704 |     79,236 |
++---------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+

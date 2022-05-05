@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - src\repository\repo.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>src\repository\repo.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">53.66</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">1101</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">86.80</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">7.78</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">import {
+  getAuth,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signOut,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updatePassword,
+} from &#039;firebase/auth&#039;
+import { auth, user, waitAuthObject } from &#039;./firebase_auth&#039;
+
+//backend server url
+const baseURL = &#039;http://localhost:8080&#039;
+
+/*
+ * Check if user is logged in
+ * returns true is user is logged in, false otherwise
+ * todo : implementation
+ *  @deprecated Use the getUserDetails to check information
+ *
+ * */
+export async function isUserLoggedIn() {
+  return (await getUserDetails()).success === true
+}
+
+/*
+ * Get the  user Detals
+ * Object Must include:
+ * name, userID, photoURL
+ *
+ * Return null if user is not logged in
+ *
+ * overload: implementation
+ *  if userID is null =&gt; query current logined user
+ *  else =&gt; query userID
+ * */
+export async function getUserDetails(userID = null) {
+  await waitAuthObject()
+  //console.log(&#039;calling getUserDetails&#039;, user)
+  try {
+    let token = await user.getIdToken()
+    console.log(&#039;calling getUserDetails&#039;, user)
+    let res = await fetch(baseURL + &#039;/queryuser&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ userid: userID || user.uid }),
+    })
+    let resBody = await res.json()
+    console.log(&#039;debug get UserDetails\n&#039;, resBody)
+    return {
+      success: true,
+      isVerified: resBody.Succeed.isVerified, //whether the user being queried is verified
+      name: resBody.Content.name,
+      userID: userID || user.uid,
+      isAdmin: resBody.Content.role === &#039;admin&#039;,
+      photoURL:
+        resBody.Content.profile_icon ||
+        &#039;https://firebasestorage.googleapis.com/v0/b/test-96f35.appspot.com/o/userPhoto%2FdefaultProfileIcon.jpg?alt=media&amp;token=e4f38e69-984e-41b2-a0fe-3164e06d36cb&#039;,
+      isBanned: resBody.Content.isBanned,
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * helper function to signUp
+ * create a user profile at the database
+ * @returns success, (response or error)
+ *
+ */
+async function createUser(fullName) {
+  await waitAuthObject()
+  console.log(&#039;userid:&#039;, await user.getIdToken())
+  let token = await user.getIdToken()
+  let res = await fetch(baseURL + &#039;/register&#039;, {
+    method: &#039;POST&#039;,
+    mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+    headers: {
+      &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+      Authorization: token,
+    },
+    // empty body
+    body: new URLSearchParams({ fullName: fullName }),
+  })
+  //DEBUG
+  let resBody = await res.json()
+  console.log(&#039;createUser()&#039;, resBody)
+  if (res.status != 300) {
+    //error in backend side
+    return { success: false, error: resBody }
+  }
+  return { success: true, response: resBody }
+}
+
+/*
+ * send verification to current user
+ * return true if success
+ */
+export async function sendVerificationEmail() {
+  await waitAuthObject()
+  if (user == null) return { success: false, error: &#039;user==null&#039; }
+  try {
+    let res = await sendEmailVerification(user)
+    return { success: true, response: res }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/*
+ * Sign in with username and password
+ * returns true if successful
+ *
+ * */
+export async function signIn(userName, password) {
+  await waitAuthObject()
+  console.log(&#039;Sign in with: &#039;, userName, password)
+  try {
+    let userCredential = await signInWithEmailAndPassword(
+      auth,
+      userName,
+      password,
+    )
+    if (userCredential) {
+      console.log({ logined: userCredential })
+      return { success: true, userCredential: userCredential }
+    } else {
+      return { success: false, error: &#039;unknown error&#039; }
+    }
+  } catch (error) {
+    console.log({ errorCode: error.code, errorMessage: error.message })
+    return { success: false, error: error.code }
+  }
+}
+
+/*
+ * Sign up with username and password
+ * returns true if successful
+ *
+ * */
+export async function signUp(fullName, userName, password) {
+  await waitAuthObject()
+  console.log(&#039;Sign up with: &#039;, userName, password)
+  try {
+    let userCredential = await createUserWithEmailAndPassword(
+      auth,
+      userName,
+      password,
+    )
+    if (userCredential) {
+      //registered
+      console.log({ registered: userCredential })
+      //send verification email
+      let sent = await sendVerificationEmail()
+      if (sent.success === false) {
+        console.log(&#039;fail to send verification email&#039;, sent.error)
+        return { success: false, error: &#039;fail to send verification email&#039; }
+      } else {
+        let create = await createUser(fullName)
+        if (create.success === false) {
+          console.log(&#039;failed to create user profile&#039;)
+          return { success: false, error: &#039;fail to create user profile&#039; }
+        } else {
+          return { success: true, userCredential: userCredential }
+        }
+      }
+    } else {
+      return { success: false, error: &#039;unknown error&#039; }
+    }
+  } catch (error) {
+    console.log({ errorCode: error.code, errorMessage: error.message })
+    return { success: false, error: error.code }
+  }
+}
+
+/*
+ * Returns the google doc link as a string
+ * **/
+export async function getGoogleDocLink(groupID) {
+  await waitAuthObject()
+  console.log(&#039;Get Doc Link&#039;)
+  //get google docLink
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/getgoogledoc&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      body: new URLSearchParams({ groupID: groupID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 401) {
+      //not a global admin OR not a member in the private group
+      return { success: false, error: resBody, unauthorized: true }
+    }
+    console.log(&quot;getGoogleDocLink&#039;s response:&quot;, resBody)
+    return {
+      success: true,
+      content: {
+        docsLink: resBody.Succeed,
+      },
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+
+  //dummy google doc link
+  return &#039;https://docs.google.com/document/d/1OFISOmBrpAjoT4mt1wozwxy1XXoXRuwXne33s06SE1k/edit?usp=sharing&#039;
+}
+
+/*
+ * returns google sheet link as a string
+ * **/
+export async function getGoogleSheetLink(groupID) {
+  await waitAuthObject()
+  console.log(&#039;Get Sheet Link&#039;)
+  //get google sheetlink
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/getgooglesheet&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      body: new URLSearchParams({ groupID: groupID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 401) {
+      //not a global admin OR not a member in the private group
+      return { success: false, error: resBody, unauthorized: true }
+    }
+    return {
+      success: true,
+      content: {
+        sheetLink: resBody.Succeed,
+      },
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return &#039;https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75&#039;
+}
+
+export async function getGoogleDriveLink(groupID) {
+  await waitAuthObject()
+  return &#039;https://drive.google.com/drive/folders/1iLYilbLLKIbYKOR3xvhRuOTj3m_gfP75&#039;
+}
+
+/**
+ * Returns google sheet link as a string
+ * **/
+
+export async function getGooglePresLink(groupID) {
+  await waitAuthObject()
+  console.log(&#039;Get Pres Link&#039;)
+  //get google presLink
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/getgooglepres&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      body: new URLSearchParams({ groupID: groupID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 401) {
+      //not a global admin OR not a member in the private group
+      return { success: false, error: resBody, unauthorized: true }
+    }
+    return {
+      success: true,
+      content: {
+        presLink: resBody,
+      },
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+  return &#039;https://docs.google.com/spreadsheets/d/1qZ_ejiZnkZyUATXvau2xPVkCkmJC0uectTemLU-bx0o/edit?usp=sharing&#039;
+}
+
+/*
+ * Sends a new Message to the server
+ *
+ * Note object contains params provided in the getUserDetails function
+ *
+ * todo: implementation
+ * **/
+export async function sendMessage(message, groupID, user) {
+  await waitAuthObject()
+  console.log(&#039;sendMessage: &#039;, message, groupID, user)
+  // promise fake wait
+  await new Promise((resolve) =&gt; setTimeout(resolve, 1000))
+}
+
+export async function getJoinAbleZoomMeetingLink(groupID) {
+  await waitAuthObject()
+  try {
+    //user === null if the user is not logged in
+    // if (!userID) console.log(&#039;WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in&#039;)
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/getzoom&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+    console.log(resBody)
+    if (res.status === 200) {
+      return {
+        success: true,
+        response: `${resBody.JoinURL}`,
+      }
+    } else {
+      return {
+        success: false,
+        response: resBody,
+      }
+    }
+  } catch (e) {
+    console.log(&#039;getJoinAbleZoomMeetingLink() failed:\n&#039;, e)
+    return { success: false, error: e }
+  }
+  //return &#039;https://zoom.us/j/908724981&#039;
+}
+
+export async function getCreateZoomMeetingLink(groupID) {
+  await waitAuthObject()
+  try {
+    //user === null if the user is not logged in
+    //if (!userID) console.log(&#039;WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in&#039;)
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/createzoom&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+    console.log(resBody)
+    if (res.status === 200) {
+      return {
+        success: true,
+        response: `${resBody.JoinURL}`,
+      }
+    } else {
+      return {
+        success: false,
+        response: resBody,
+      }
+    }
+  } catch (e) {
+    console.log(&#039;getCreateZoomMeetingLink() failed:\n&#039;, e)
+    return { success: false, error: e }
+  }
+  //return &#039;https://zoom.us/j/908724981&#039;
+}
+
+/**
+ * get Group Chats
+ * each message must contain name, text, timeStamp, and photoURL
+ */
+export async function getGroupChats(groupID) {
+  await waitAuthObject()
+  // here are some 30 fake messages with some random google images as profileurl
+  return [
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;Hello, how are you?&#039;,
+      timeStamp: &#039;1:00&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;I am fine, thank you!&#039;,
+      timeStamp: &#039;1:01&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;How are you?&#039;,
+      timeStamp: &#039;1:02&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;I am fine, thank you!&#039;,
+      timeStamp: &#039;1:03&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;How are you?&#039;,
+      timeStamp: &#039;1:04&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;I am fine, thank you!&#039;,
+      timeStamp: &#039;1:05&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    // 20 more
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;How are you?&#039;,
+      timeStamp: &#039;1:06&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;I am fine, thank you!&#039;,
+      timeStamp: &#039;1:07&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;How are you?&#039;,
+      timeStamp: &#039;1:08&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;I am fine, thank you!&#039;,
+      timeStamp: &#039;1:09&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;How are you?&#039;,
+      timeStamp: &#039;1:10&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+    {
+      name: &#039;John Doe&#039;,
+      text: &#039;I am fine, thank you!&#039;,
+      timeStamp: &#039;1:11&#039;,
+      photoURL:
+        &#039;https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50&#039;,
+    },
+  ]
+}
+
+/*
+ * Returns the group details:
+ * Must contain name, description, photoURL
+ * if you want to get the group content by groupname, just change it inside the body
+ * e.g. body: new URLSearchParams({groupname:groupName})
+ * */
+export async function getGroupDetails(groupID) {
+  await waitAuthObject()
+  console.log(&#039;get group details&#039;, groupID)
+  //this is just a dummy photo
+  let dummyIcon =
+    &#039;https://cdn.pixabay.com/photo/2017/11/10/05/46/group-2935521_960_720.png&#039;
+
+  // return {
+  //     name: &#039;debug &#039;,
+  //     description: &#039;de-ing bug&#039;,
+  //     photoURL: dummyIcon,
+  //     id: 0
+  // };
+
+  console.log(user)
+
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/querygroup&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 401) {
+      //not a global admin OR not a member in the private group
+      return { success: false, error: resBody, unauthorized: true }
+    }
+    console.log(&#039;response from querygroup API&#039;, resBody)
+    return {
+      success: true,
+      content: {
+        ...resBody.Succeed.Content,
+        photoURL: resBody.Succeed.Content.group_icon || dummyIcon,
+        groupid: groupID,
+      },
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/*
+ * Logs user out of the app
+ * **/
+export async function logout() {
+  await waitAuthObject()
+  try {
+    let signout = await signOut(auth)
+    return { success: true, response: &#039;logout&#039; }
+  } catch (error) {
+    console.log({ errorCode: error.code, errorMessage: error.message })
+    return { success: false, error: error.code }
+  }
+}
+
+/**
+ * Load All the groups the user is a member of
+ *
+ * if userID is null =&gt; query current logined user
+ *  else =&gt; query userID
+ *
+ * implementation: 1. get user&#039;s groups --&gt; get group&#039;s content
+ *
+ * TODO
+ * **/
+export async function getJoinedGroups(userID = null) {
+  await waitAuthObject()
+  //get user&#039;s groups
+  try {
+    //user === null if the user is not logged in
+    if (!userID) console.log(&#039;WARNING!!!!!!!!!!!!!!!!!!!!!, no user logged in&#039;)
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/queryusergroup&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ userid: userID || user.uid }),
+    })
+    let resBody = await res.json()
+    console.log(resBody)
+    if (resBody.Error) {
+      return { success: false, error: resBody.Error }
+    }
+    let groups = resBody.Succeed.Content
+
+    return { success: true, groups: groups }
+  } catch (e) {
+    console.log(&#039;getJoinedGroups() failed:\n&#039;, e)
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * ban user (ADMIN function)
+ */
+export async function banUser(userID = null) {
+  await waitAuthObject()
+  if (!userID) {
+    return { success: false, error: &#039;userID cant be null&#039; }
+  }
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/banuser&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ userid: userID }),
+    })
+    let resBody = await res.json()
+    console.log(&#039;debug get banUser\n&#039;, resBody)
+    if (res.status === 200) {
+      return {
+        success: true,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * delete group (ADMIN function)
+ * param: groupID
+ * return: success:true/false
+ */
+export async function deleteGroup(groupID) {
+  await waitAuthObject()
+  if (!groupID) {
+    return { success: false, error: &#039;groupID cant be null&#039; }
+  }
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/deletegroup&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+    console.log(&#039;debug delete Group\n&#039;, resBody)
+    if (res.status === 200) {
+      return {
+        success: true,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * getAllGroups (ADMIN function)
+ * remark: it will get all groups that a user is authorized to access
+ *  if the user is an admin, basically he can get all groups
+ *
+ */
+export async function getAllGroups() {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/listgroup&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ dummy: null }),
+    })
+    let resBody = await res.json()
+    console.log(&#039;debug get getAllGroups\n&#039;, resBody)
+
+    if (res.status === 200) {
+      return {
+        success: true,
+        groups: resBody.Succeed.groups,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * getAllUsers (ADMIN function)
+ * remark: it will get all users that a user is authorized to access
+ *  if the user is an admin, basically he can get all users
+ *
+ */
+export async function getAllUsers() {
+  console.log(&#039;getAllUsers&#039;)
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/getallusers&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ dummy: null }),
+    })
+    let resBody = await res.json()
+    console.log(&#039;debug get getAllUsers\n&#039;, resBody)
+
+    if (res.status === 200) {
+      return {
+        success: true,
+        users: resBody.Users,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * uploadUserIcon
+ * remark: it will upload user icon to the user&#039;s profile
+ * input: url from Front END
+ */
+export async function uploadUserIcon(url) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/uploadusericon&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ url: url }),
+    })
+    let resBody = await res.json()
+    console.log(&#039;debug get uploadUserIcon\n&#039;, resBody)
+
+    if (res.status === 200) {
+      return {
+        success: true,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * uploadGroupIcon
+ *
+ * input: url from Front END
+ */
+export async function uploadGroupIcon(url, groupID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/uploadgroupicon&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ url: url, groupid: groupID }),
+    })
+    let resBody = await res.json()
+    console.log(&#039;debug get uploadGroupIcon\n&#039;, resBody)
+
+    if (res.status === 200) {
+      return {
+        success: true,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * update group name + description
+ *
+ */
+export async function updateGroupNameDescription(name, description, groupID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/updategroupprofile&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({
+        name: name,
+        description: description,
+        groupid: groupID,
+      }),
+    })
+    let resBody = await res.json()
+    console.log(&#039;debug get uploadGroupIcon\n&#039;, resBody)
+
+    if (res.status === 200) {
+      return {
+        success: true,
+      }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * scanDocument
+ * remark: it will scan document and return text from it
+ * input: filename from Front END
+ */
+
+export async function scanDocument(fileName) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/scandocument&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ fileName: fileName }),
+    })
+    let resBody = await res.json()
+
+    if (res.status === 200) {
+      return { success: true, content: resBody.Content }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * join group
+ * - add current user to the group of groupID
+ * params: groupID
+ */
+export async function joinGroup(groupID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/joingroup&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 200) {
+      return { success: true }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * leave group
+ * - kick the user from the group of groupID
+ * params: groupID
+ */
+export async function leaveGroup(groupID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/leavegroup&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 200) {
+      return { success: true }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * kick user (can only be done by local group admin)
+ * - kick the user of userID from the group of groupID
+ * params: groupID, userID
+ */
+export async function kickUser(userID, groupID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/kickuser&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ groupid: groupID, uid: userID }),
+    })
+    let resBody = await res.json()
+    if (res.status === 200) {
+      return { success: true }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * create group
+ * the user who create a group will be the admin and member of the group automatically
+ *
+ * params: groupName
+ * returns: succ
+ */
+export async function createGroup(groupName, description) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/creategroup&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({
+        groupname: groupName,
+        description: description,
+      }),
+    })
+    let resBody = await res.json()
+    if (res.status === 200) {
+      return { success: true, groupId: resBody.Succeed }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * get group members
+ * 
+ * params: groupID
+ * returns:  members: [{
+            &quot;name&quot;: &quot;tokaho2000@gmail.com&quot;,
+            &quot;profileURL&quot;: null,
+            &quot;role&quot;: &quot;admin&quot; or &quot;member&quot;
+        }]
+ */
+export async function getGroupMembers(groupID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/getgroupmembers&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ groupid: groupID }),
+    })
+    let resBody = await res.json()
+
+    if (res.status === 200) {
+      return { success: true, members: resBody.Members }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * get zoom signature
+ *
+ * params: meetingID
+ */
+export async function getZoomSignature(meetingID) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/getzoomsignature&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ meetingNumber: meetingID, role: 0 }),
+    })
+    let resBody = await res.json()
+
+    if (res.status === 200) {
+      return { success: true, signature: resBody.signature, name: user }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * send resent password email
+ *  params: email (the email of the user who will recieve a password reset email)
+ *        or by default, it will send to the current logined user&#039;s email
+ *
+ */
+export async function resetPasswordEmail(email) {
+  await waitAuthObject()
+  try {
+    let res = await sendPasswordResetEmail(auth, email || user.email)
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}
+
+/**
+ * update current user&#039;s password
+ *  params: password
+ *
+ */
+
+export async function updateUserPassword(userID, password) {
+  await waitAuthObject()
+  try {
+    let token = await user.getIdToken()
+    let res = await fetch(baseURL + &#039;/apis/updateuserpassword&#039;, {
+      method: &#039;POST&#039;,
+      mode: &#039;cors&#039;, // no-cors, *cors, same-origin
+      headers: {
+        &#039;Content-Type&#039;: &#039;application/x-www-form-urlencoded&#039;,
+        Authorization: token,
+      },
+      // current userID =&gt; user.uid
+      body: new URLSearchParams({ userid: userID, newpassword: password }),
+    })
+    let resBody = await res.json()
+
+    if (res.status === 200) {
+      return { success: true }
+    } else {
+      return { success: false, error: resBody }
+    }
+  } catch (e) {
+    return { success: false, error: e }
+  }
+}</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

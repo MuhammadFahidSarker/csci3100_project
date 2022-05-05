@@ -1,0 +1,42 @@
+Date : 2022-05-05 23:23:55
+Directory : c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho
+Total : 13 files,  31643 codes, 394 comments, 158 blanks, all 32195 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          2 |     30,167 |          0 |          2 |     30,169 |
+| JavaScript |          8 |      1,278 |        394 |        121 |      1,793 |
+| HTML       |          1 |        105 |          0 |          7 |        112 |
+| Markdown   |          1 |         90 |          0 |         28 |        118 |
+| Batch      |          1 |          3 |          0 |          0 |          3 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                      | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                         |         13 |     31,643 |        394 |        158 |     32,195 |
+| public                                                                    |          1 |        105 |          0 |          7 |        112 |
++---------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                  | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\app.js            | JavaScript |         79 |         56 |         35 |        170 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\centralAuth.js    | JavaScript |         61 |         35 |          3 |         99 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\config.js         | JavaScript |         11 |          0 |          1 |         12 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\googlelinks.js    | JavaScript |        229 |         50 |         22 |        301 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\groupfunctions.js | JavaScript |        638 |        154 |         36 |        828 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\package-lock.json | JSON       |     30,133 |          0 |          1 |     30,134 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\package.json      | JSON       |         34 |          0 |          1 |         35 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\public\index.html | HTML       |        105 |          0 |          7 |        112 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\readme.md         | Markdown   |         90 |          0 |         28 |        118 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\registration.js   | JavaScript |        114 |         54 |          9 |        177 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\run.bat           | Batch      |          3 |          0 |          0 |          3 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\scanfile.js       | JavaScript |         42 |         26 |          5 |         73 |
+| c:\Users\adikk\Documents\GitHub\csci3100_project\tokaho\zoomlink.js       | JavaScript |        104 |         19 |         10 |        133 |
+| Total                                                                     |            |     31,643 |        394 |        158 |     32,195 |
++---------------------------------------------------------------------------+------------+------------+------------+------------+------------+

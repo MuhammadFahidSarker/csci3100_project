@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - groupfunctions.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>groupfunctions.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">56.66</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">827</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">123.27</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">8.72</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">&#039;use strict&#039;
+/*
+Descriptions:
+ all functions related to group operations
+  - POST /creategroup -&gt; create group with user being an admin
+  - POST /deletegroup -&gt; delete group (id)
+  - POST /updategroup -&gt; update any field related to the group (user == admin)
+  - POST /querygroup  -&gt; query the group content (excluding the messages(messages can be accessed from the chat API))
+  - POST /listgroup   -&gt; list the group cotent of all group that the user can view
+
+  -- working
+  - POST /deletefromgroup -&gt; delete the specified from the group **the field has to be a list e.g. zoomLink, admins, members, docLink
+
+
+Exports:
+  creategroup HTTP POST:
+    required params:
+      (header)&quot;authorization&quot;: securityToken of the user
+      (body)&quot;groupname&quot;: the name of group being created
+      *use x-www-form-urlencoded
+    return:
+      HTTP Status + JSON
+
+  deletegroup HTTP POST:
+    required params;
+      (header)&quot;authorization&quot;: security token of the users
+      (body)&quot;groupname&quot;: the name of group being deleted
+      *use x-www-form-urlencoded
+      * the user must be a global admin or a group admin to inital the delete operation
+    return:
+      HTTP Status + JSON
+
+  updategroup HTTP POST:
+    required params;
+      (header)&quot;authorization&quot;: security token of the users
+      (body)&quot;groupname&quot;: the name of group being deleted
+      (body)&quot;update&quot;: a JSON object represent the update field and value
+          - e.g.  {&quot;name&quot;:&quot;unhappy&quot;,&quot;zoomLink&quot;:[&quot;zoomlink1&quot;,&quot;zoomlink2&quot;]}
+      *use x-www-form-urlencoded
+      *the user must be a global admin or a group admin to inital the update operation
+    return:
+      HTTP Status + JSON
+
+  querygroup HTTP POST:  (**DO NOT** contain messages, if you need the messages of the group, please visit the chat APIs)
+    required params:
+      (header)&quot;authorization&quot;: security Token
+      (body)&quot;groupname&quot;: the name of group being queried
+      *use x-www-form-urlencoded
+      *the user must be a global admin or a group member to querythe profile of a private group
+      return:
+        HTTP Status + JSON
+
+  listgroup HTTP POST:  (**DO NOT** contain messages, if you need the messages of the group, please visit the chat APIs)
+    required params:
+      (header)&quot;authorization&quot;: security Token
+      *the user must be a global admin or a group member in the private group to include it in the response
+      return:
+        HTTP Status + JSON
+
+Implementations:
+  creategroup:
+  (&quot;authorization&quot; in the req.header will be checked and verify by centralAuth)
+    1. check if groupname is present in the HTTP POST body
+    3. check if groupname duplicated?
+    4. create new group entry in the DB with the user as the only member
+    5. add the group id to the user&#039;s group list
+  groupActions:
+    1. check if groupname exist?
+    2. chedk is authorized ? (is admin?)
+  deletegroup: (uses groupActions)
+    0. pass the deletegroup function to groupsActions for checking(constraints)
+      1. delete group from all user&#039;s grouplist
+      2. delete group from collections
+  updategroup: (uses groupActions)
+    0. pass updategroup function to groupActions for checking(constraints)
+      1. match fields (reject if it contains the &quot;message&quot; field)
+      2. update fields
+  querygroup: (uses groupActions)
+    0. pass querygroup function go groupActions for checking(constraints)
+      1. check additional constraints ( whether the group is private, if yes, whether the user is an admin or a member of the group)
+      2. return the group content
+  listgroup:
+    0. check membership
+    1. add the group&#039;s profile to the response if the use is authorized(a member/ admin of a private group) to read it
+    2. return the groups data (without the chat messages)
+
+HTTP response:
+  creategroup:
+    OK:
+      status 200: success, return new group id
+    Error:
+      status 400: interal error, return error
+      status 401: duplicated groupname, return &quot;invalid/duplicated groupname&quot;
+      status 402: no groupname recieved, return &quot;Missing groupname&quot;
+  deletegroup/updategroup/querygroup:
+    OK:
+      status 200: success, return OK
+    Error:
+      status 400: interal error, return error
+      status 401: duplicated groupname, return &quot;invalid/duplicated groupname&quot;
+             401: not a global admin nor group admin, return &quot;unauthorized&quot;
+      status 402: no groupname recieved, return &quot;Missing groupname&quot;
+  listgroup:
+    OK:
+      status 200: success, return all group contents
+    Error:
+      status 400: internal error, return error
+
+
+Return JSON format:
+{
+  Error: xxxxxxxx,   (Optional field: exist if error happened)
+  Succeed: yyyyyyy   (Optional field: exist if the API call runs smoothly)
+}
+
+
+
+
+
+*/
+
+// Library
+const functions = require(&#039;firebase-functions&#039;)
+const admin = require(&#039;firebase-admin&#039;)
+const cookieParser = require(&#039;cookie-parser&#039;)
+const nodemailer = require(&#039;nodemailer&#039;)
+const { Firestore, FieldValue } = require(&#039;@google-cloud/firestore&#039;)
+const os = require(&#039;os&#039;)
+const { deepStrictEqual } = require(&#039;assert&#039;)
+const { resolveSoa } = require(&#039;dns&#039;)
+const firestore = new Firestore()
+const group_table = firestore.collection(&#039;groups&#039;)
+const user_table = firestore.collection(&#039;users&#039;)
+
+async function isAdmin(user, req) {
+  let d = await user_table.doc(req.header.verified.uid).get()
+  //console.log(d)
+  if (d.data().role == &#039;admin&#039;) return true
+  else return false
+}
+
+class Assert extends Error {
+  constructor(message) {
+    super(message) // (1)
+    this.name = &#039;Assertion&#039;
+    this.errormsg = message
+  }
+}
+
+async function groupsActions(req, res, next, custom_actions) {
+  console.log(&#039;groupaction on:&#039;, req.body.groupname)
+  //contain group name?
+  if (!req.body || !req.body.groupname)
+    return res.status(402).json({
+      Error: &#039;Missing groupname&#039;,
+    })
+  //global admin?
+  let isadmin = await isAdmin(req.header.verified.uid, req)
+  try {
+    let querySnapshot = await group_table
+      .where(&#039;name&#039;, &#039;==&#039;, req.body.groupname)
+      .get()
+    if (querySnapshot._size &gt; 1) {
+      return res.status(401).json({
+        Error: &#039;multiple group found&#039;,
+      })
+    }
+    if (querySnapshot._size &lt; 1) {
+      return res.status(401).json({
+        Error: req.body.groupname + &#039; not found&#039;,
+      })
+    }
+
+    for (var i in querySnapshot.docs) {
+      // is group admin?
+      let docu = querySnapshot.docs[i]
+      let admin_list = docu.data().admins
+      isadmin = isadmin || admin_list.includes(req.header.verified.uid)
+
+      //custom functions
+      await custom_actions(req, res, next, docu, isadmin)
+    }
+  } catch (e) {
+    console.log(&#039;Error&#039;, e)
+    return res.status(401).json({
+      Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+    })
+  }
+}
+
+module.exports = {
+  creategroup: async function creategroup(req, res, next) {
+    if (!req.body || !req.body.groupname || !req.body.description)
+      return res.status(402).json({
+        Error: &#039;Missing groupname&#039;,
+      })
+    const q = await group_table.where(&#039;name&#039;, &#039;==&#039;, req.body.groupname).get()
+    if (q._size &gt; 0) {
+      return res.status(401).json({
+        Error: &#039;invalid/duplicated groupname&#039;,
+      })
+    } else {
+      let group_info = {
+        name: req.body.groupname,
+        description: req.body.description,
+        docsLink: null,
+        sheetLink: null,
+        presLink: null,
+        zoomLink: null,
+        group_icon:
+          &#039;https://thumbs.dreamstime.com/b/linear-group-icon-customer-service-outline-collection-thin-line-vector-isolated-white-background-138644548.jpg&#039;,
+        isPrivate: false,
+        members: [req.header.verified.uid],
+        admins: [req.header.verified.uid],
+      }
+      //create group
+      try {
+        let resid = &#039;&#039;
+        await group_table.add(group_info).then(
+          //add group id to the user&#039;s groupList
+          function (gpRef) {
+            resid = gpRef.id
+            user_table
+              .doc(req.header.verified.uid)
+              .get()
+              .then((d) =&gt; {
+                if (d.exists) {
+                  let temp = d.data().groupList
+                  temp.push(gpRef.id)
+                  console.log(&#039;Document data:&#039;, d.data().groupList, temp)
+                  user_table.doc(req.header.verified.uid).update({
+                    groupList: temp,
+                  })
+                } else {
+                  throw &#039;unknown error&#039;
+                }
+              })
+          },
+        )
+        //initialize empty message collections
+        group_table.doc(resid).collection(&#039;messages&#039;).doc(&#039;dummy&#039;).set({})
+        return res.status(200).json({
+          Succeed: resid,
+        })
+      } catch (e) {
+        console.log(e)
+        return res.status(401).json({
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+        })
+      }
+    }
+  },
+
+  deletegroup: async function deletegroup(req, res, next) {
+    if (req.body.groupname) {
+      groupsActions(req, res, next, (req, res, next, docu, isadmin) =&gt; {
+        if (!isadmin) {
+          throw new Assert(&#039;unauthorized&#039;)
+        }
+        //////////////////////////////////////////////
+
+        docu.data().members.forEach((user) =&gt; {
+          console.log(
+            user,
+            &#039;initializing a delete action on group:&#039;,
+            docu.data().name,
+          )
+          //delete group from every user&#039;s grouplist
+          user_table
+            .doc(user)
+            .get()
+            .then((d) =&gt; {
+              if (d.exists) {
+                //console.log(&#039;D - EXIST&#039;)
+                let temp = d.data().groupList
+                //console.log(&#039;temp: &#039; + temp)
+                var delIdx = temp.indexOf(docu.id)
+                //console.log(&#039;delIdx: &#039; + delIdx)
+                if (delIdx !== -1) {
+                  temp.splice(delIdx, 1)
+                } else {
+                  throw new Assert(
+                    &quot;multiple group found in user&#039;s grouplist:&quot; + d.id,
+                  )
+                }
+                //update user&#039;s grouplist
+                user_table.doc(d.id).update({
+                  groupList: temp,
+                })
+              } else {
+                throw new Assert(&#039;unable to remove the group from user:&#039; + d.id)
+              }
+            })
+        })
+        //remove the group from the groups collection
+        firestore.recursiveDelete(docu.ref)
+        console.log(&#039;deleted:&#039;, req.body.groupname)
+        return res.status(200).json({
+          Succeed: &#039;OK&#039;,
+        })
+      })
+    } else {
+      if (req.body.groupid) {
+        console.log(&#039;delete by groupid&#039;)
+        try {
+          let isadmin = await isAdmin(req.header.verified.uid, req)
+          console.log(&#039;isadmin&#039;, isadmin)
+          let groupSnapshot = await group_table.doc(req.body.groupid).get()
+          let docu = groupSnapshot
+          console.log(&#039;group data&#039;, docu.data())
+          if (docu.data().isPrivate) {
+            if (
+              !(
+                isadmin || docu.data().members.includes(req.header.verified.uid)
+              )
+            ) {
+              return res.status(401).json({
+                Error: &#039;not authorized&#039;,
+              })
+            }
+          }
+          docu.data().members.forEach((user) =&gt; {
+            console.log(
+              user,
+              &#039;initializing a delete action on group:&#039;,
+              docu.data().name,
+            )
+            //delete group from every user&#039;s grouplist
+            user_table
+              .doc(user)
+              .get()
+              .then((d) =&gt; {
+                if (d.exists) {
+                  let temp = d.data().groupList
+
+                  var delIdx = temp.indexOf(docu.id)
+                  if (delIdx !== -1) {
+                    temp.splice(delIdx, 1)
+                  } else {
+                    throw new Assert(
+                      &quot;multiple group found in user&#039;s grouplist:&quot; + d.id,
+                    )
+                  }
+                  //update user&#039;s grouplist
+                  user_table.doc(d.id).update({
+                    groupList: temp,
+                  })
+                } else {
+                  throw new Assert(
+                    &#039;unable to remove the group from user:&#039; + d.id,
+                  )
+                }
+              })
+          })
+          //remove the group from the groups collection
+          firestore.recursiveDelete(docu.ref)
+          console.log(&#039;deleted:&#039;, req.body.groupid)
+          return res.status(200).json({
+            Succeed: &#039;OK&#039;,
+          })
+        } catch (e) {
+          console.log(e)
+          return res.status(400).json({
+            Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+          })
+        }
+      } else {
+        return res.status(400).json({
+          Error: &#039;please contain groupname or groupid&#039;,
+        })
+      }
+    }
+  },
+
+  updategroup: async function updategroup(req, res, next) {
+    groupsActions(req, res, next, async (req, res, next, docu, isadmin) =&gt; {
+      if (!isadmin) {
+        throw new Assert(&#039;unauthorized&#039;)
+      }
+      let resJson = {}
+      if (&#039;message&#039; in req.body) {
+        throw new Assert(
+          &#039;unable to update &quot;message&quot;, please invoke the chat apis instead of updategroup&#039;,
+        )
+      }
+      //update
+      await docu.ref.update(JSON.parse(req.body.update))
+      return res.status(200).json({
+        Succeed: {
+          updatedContent: await docu.ref.get().then((d) =&gt; {
+            return d.data()
+          }),
+        },
+      })
+    })
+  },
+
+  querygroup: async function querygroup(req, res, next) {
+    console.log(&#039;querygroup&#039;)
+    console.log(req.body)
+    if (req.body.groupname) {
+      groupsActions(req, res, next, async (req, res, next, docu, isadmin) =&gt; {
+        //check membership
+        if (docu.data().isPrivate) {
+          if (
+            !isadmin ||
+            !docu.data().member.includes(req.header.verified.uid)
+          ) {
+            throw new Assert(&#039;Not authorized, the requested group is private&#039;)
+          }
+        }
+        return res.status(200).json({
+          Succeed: {
+            Content: docu.data(),
+          },
+        })
+      })
+    } else {
+      if (req.body.groupid) {
+        console.log(&#039;querygroup by groupid&#039;, req.body)
+        try {
+          let isadmin = await isAdmin(req.header.verified.uid, req)
+          let groupSnapshot = await group_table.doc(req.body.groupid).get()
+          let docu = groupSnapshot
+          if (docu.data().isPrivate) {
+            if (
+              !isadmin ||
+              !docu.data().members.includes(req.header.verified.uid)
+            ) {
+              return res.status(401).json({
+                Error: &#039;not authorized&#039;,
+              })
+            }
+          }
+          console.log(&#039;return&#039;, docu.data())
+          return res.status(200).json({
+            Succeed: {
+              Content: docu.data(),
+            },
+          })
+        } catch (e) {
+          console.log(e)
+          return res.status(400).json({
+            Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+          })
+        }
+      } else {
+        return res.status(400).json({
+          Error: &#039;please contain groupname or groupid&#039;,
+        })
+      }
+    }
+  },
+
+  listgroup: async function listgroup(req, res, next) {
+    try {
+      let allgroups = []
+      console.log(req.header.verified)
+      let isadmin = await isAdmin(req.header.verified.uid, req)
+      let groupSnapshot = await group_table.get()
+      // for each group
+      for (let p in groupSnapshot.docs) {
+        if (groupSnapshot.docs[p].data().isPrivate) {
+          if (
+            !(
+              isadmin ||
+              groupSnapshot.docs[p]
+                .data()
+                .members.includes(req.header.verified.uid)
+            )
+          ) {
+            continue
+          }
+        }
+        console.log(&#039;list:&#039;, groupSnapshot.docs[p].data().name)
+        allgroups.push(groupSnapshot.docs[p].data())
+        allgroups[allgroups.length - 1].groupid = groupSnapshot.docs[p].id
+      }
+      return res.status(200).json({
+        Succeed: {
+          groups: allgroups,
+        },
+      })
+    } catch (e) {
+      console.log(e)
+      return res.status(401).json({
+        Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+      })
+    }
+  },
+
+  //TODO: move this to user function
+  queryuser: async function queryuser(req, res, next) {
+    console.log(&#039;queryuser&#039;)
+    try {
+      if (!req.body.userid) {
+        throw new Assert(&#039;no userID provided&#039;)
+      }
+      let userRecord = await admin.auth().getUser(req.body.userid)
+      let isVerified = userRecord.emailVerified
+      let userSnapshot = await user_table.doc(req.body.userid).get()
+      let docu = userSnapshot
+      return res.status(200).json({
+        Succeed: {
+          isVerified: isVerified,
+        },
+        Content: docu.data(),
+      })
+    } catch (e) {
+      console.log(e)
+      return res.status(400).json({
+        Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+      })
+    }
+  },
+
+  //TODO: move this to user function
+  banuser: async function banuser(req, res, next) {
+    console.log(&#039;banuser&#039;)
+    try {
+      let isadmin = await isAdmin(req.header.verified.uid, req)
+      if (!isadmin) {
+        return res.status(401).json(&#039;unauthorized&#039;)
+      }
+      if (!req.body.userid) {
+        throw new Assert(&#039;no userID provided&#039;)
+      }
+      let userRecord = await admin.auth().getUser(req.body.userid)
+      let isVerified = userRecord.emailVerified
+      let userSnapshot = await user_table.doc(req.body.userid).get()
+      let docu = userSnapshot
+      //ban user
+      await docu.ref.update({ isBanned: true })
+
+      return res.status(200).json({
+        Succeed: true,
+      })
+    } catch (e) {
+      console.log(e)
+      return res.status(400).json({
+        Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+      })
+    }
+  },
+
+  queryusergroup: async function queryusergroup(req, res, next) {
+    console.log(&#039;queryusergroup&#039;)
+    console.log(req.body)
+    if (req.body.userid) {
+      try {
+        let allgroups = []
+        let groupSnapshot = await group_table.get()
+        for (let p in groupSnapshot.docs) {
+          console.log(groupSnapshot.docs[p].data().members)
+          if (!groupSnapshot.docs[p].data().members.includes(req.body.userid)) {
+            continue
+          }
+          //console.log(&#039;list:&#039;, groupSnapshot.docs[p].id)
+          let content = groupSnapshot.docs[p].data()
+          content.groupid = groupSnapshot.docs[p].id
+          allgroups.push(content)
+        }
+        console.log(allgroups)
+        return res.status(200).json({
+          Succeed: {
+            Content: allgroups,
+          },
+        })
+      } catch (e) {
+        console.log(e)
+        return res.status(400).json({
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+        })
+      }
+    } else {
+      return res.status(400).json({
+        Error: &#039;please contain groupname or groupid&#039;,
+      })
+    }
+  },
+
+  joingroup: async function joingroup(req, res, next) {
+    console.log(&#039;join group&#039;)
+    console.log(req.body)
+    const uid = req.header.verified.uid
+    const groupid = req.body.groupid
+    if (groupid) {
+      try {
+        // update in group collection
+        let groupSnapshot = await group_table.doc(groupid).get()
+        console.log(&#039;group data&#039;, groupSnapshot.data())
+        await groupSnapshot.ref.update({ members: FieldValue.arrayUnion(uid) })
+
+        // update in users collection
+        let userSnapshot = await user_table.doc(uid).get()
+        console.log(&#039;user data&#039;, userSnapshot.data())
+        await userSnapshot.ref.update({
+          groupList: FieldValue.arrayUnion(groupid),
+        })
+
+        return res.status(200).json({
+          Succeed: true,
+        })
+      } catch (e) {
+        console.log(e)
+        return res.status(400).json({
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+        })
+      }
+    } else {
+      return res.status(400).json({
+        Error: &#039;please contain groupid&#039;,
+      })
+    }
+  },
+
+  leavegroup: async function leavegroup(req, res, next) {
+    console.log(&#039;leave group&#039;)
+    console.log(req.body)
+    const uid = req.header.verified.uid
+    const groupid = req.body.groupid
+    if (groupid) {
+      try {
+        // update in group collection
+        let groupSnapshot = await group_table.doc(groupid).get()
+        console.log(&#039;group data&#039;, groupSnapshot.data())
+        await groupSnapshot.ref.update({ members: FieldValue.arrayRemove(uid) })
+
+        // update in users collection
+        let userSnapshot = await user_table.doc(uid).get()
+        console.log(&#039;user data&#039;, userSnapshot.data())
+        await userSnapshot.ref.update({
+          groupList: FieldValue.arrayRemove(groupid),
+        })
+
+        return res.status(200).json({
+          Succeed: true,
+        })
+      } catch (e) {
+        console.log(e)
+        return res.status(400).json({
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+        })
+      }
+    } else {
+      return res.status(400).json({
+        Error: &#039;please contain groupid&#039;,
+      })
+    }
+  },
+
+  kickuser: async function kickuser(req, res, next) {
+    console.log(&#039;kick user&#039;)
+    console.log(req.body)
+    const uid = req.body.uid
+    const groupid = req.body.groupid
+    const callerid = req.header.verified.uid
+    if (!groupid || !uid) {
+      return res.status(401).json({
+        Error: &#039;please contain groupid and uid&#039;,
+      })
+    }
+    try {
+      // update in group collection
+      let groupSnapshot = await group_table.doc(groupid).get()
+      console.log(&#039;group data&#039;, groupSnapshot.data())
+
+      // check if the caller is a local admin
+      if (!groupSnapshot.data().admins.includes(callerid)) {
+        return res.status(401).json({
+          Error: &#039;unauthorized&#039;,
+        })
+      }
+
+      if (uid == callerid) {
+        return res.status(401).json({
+          Error: &#039;you cannot kick yourself&#039;,
+        })
+      }
+
+      await groupSnapshot.ref.update({ members: FieldValue.arrayRemove(uid) })
+
+      // update in users collection
+      let userSnapshot = await user_table.doc(uid).get()
+      console.log(&#039;user data&#039;, userSnapshot.data())
+      await userSnapshot.ref.update({
+        groupList: FieldValue.arrayRemove(groupid),
+      })
+
+      return res.status(200).json({
+        Succeed: true,
+      })
+    } catch (e) {
+      console.log(e)
+      return res.status(401).json({
+        Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+      })
+    }
+  },
+
+  getgroupmembers: async function getgroupmembers(req, res, next) {
+    console.log(&#039;getGroupMembers&#039;)
+    console.log(req.body)
+    const groupID = req.body.groupid
+    if (groupID) {
+      console.log(&#039;getGroupMembers by groupid&#039;, groupID)
+      try {
+        let groupSnapshot = await group_table.doc(req.body.groupid).get()
+        let members = groupSnapshot.data().members
+        let admins = groupSnapshot.data().admins
+        let memberProfiles = []
+        for (let memberID of members) {
+          let userSnapshot = await user_table.doc(memberID).get()
+          let userData = userSnapshot.data()
+          let profile = {
+            name: userData.name,
+            profileURL: userData.profile_icon,
+            role: admins.includes(memberID) ? &#039;admin&#039; : &#039;member&#039;,
+          }
+          memberProfiles.push(profile)
+          memberProfiles[memberProfiles.length - 1].userid = memberID
+        }
+        return res.status(200).json({
+          Succeed: true,
+          Members: memberProfiles,
+        })
+      } catch (e) {
+        console.log(e)
+        return res.status(400).json({
+          Error: JSON.stringify(e, Object.getOwnPropertyNames(e)),
+        })
+      }
+    } else {
+      return res.status(400).json({
+        Error: &#039;please contain groupid&#039;,
+      })
+    }
+  },
+
+  getallusers: async function getallusers(req, res, next) {
+    console.log(&#039;getAllUsers&#039;)
+    console.log(req.body)
+    try {
+      let allusers = []
+      let isadmin = await isAdmin(req.header.verified.uid, req)
+      if (!isadmin) {
+        return res.status(401).json(&#039;unauthorized&#039;)
+      }
+      let userSnapshot = await user_table.get()
+      for (let p in userSnapshot.docs) {
+        console.log(&#039;list:&#039;, userSnapshot.docs[p].data().email)
+        //console.log(&#039;ID:&#039;, userSnapshot.docs[p].id)
+        allusers.push(userSnapshot.docs[p].data())
+        allusers[allusers.length - 1].userid = userSnapshot.docs[p].id
+      }
+      return res.status(200).json({ Succeed: true, Users: allusers })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
+
+  uploadusericon: async function uploadusericon(req, res, next) {
+    console.log(&#039;uploadusericon&#039;)
+    console.log(req.body)
+    try {
+      if (!req.body.url) return res.status(401).json(&#039;No URL appended&#039;)
+      await user_table.doc(req.header.verified.uid).update({
+        profile_icon: req.body.url,
+      })
+      return res.status(200).json({ Succeed: true })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
+
+  uploadgroupicon: async function uploadgroupicon(req, res, next) {
+    console.log(&#039;uploadusericon&#039;)
+    console.log(req.body)
+    try {
+      if (!req.body.url) return res.status(401).json(&#039;No URL appended&#039;)
+      await group_table.doc(req.body.groupid).update({
+        group_icon: req.body.url,
+      })
+      return res.status(200).json({ Succeed: true })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
+
+  updategroupprofile: async function updategroupprofile(req, res, next) {
+    console.log(&#039;updategroupprofile!!!&#039;, req.body.groupid)
+    console.log(req.body)
+    try {
+      if (!req.body.description || !req.body.name || !req.body.groupid)
+        return res.status(401).json(&#039;no description/name/groupid&#039;)
+      console.log(&#039;updating&#039;)
+      await group_table.doc(req.body.groupid).update({
+        description: req.body.description,
+        name: req.body.name,
+      })
+      //await groupSnapshot.ref.update({ members: FieldValue.arrayRemove(uid) })
+      return res.status(200).json({ Succeed: true })
+    } catch (err) {
+      return res.status(401).json({ Error: err })
+    }
+  },
+
+  updateuserpassword: async function updateuserpassword(req, res, next) {
+    console.log(&#039;updateuserpassword&#039;, req.body.userid)
+    console.log(req.body)
+    try {
+      if (!req.body.userid || !req.body.newpassword)
+        return res.status(401).json(&#039;no userid/newpassword&#039;)
+      let isadmin = await isAdmin(req.header.verified.uid, req)
+      if (!isadmin) return res.status(401).json(&#039;unauthorized&#039;)
+      await admin.auth().updateUser(req.body.userid, {
+        password: req.body.newpassword,
+      })
+      return res.status(200).json({
+        Succeed: true,
+      })
+    } catch (err) {
+      console.log(err)
+      return res.status(401).json({ Error: err })
+    }
+  },
+}</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

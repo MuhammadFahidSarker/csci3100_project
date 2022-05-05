@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - app.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>app.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">74.94</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">169</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">10.58</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.13</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">&#039;use strict&#039;
+
+/*
+
+uses:
+  registration (for user registration and verification)
+  centralAuth (the gateway to our APIs functions)
+  groupfunctions (for general group functions)
+  zoomLink (for zoom related functions)
+  googlelinks (for Google Drive related functions)
+  scanfile (for Image Processing)
+
+*/
+
+// Libraries
+const serviceAccount = require(&#039;./SDK/test-96f35-firebase-adminsdk-m8zbg-8e10e14cd1.json&#039;)
+const functions = require(&#039;firebase-functions&#039;)
+const admin = require(&#039;firebase-admin&#039;)
+const express = require(&#039;express&#039;)
+const path = require(&#039;path&#039;)
+const cors = require(&#039;cors&#039;)
+const cookieParser = require(&#039;cookie-parser&#039;)
+const nodemailer = require(&#039;nodemailer&#039;)
+const bodyParser = require(&#039;body-parser&#039;)
+const xoauth2 = require(&#039;xoauth2&#039;)
+const { Firestore } = require(&#039;@google-cloud/firestore&#039;)
+const os = require(&#039;os&#039;)
+// initialization
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  projectId: &#039;test-96f35&#039;,
+  databaseURL: &#039;https://test-96f35-default-rtdb.firebaseio.com&#039;,
+})
+const app = express()
+const PORT = 8080
+
+/*
+  custom functions
+*/
+const central_auth = require(&#039;./centralAuth.js&#039;)
+const registration = require(&#039;./registration.js&#039;)
+const groupfunctions = require(&#039;./groupfunctions.js&#039;)
+const scanfile = require(&#039;./scanfile.js&#039;)
+const zoomlink = require(&#039;./zoomlink.js&#039;)
+const googlelinks = require(&#039;./googlelinks.js&#039;)
+
+app.use(cookieParser())
+app.use(bodyParser())
+
+// DEBUG FUNCTION
+{
+  app.use((req, res, next) =&gt; {
+    console.log(&#039;-----------------------&#039;)
+    console.log(&#039;Time: &#039;, Date.now())
+    res.header(&#039;Access-Control-Allow-Origin&#039;, &#039;*&#039;)
+    res.header(
+      &#039;Access-Control-Allow-Methods&#039;,
+      &#039;GET,PUT,POST,DELETE,PATCH,OPTIONS&#039;,
+    )
+    res.header(&#039;Access-Control-Allow-Headers&#039;, &#039;Content-Type, Authorization&#039;) //Add other headers used in your requests
+
+    if (&#039;OPTIONS&#039; == req.method) {
+      res.sendStatus(200)
+    } else {
+      console.log(&#039;API call to:&#039;, req.url)
+      next()
+    }
+  })
+  app.use((req, res, next) =&gt; {
+    console.log(&#039;Request type: &#039;, req.method)
+    //console.log(&#039;request body&#039;)
+    //console.log(req.body)
+    //console.log(&#039;header&#039;)
+    //console.log(req.headers)
+    next()
+  })
+}
+
+/*
+  NOT GUARDED BY CENTRAL AUTH
+*/
+
+// registration and verification
+app.use(&#039;/register&#039;, registration.authenticate)
+app.use(&#039;/verify&#039;, registration.verify_email)
+
+// use Google Cloud API to do ImageProcessing on the given file
+app.use(&#039;/scandocument&#039;, scanfile.scanfile)
+
+// Zoom related functions
+app.use(&#039;/getzoom&#039;, zoomlink.getZoomLink)
+app.use(&#039;/getzoomsignature&#039;, zoomlink.getZoomSignature)
+app.use(&#039;/createzoom&#039;, zoomlink.createZoomLink)
+
+// Google Drive related functions (document, spreadsheet, presentation)
+app.use(&#039;/getgoogledoc&#039;, googlelinks.createDoc)
+app.use(&#039;/getgooglesheet&#039;, googlelinks.createSheet)
+app.use(&#039;/getgooglePres&#039;, googlelinks.createPres)
+
+// get user details
+app.use(&#039;/queryuser&#039;, groupfunctions.queryuser)
+
+// Gateway - centralAuth
+app.use(&#039;/apis&#039;, central_auth.central_auth)
+
+/*
+  GUARDED BY CENTRAL AUTH
+*/
+
+// delete the certain group
+app.use(&#039;/apis/deletegroup&#039;, groupfunctions.deletegroup)
+
+// update the certain group&#039;s description
+app.use(&#039;/apis/updategroup&#039;, groupfunctions.updategroup)
+
+// get group details
+app.use(&#039;/apis/querygroup&#039;, groupfunctions.querygroup)
+
+// create a new group
+app.use(&#039;/apis/creategroup&#039;, groupfunctions.creategroup)
+
+// get user&#039;s groups
+app.use(&#039;/apis/queryusergroup&#039;, groupfunctions.queryusergroup)
+
+// join the group
+app.use(&#039;/apis/joingroup&#039;, groupfunctions.joingroup)
+
+// leave the group
+app.use(&#039;/apis/leavegroup&#039;, groupfunctions.leavegroup)
+
+/*
+  Haven&#039;t used this function
+*/
+
+app.use(&#039;/apis/kickuser&#039;, groupfunctions.kickuser)
+
+// get group members of the certain group
+app.use(&#039;/apis/getgroupmembers&#039;, groupfunctions.getgroupmembers)
+
+// upload user icon
+app.use(&#039;/apis/uploadusericon&#039;, groupfunctions.uploadusericon)
+
+// upload groupicon
+app.use(&#039;/apis/uploadgroupicon&#039;, groupfunctions.uploadgroupicon)
+
+// update group details
+app.use(&#039;/apis/updategroupprofile&#039;, groupfunctions.updategroupprofile)
+
+/*
+  ADMIN FUNCTIONS
+*/
+
+// list all groups
+app.use(&#039;/apis/listgroup&#039;, groupfunctions.listgroup)
+
+// list all users
+app.use(&#039;/apis/getallusers&#039;, groupfunctions.getallusers)
+
+// ban user
+app.use(&#039;/apis/banuser&#039;, groupfunctions.banuser)
+
+// update user password
+app.use(&#039;/apis/updateuserpassword&#039;, groupfunctions.updateuserpassword)
+
+// DEBUG page
+app.use(express.static(path.join(__dirname, &#039;public&#039;)))
+
+// server
+app.listen(PORT, () =&gt; console.log(`serving on port ${PORT}`))</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

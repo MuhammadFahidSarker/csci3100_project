@@ -1073,7 +1073,7 @@ export async function resetPasswordEmail(email) {
  *  params: password
  *
  */
- 
+
 export async function updateUserPassword(userID, password) {
   await waitAuthObject()
   try {

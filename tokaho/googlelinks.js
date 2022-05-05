@@ -1,3 +1,19 @@
+/*
+Description:
+  - this function serves as google drive files provider
+
+Exports:
+  - Google Doc Link
+  - Google Sheet Link
+  - Google Presentation Link
+
+HTTP response:
+  - OK:
+      status 200: returns the link
+  - Error:
+      status 401: error occured during function call
+*/
+
 // Library
 const { google } = require('googleapis')
 const { Firestore } = require('@google-cloud/firestore')
@@ -21,6 +37,7 @@ const driveService = google.drive({ version: 'v3', auth })
 
 // get GoogleDoc
 async function createDoc(req, res, next) {
+  // missing Group ID
   if (!req.body || !req.body.groupID) {
     return res.status(401).json({
       Error: 'Missing Group ID',
@@ -28,14 +45,16 @@ async function createDoc(req, res, next) {
   }
   try {
     let querySnapshot = await group_table.doc(req.body.groupID).get()
-    //console.log(querySnapshot)
+    // check whether the group exists
     if (!querySnapshot._fieldsProto) {
       return res.status(401).json({
         Error: 'The Group with ID: ' + req.body.groupID + ' was not found',
       })
     }
-    //console.log(!querySnapshot.data().docsLink[0])
+
+    // check whether the document link exists in Firestore
     if (!querySnapshot.data().docsLink) {
+      // create new doc file if doesn't exist
       driveService.files.create(
         {
           requestBody: {
@@ -55,6 +74,8 @@ async function createDoc(req, res, next) {
           }
           console.log(result.data.id)
           const fileId = result.data.id
+
+          // set up everyone as a writer of the document
           driveService.permissions.create({
             fileId: fileId,
             requestBody: {
@@ -62,6 +83,8 @@ async function createDoc(req, res, next) {
               type: 'anyone',
             },
           })
+
+          // get the doc link
           driveService.files.get(
             {
               fileId: fileId,
@@ -74,19 +97,21 @@ async function createDoc(req, res, next) {
                   Error: err,
                 })
               }
-
               console.log(result.data)
+
               // store the link into database
               group_table
                 .doc(req.body.groupID)
                 .update({ docsLink: result.data.webViewLink })
+
+              // return the link
               return res.status(200).json({ Succeed: result.data.webViewLink })
             },
           )
         },
       )
     } else {
-      // if there is no Google Doc File in the group
+      // if there is a Google Doc File in the group
       console.log('Already have Doc File')
       return res.status(200).json({ Succeed: querySnapshot.data().docsLink })
     }
@@ -97,7 +122,9 @@ async function createDoc(req, res, next) {
   }
 }
 
+// get GoogleSheet
 async function createSheet(req, res, next) {
+  // missing Group ID
   if (!req.body || !req.body.groupID) {
     return res.status(401).json({
       Error: 'Missing Group ID',
@@ -105,14 +132,16 @@ async function createSheet(req, res, next) {
   }
   try {
     let querySnapshot = await group_table.doc(req.body.groupID).get()
-    //console.log(querySnapshot)
+    // check whether the group exists
     if (!querySnapshot._fieldsProto) {
       return res.status(401).json({
         Error: 'The Group with ID: ' + req.body.groupID + ' was not found',
       })
     }
-    //console.log(!querySnapshot.data().docsLink[0])
+
+    // check whether the sheet link exists in Firestore
     if (!querySnapshot.data().sheetLink) {
+      // create new sheet file if doesn't exist
       driveService.files.create(
         {
           requestBody: {
@@ -132,6 +161,8 @@ async function createSheet(req, res, next) {
           }
           console.log(result.data.id)
           const fileId = result.data.id
+
+          // set up everyone as a writer of the document
           driveService.permissions.create({
             fileId: fileId,
             requestBody: {
@@ -139,6 +170,8 @@ async function createSheet(req, res, next) {
               type: 'anyone',
             },
           })
+
+          // get the sheet link
           driveService.files.get(
             {
               fileId: fileId,
@@ -157,6 +190,8 @@ async function createSheet(req, res, next) {
               group_table
                 .doc(req.body.groupID)
                 .update({ sheetLink: result.data.webViewLink })
+
+              // return the link
               return res.status(200).json({ Succeed: result.data.webViewLink })
             },
           )
@@ -174,7 +209,9 @@ async function createSheet(req, res, next) {
   }
 }
 
+// get GooglePres
 async function createPres(req, res, next) {
+  // missing Group ID
   if (!req.body || !req.body.groupID) {
     return res.status(401).json({
       Error: 'Missing Group ID',
@@ -182,14 +219,16 @@ async function createPres(req, res, next) {
   }
   try {
     let querySnapshot = await group_table.doc(req.body.groupID).get()
-    //console.log(querySnapshot)
+    // check whether the group exists
     if (!querySnapshot._fieldsProto) {
       return res.status(401).json({
         Error: 'The Group with ID: ' + req.body.groupID + ' was not found',
       })
     }
-    //console.log(!querySnapshot.data().docsLink[0])
+
+    // check whether the presentation link exists in Firestore
     if (!querySnapshot.data().presLink) {
+      // create new presentation file if doesn't exist
       driveService.files.create(
         {
           requestBody: {
@@ -209,6 +248,7 @@ async function createPres(req, res, next) {
           }
           console.log(result.data.id)
           const fileId = result.data.id
+          // set up everyone as a writer of the document
           driveService.permissions.create({
             fileId: fileId,
             requestBody: {
@@ -216,6 +256,7 @@ async function createPres(req, res, next) {
               type: 'anyone',
             },
           })
+          // get the pres link
           driveService.files.get(
             {
               fileId: fileId,
@@ -242,6 +283,7 @@ async function createPres(req, res, next) {
     } else {
       // if there is no Google Presentation File in the group
       console.log('Already have Presentation File')
+      // return the link
       return res.status(200).json({ Succeed: querySnapshot.data().presLink })
     }
   } catch (err) {

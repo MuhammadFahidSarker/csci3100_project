@@ -813,11 +813,11 @@ module.exports = {
         return res.status(401).json('no userid/newpassword')
       let isadmin = await isAdmin(req.header.verified.uid, req)
       if (!isadmin) return res.status(401).json('unauthorized')
-      await admin.auth().updateUser(req.body.userid,{
-        password:req.body.newpassword
+      await admin.auth().updateUser(req.body.userid, {
+        password: req.body.newpassword,
       })
       return res.status(200).json({
-        Succeed:true
+        Succeed: true,
       })
     } catch (err) {
       console.log(err)

@@ -1,0 +1,64 @@
+"filename", "language", "JavaScript", "CSS", "JavaScript React", "Markdown", "JSON", "XML", "HTML", "comment", "blank", "total"
+"c:\Users\adikk\Documents\GitHub\csci3100_project\.idea\csci3100_project.iml", "XML", 0, 0, 0, 0, 0, 12, 0, 0, 0, 12
+"c:\Users\adikk\Documents\GitHub\csci3100_project\.idea\inspectionProfiles\Project_Default.xml", "XML", 0, 0, 0, 0, 0, 6, 0, 0, 0, 6
+"c:\Users\adikk\Documents\GitHub\csci3100_project\.idea\modules.xml", "XML", 0, 0, 0, 0, 0, 8, 0, 0, 0, 8
+"c:\Users\adikk\Documents\GitHub\csci3100_project\.idea\vcs.xml", "XML", 0, 0, 0, 0, 0, 6, 0, 0, 0, 6
+"c:\Users\adikk\Documents\GitHub\csci3100_project\README.md", "Markdown", 0, 0, 0, 38, 0, 0, 0, 0, 33, 71
+"c:\Users\adikk\Documents\GitHub\csci3100_project\craco.config.js", "JavaScript", 10, 0, 0, 0, 0, 0, 0, 0, 0, 10
+"c:\Users\adikk\Documents\GitHub\csci3100_project\package-lock.json", "JSON", 0, 0, 0, 0, 42329, 0, 0, 0, 1, 42330
+"c:\Users\adikk\Documents\GitHub\csci3100_project\package.json", "JSON", 0, 0, 0, 0, 53, 0, 0, 0, 1, 54
+"c:\Users\adikk\Documents\GitHub\csci3100_project\public\index.html", "HTML", 0, 0, 0, 0, 0, 0, 20, 23, 1, 44
+"c:\Users\adikk\Documents\GitHub\csci3100_project\public\manifest.json", "JSON", 0, 0, 0, 0, 25, 0, 0, 0, 1, 26
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\App.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\App.jsx", "JavaScript React", 0, 0, 49, 0, 0, 0, 0, 0, 8, 57
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\App.test.js", "JavaScript", 7, 0, 0, 0, 0, 0, 0, 0, 2, 9
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\admin\admin.css", "CSS", 0, 69, 0, 0, 0, 0, 0, 0, 11, 80
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\admin\admin.jsx", "JavaScript React", 0, 0, 151, 0, 0, 0, 0, 0, 19, 170
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\auth.css", "CSS", 0, 11, 0, 0, 0, 0, 0, 0, 1, 12
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\change_pass.jsx", "JavaScript React", 0, 0, 93, 0, 0, 0, 0, 0, 8, 101
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\forgot_pass.jsx", "JavaScript React", 0, 0, 87, 0, 0, 0, 0, 0, 6, 93
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\login.jsx", "JavaScript React", 0, 0, 104, 0, 0, 0, 0, 0, 14, 118
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\auth_screen\signup.jsx", "JavaScript React", 0, 0, 78, 0, 0, 0, 0, 0, 11, 89
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\banned_user\banned.css", "CSS", 0, 7, 0, 0, 0, 0, 0, 0, 1, 8
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\banned_user\banned_user.jsx", "JavaScript React", 0, 0, 49, 0, 0, 0, 0, 0, 9, 58
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\history.js", "JavaScript", 2, 0, 0, 0, 0, 0, 0, 0, 1, 3
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\input\textinput.jsx", "JavaScript React", 0, 0, 11, 0, 0, 0, 0, 0, 1, 12
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\input\txtinput.css", "CSS", 0, 26, 0, 0, 0, 0, 0, 0, 3, 29
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\loading.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 12, 1, 13
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\loading.jsx", "JavaScript React", 0, 0, 16, 0, 0, 0, 0, 0, 1, 17
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\common\loading_anim.jsx", "JavaScript React", 0, 0, 4, 0, 0, 0, 0, 0, 1, 5
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\create_group\create_group.jsx", "JavaScript React", 0, 0, 54, 0, 0, 0, 0, 0, 9, 63
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\create_group\creategroup.css", "CSS", 0, 14, 0, 0, 0, 0, 0, 0, 2, 16
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\edit_group\edit_group.jsx", "JavaScript React", 0, 0, 230, 0, 0, 0, 0, 7, 35, 272
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\edit_group\edit_grp.css", "CSS", 0, 11, 0, 0, 0, 0, 0, 0, 1, 12
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\group_launcher\components\group_prev.css", "CSS", 0, 5, 0, 0, 0, 0, 0, 0, 0, 5
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\group_launcher\components\group_prev.jsx", "JavaScript React", 0, 0, 78, 0, 0, 0, 0, 0, 9, 87
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\group_launcher\index.jsx", "JavaScript React", 0, 0, 110, 0, 0, 0, 0, 0, 22, 132
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\groups\group_search\index.jsx", "JavaScript React", 0, 0, 3, 0, 0, 0, 0, 0, 2, 5
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ChannelBar\index.jsx", "JavaScript React", 0, 0, 69, 0, 0, 0, 0, 1, 10, 80
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\docsContainer.jsx", "JavaScript React", 0, 0, 44, 0, 0, 0, 0, 0, 8, 52
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\driveContainer.jsx", "JavaScript React", 0, 0, 44, 0, 0, 0, 0, 0, 8, 52
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\etc.js", "JavaScript", 10, 0, 0, 0, 0, 0, 0, 0, 4, 14
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\groupChatContainer.jsx", "JavaScript React", 0, 0, 244, 0, 0, 0, 0, 13, 30, 287
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\groupchat.css", "CSS", 0, 44, 0, 0, 0, 0, 0, 0, 8, 52
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\index.jsx", "JavaScript React", 0, 0, 23, 0, 0, 0, 0, 1, 3, 27
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\sheetsContainer.jsx", "JavaScript React", 0, 0, 44, 0, 0, 0, 0, 0, 8, 52
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\ContentContainer\zoomContainer.jsx", "JavaScript React", 0, 0, 124, 0, 0, 0, 0, 3, 13, 140
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\SideBar\index.jsx", "JavaScript React", 0, 0, 39, 0, 0, 0, 0, 1, 12, 52
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\components\TopNavigation\index.jsx", "JavaScript React", 0, 0, 112, 0, 0, 0, 0, 0, 14, 126
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\home.css", "CSS", 0, 33, 0, 0, 0, 0, 0, 0, 6, 39
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\home_screen.jsx", "JavaScript React", 0, 0, 84, 0, 0, 0, 0, 1, 32, 117
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\home_screen\hooks\useDarkMode.jsx", "JavaScript React", 0, 0, 33, 0, 0, 0, 0, 0, 10, 43
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\index.css", "CSS", 0, 262, 0, 0, 0, 0, 0, 0, 50, 312
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\index.js", "JavaScript", 11, 0, 0, 0, 0, 0, 0, 0, 3, 14
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\logo.svg", "XML", 0, 0, 0, 0, 0, 1, 0, 0, 0, 1
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\profile\profile.css", "CSS", 0, 87, 0, 0, 0, 0, 0, 1, 15, 103
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\profile\profile.jsx", "JavaScript React", 0, 0, 129, 0, 0, 0, 0, 4, 17, 150
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\reportWebVitals.js", "JavaScript", 12, 0, 0, 0, 0, 0, 0, 0, 2, 14
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\repository\firebase_auth.js", "JavaScript", 31, 0, 0, 0, 0, 0, 0, 4, 10, 45
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\repository\repo.js", "JavaScript", 836, 0, 0, 0, 0, 0, 0, 214, 52, 1102
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\setupTests.js", "JavaScript", 1, 0, 0, 0, 0, 0, 0, 4, 1, 6
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\varification\not_verified.jsx", "JavaScript React", 0, 0, 79, 0, 0, 0, 0, 0, 12, 91
+"c:\Users\adikk\Documents\GitHub\csci3100_project\src\varification\verify.css", "CSS", 0, 6, 0, 0, 0, 0, 0, 0, 0, 6
+"c:\Users\adikk\Documents\GitHub\csci3100_project\tailwind.config.js", "JavaScript", 28, 0, 0, 0, 0, 0, 0, 0, 2, 30
+"Total", "-", 948, 575, 2185, 38, 42407, 33, 20, 289, 546, 47041
