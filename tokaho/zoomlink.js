@@ -1,3 +1,19 @@
+/*
+Description:
+  - create and join zoom meeting
+
+Exports:
+  - getZoomSignature
+  - createZoomLink
+  - getZoomLink
+
+HTTP response:
+  - OK:
+      status 200: returns the link
+  - Error:
+      status 401: error occured during function call
+*/
+
 // Library
 const jwt = require('jsonwebtoken')
 const nJwt = require('njwt')
@@ -10,16 +26,13 @@ const { Firestore } = require('@google-cloud/firestore')
 const firestore = new Firestore()
 const group_table = firestore.collection('groups')
 
-// import ZoomMtgEmbedded from '@zoomus/websdk/embedded';
-
-// const client = ZoomMtgEmbedded.createClient();
-
+//zoom meeting info
 const payload = {
   iss: config.APIKey,
   exp: new Date().getTime() + 5000,
 }
 const token = jwt.sign(payload, config.APISecret)
-
+//sign the zoom meeting with api key
 const generateSignature = async (req, res, next) => {
   const apiKey = 'CyxAFmRCQWeCyu4eGFC0IQ'
   const apiSecret = 'V0vb2sbkmoaEP5DaWZFrq8Eq7FWB0ixsx1wc'
@@ -41,6 +54,7 @@ const generateSignature = async (req, res, next) => {
   return res.status(200).json({ signature: signature })
 }
 
+// create a zoom links
 const createZoomLink = async (req, res, next) => {
   try {
     let querySnapshot = await group_table.doc(req.body.groupid).get()
@@ -50,21 +64,10 @@ const createZoomLink = async (req, res, next) => {
         JoinURL: querySnapshot.data().zoomLink,
       })
     }
+    //zoom meeting options
     const options = {
       method: 'POST',
       uri: 'https://api.zoom.us/v2/users/me/meetings',
-      // body: {
-      //   topic: 'Test meeting',
-      //   type: 1,
-      //   settings: {
-      //     host_video: true,
-      //     participant_video: true,
-      //     join_before_host: true,
-      //     waiting_room: false,
-      //     pre_schedule: true,
-      //     start_time: '2022-04-07T12:02:00Z',
-      //     jbh_time: 0,
-      //   }
       body: {
         topic: 'Test',
         type: '2',
@@ -89,7 +92,7 @@ const createZoomLink = async (req, res, next) => {
       },
       json: true, //Parse the JSON string in the response
     }
-
+    //add the zoom meeting id to database
     rp(options)
       .then(function (response) {
         console.log(response)
@@ -108,6 +111,7 @@ const createZoomLink = async (req, res, next) => {
   }
 }
 
+//get and return the zoom link
 const getZoomLink = async (req, res, next) => {
   console.log(req.body)
   try {
