@@ -6,7 +6,21 @@ import {banUser, getAllGroups, getAllUsers, getUserDetails, resetPasswordEmail} 
 import './admin.css'
 import {Loader} from "../common/loading_anim";
 
+/**
+ * Admin page
+ * @param props
+ * @returns {ui}
+ * **/
 export function AdminScreen({}) {
+
+    /**
+     * variables to display ui conditionally
+     * user is null initially
+     * loading and dataLoading is true initially
+     * viewMode is groups initially
+     * groups and users are empty initially
+     * error is empty initially
+     * **/
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [viewMode, setViewMode] = useState('groups');
@@ -15,6 +29,11 @@ export function AdminScreen({}) {
     const [error, setError] = useState('');
     const [dataLoading, setDataLoading] = useState(true);
 
+    /**
+     * get the users and initialize it
+     * set loading to false
+     * if the user is not admin, set the user to null
+     * **/
     useEffect(
         () => {
             getUserDetails().then(
@@ -31,7 +50,10 @@ export function AdminScreen({}) {
         }, []
     )
 
-
+    /**
+     * @param viewMode
+     * load the data based on the viewMode
+     * */
     function changeViewMode(mode) {
         if (mode === viewMode)
             return;
@@ -39,7 +61,10 @@ export function AdminScreen({}) {
         loadData(mode)
     }
 
-
+    /**
+     * @param viewMode
+     * load the data based on the viewMode
+     * */
     function loadData(mode) {
         setDataLoading(true);
         if (mode === 'groups') {
@@ -65,18 +90,24 @@ export function AdminScreen({}) {
         }
     }
 
-
-    console.log(users)
-
+    /**
+     * Data is still loading --> show loading screen
+     * **/
     if (loading === true) {
         return <LoadingScreen withTopNav={false}/>
     }
 
+    /**
+     * User is not logged in --> show login screen
+     * **/
     if (user === null) {
         return <Navigate to={'/admin-login'}/>
     }
 
 
+    /**
+     * User is logged in and user is admin --> show admin page
+     * **/
     return <div className={'content-container'}>
         <TopNavigation showNormalModeIcon={true} hideAdminIcon={true} forceName={'Admin Mode'} user={user}/>
         <div className={'content-list'}>
@@ -102,6 +133,11 @@ export function AdminScreen({}) {
     </div>
 }
 
+/**
+ * @param group
+ * @returns {AdminGroup}
+ * returns the ui of admin group
+ * **/
 function AdminGroup({group}) {
     return <li className={'group-container'}>
         <div>
@@ -114,6 +150,10 @@ function AdminGroup({group}) {
     </li>
 }
 
+/***
+ * @param user
+ * @returns {*}
+ * **/
 function AdminUser({user}) {
     const [banned, setBanned] = useState(user.isBanned);
     const [loading, setLoading] = useState(false);
@@ -121,6 +161,9 @@ function AdminUser({user}) {
 
     const navigate = useNavigate();
 
+    /**
+     * Ban @param user
+     * **/
     function banThisUser() {
         setLoading(true);
         banUser(user.userid).then(res => {
@@ -133,6 +176,9 @@ function AdminUser({user}) {
 
     }
 
+    /**
+     * Reset @param user's password
+     * **/
     function resetPass(){
         setLoading(true);
         resetPasswordEmail(user.email).then(res => {
@@ -143,6 +189,9 @@ function AdminUser({user}) {
         })
     }
 
+    /**
+     * Returns the admin user view
+     * **/
     return <li>
         <div className={'user-container'}>
             <div className={'center'}>

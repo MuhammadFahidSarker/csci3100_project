@@ -2,13 +2,16 @@ import {Component} from "react";
 import {getAllGroups, getGroupDetails, getJoinedGroups, getUserDetails} from "../../repository/repo";
 import {LoadingScreen} from "../../common/loading";
 import {Navigate} from "react-router-dom";
-import SideBar from "../../home_screen/components/SideBar";
-import Channelbar from "../../home_screen/components/ChannelBar";
-import ContentContainer from "../../home_screen/components/ContentContainer";
 import TopNavigation from "../../home_screen/components/TopNavigation";
 import GroupPreview from "./components/group_prev";
 import {Loader} from "../../common/loading_anim";
 
+
+/**
+ * @class GroupLauncher
+ * @extends {Component}
+ * @description shows a list of group - previews and allows to join a group or launch group
+ */
 export default class GroupLauncher extends Component {
     constructor(props) {
         super(props);
@@ -24,6 +27,7 @@ export default class GroupLauncher extends Component {
     async componentDidMount() {
         let user, groups;
 
+        // check if user is logged in
         user = await getUserDetails();
         if (user.success === false) {
             this.setState({loginRequired: true});
@@ -32,6 +36,7 @@ export default class GroupLauncher extends Component {
         }
 
         try {
+            // get all groups
             groups = await getJoinedGroups(user.userID);
             if (groups.success) {
                 groups = groups.groups
@@ -45,6 +50,10 @@ export default class GroupLauncher extends Component {
         this.setState({user, groups, loginRequired: false});
     }
 
+    /**
+     * @description filters the groups based on the search term
+     * @returns {List<Group>}
+     */
     filteredGroup = () => {
         const {groups, searchTerm} = this.state;
         if (searchTerm === '') {
@@ -53,6 +62,11 @@ export default class GroupLauncher extends Component {
         return groups.filter(group => group.name.toLowerCase().includes(searchTerm.toLowerCase()));
     }
 
+    /**
+     * @description change the view to show either all groups or joined groups
+     * @param view
+     * @returns {Promise<void>}
+     */
     changeGroupView = async (view) => {
         if (view === this.state.viewGroupOf) {
             return;
@@ -64,10 +78,7 @@ export default class GroupLauncher extends Component {
         } else {
             groups = [];
         }
-
-
         this.setState({groups});
-
     }
 
     render() {

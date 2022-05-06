@@ -8,17 +8,24 @@ import logo from "../images/logo.png";
 import {TextInput} from "../common/input/textinput";
 import {Loader} from "../common/loading_anim";
 
+/**
+ * Change password screen
+ * **/
+
 export function ChangePassword(){
-    const path = useLocation().pathname;
-    const targetUserID = path.split("/")[3];
-    const [password, setPassword] = useState("");
-    const [password2, setPassword2] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const navigate = useNavigate();
+    const path = useLocation().pathname; // get current path
+    const targetUserID = path.split("/")[3]; // get user id from path
+    const [password, setPassword] = useState(""); // password
+    const [password2, setPassword2] = useState(""); // password2
+    const [loading, setLoading] = useState(true); // loading
+    const [error, setError] = useState(''); // error
+    const [success, setSuccess] = useState(''); // success
+    const navigate = useNavigate(); // navigate for navigating the screen
 
-
+    /**
+     * get user details
+     * only admin can access this page --> if user is not admin, redirect to admin-login
+     * **/
     useEffect(
         () => {
             getUserDetails().then((res) => {
@@ -35,6 +42,11 @@ export function ChangePassword(){
         },[]
     )
 
+    /**
+     * update user password
+     * if password and password2 are same and not empty, update the password
+     * else show error
+     * **/
     async  function changePass(){
         if(password === '' || password2 === '') {
             setError("Please enter password");
@@ -59,6 +71,10 @@ export function ChangePassword(){
         setLoading(false);
     }
 
+
+    /**
+     * return ui
+     * **/
     return <div className={'content-container'}>
         <div style={{
             display: 'flex',

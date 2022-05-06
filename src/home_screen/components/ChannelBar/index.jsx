@@ -2,12 +2,21 @@ import { useState } from 'react';
 import { BsHash } from 'react-icons/bs';
 import {FaChevronDown, FaChevronRight, FaMinus, FaPlus} from 'react-icons/fa';
 import {getJoinAbleZoomMeetingLink} from "../../../repository/repo";
-import {BiLinkExternal, GoLinkExternal} from "react-icons/all";
 
+/**
+ * Categories of the channel bar (e.g. Chats, Groups, etc.)
+ * @type {string[]}
+ */
 const chats = ['Group Chat']
 const googleTools = ['Google Docs', 'Google Sheets', 'Google Presentation']
 const zoomTools = ['Meeting']
 
+/**
+ * The channel bar component shows the categories of the channel bar and elements of each category.
+ * @param changeType
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const ChannelBar = ({changeType}) => {
   return (
     <div id={'channelBar'} className='channel-bar shadow-lg' style={{height:'100vh'}}>
@@ -21,9 +30,16 @@ const ChannelBar = ({changeType}) => {
   );
 };
 
+/**
+ * @description displays the menus of a category
+ * @param header
+ * @param selections
+ * @param setType
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const Dropdown = ({ header, selections, setType }) => {
   const [expanded, setExpanded] = useState(true);
-
   return (
     <div className='dropdown'>
       <div onClick={() => setExpanded(!expanded)} className='dropdown-header'>
@@ -42,6 +58,12 @@ const Dropdown = ({ header, selections, setType }) => {
   );
 };
 
+/**
+ * @description displays the icons of an action
+ * @param expanded
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const ChevronIcon = ({ expanded }) => {
   const chevClass = 'text-accent text-opacity-80 my-auto mr-1';
   return expanded ? (
@@ -51,6 +73,13 @@ const ChevronIcon = ({ expanded }) => {
   );
 };
 
+/**
+ * @description displays the name of a category
+ * @param selection
+ * @param changeType
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const TopicSelection = ({ selection, changeType}) => (
   <div className='dropdown-selection'>
     <BsHash size='24' className='text-gray-400' />

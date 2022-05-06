@@ -23,9 +23,12 @@ class App extends Component {
         super(props);
     }
 
+    /**
+     * @description - This method is called when the component is mounted.
+     * @returns {all the routes}
+     */
     render() {
         return (
-            
             <Router history={history}>
                 <div id="meetingSDKElement" style={{height: "0px"}}/>
                 <Routes>

@@ -21,10 +21,17 @@ import { v4 as uuidv4 } from 'uuid'
 import './groupchat.css'
 import { scanDocument } from '../../../repository/repo'
 
-firebase.initializeApp(firebaseConfig)
-const firestore = firebase.firestore()
-const storage = getStorage()
 
+
+firebase.initializeApp(firebaseConfig) // initialize firebase
+const firestore = firebase.firestore() // initialize firestore
+const storage = getStorage() // initialize storage
+
+/**
+ * @description uploads a file to firebase storage and returns the download url, metadata and newFileName
+ * @param file
+ * @returns {Promise<(string|FullMetadata|string)[]|null>}
+ */
 const uploadFiles = async (file) => {
   // if there is no file, return null
   console.log('upload file')
@@ -41,26 +48,41 @@ const uploadFiles = async (file) => {
   return [url, metadata, newFileName]
 }
 
+/**
+ * @description A Container that displays the group chat components
+ * @param group
+ * @param toolbarHidden
+ * @param user
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function GroupChatContainer({ group, toolbarHidden, user }) {
-  const groupId = group.groupid
-  const messagesRef = firestore.collection(`groups/${groupId}/messages`)
-  const query = messagesRef.orderBy('createdAt') //.limit(25)
-  // Hook for input value (send message)
-  const [messages] = useCollectionData(query, { idField: 'id' })
-  var url = null
-  var metadata = null
 
-  const [searchField, setSearchField] = useState('')
+  const groupId = group.groupid // group id
+  const messagesRef = firestore.collection(`groups/${groupId}/messages`) // reference to the messages collection
+  const query = messagesRef.orderBy('createdAt') //.limit(25) // query to get the messages
+  // Hook for input value (send message) and messages (display messages)
+  const [messages] = useCollectionData(query, { idField: 'id' }) // messages
+  var url = null // url of the uploaded file
+  var metadata = null // metadata of the uploaded file
+
+  const [searchField, setSearchField] = useState('') // search field
 
   //bottom hook
-  const divRef = useRef(null)
+  const divRef = useRef(null) // reference to the div
 
-  //onUpdate
+  //onUpdate hook
   useEffect(() => {
-    console.log('scroll down ')
+    // scroll to the bottom of the chat
     divRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
   })
 
+  /**
+   * @description sends a message to the group
+   * @param text
+   * @param file
+   * @returns {Promise<void>}
+   */
   const sendMessage = async (text, file) => {
     if (text === '' && file === null) return
     console.log(user, text, file)
@@ -86,6 +108,10 @@ export function GroupChatContainer({ group, toolbarHidden, user }) {
     })
   }
 
+  /**
+   * @description filter the messages based on the search field
+   * @returns {List<Message>}
+   */
   function getFilteredMessages() {
     if (searchField === '') return messages
     if (messages === null || messages === undefined) return []
@@ -122,6 +148,13 @@ export function GroupChatContainer({ group, toolbarHidden, user }) {
   )
 }
 
+/**
+ * @description A Container that displays a single group message
+ * @param message
+ * @param userID
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function Message({ message, userID }) {
   const { text, uid, createdAt, name, photoURL, metadata, attachedF } = message
   const type = uid === userID ? 'self' : 'other'
@@ -181,17 +214,28 @@ function Message({ message, userID }) {
   )
 }
 
+/**
+ * @description the bottom bar component where we can type messages and sed it
+ * @param onSend
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const BottomBar = ({ onSend }) => {
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [text, setText] = useState('')
 
+  // all the supported formats for image to text conversion
   const supportedFormat = ['jpg', 'png', 'jpeg', 'gif', 'bmp', 'svg', 'webp']
 
   if (loading) {
     return <div className={'bottom-bar'}>...</div>
   }
 
+  /**
+   * Scans doc using AI to extract text from image
+   * @returns {Promise<void>}
+   */
   async function scanDoc() {
     setLoading(true)
     const [url, metadata, newFileName] = await uploadFiles(file)
@@ -255,6 +299,12 @@ const BottomBar = ({ onSend }) => {
   )
 }
 
+/**
+ * @description the plus button that uploads an image if clicked
+ * @param onFileUploaded
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const PlusIcon = ({ onFileUploaded }) => {
   function fileUploadButton() {
     document.getElementById('fileButton').click()
@@ -276,6 +326,12 @@ const PlusIcon = ({ onFileUploaded }) => {
   )
 }
 
+/**
+ * @description the send button that sends the message
+ * @param onClick
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const SendIcon = ({ onClick }) => (
   <BiSend
     size="22"

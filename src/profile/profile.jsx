@@ -17,10 +17,15 @@ import {getDownloadURL, getStorage, ref, uploadBytesResumable,getMetadata } from
 import {v4 as uuidv4} from 'uuid'
 import {Loader} from "../common/loading_anim";
 
-firebase.initializeApp(firebaseConfig)
-const firestore = firebase.firestore()
-const storage = getStorage()
+firebase.initializeApp(firebaseConfig)  // initialize firebase
+const firestore = firebase.firestore()  // initialize firestore
+const storage = getStorage() // initialize storage
 
+/**
+ * Uploads a file to firebase storage and returns the download url and metadata
+ * @param file
+ * @returns {Promise<null|(string|FullMetadata)[]>}
+ */
 const uploadFiles = async (file) => {
   // if there is no file, return null
   console.log('upload file')
@@ -37,15 +42,21 @@ const uploadFiles = async (file) => {
   return [url,metadata]
 }
 
-
+/**
+ * @description profile screen component displays the profile of an user and allows them to modify it
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function ProfileScreen({}) {
-    const [groups, setGroups] = useState([]);
-    const [user, setUser] = useState(null);
-    const [signedIn, setSignedIn] = useState(null);
 
-    const navigate = useNavigate();
+    const [groups, setGroups] = useState([]); // groups that the user is a member of
+    const [user, setUser] = useState(null); // user details
+    const [signedIn, setSignedIn] = useState(null); // signed in status
+
+    const navigate = useNavigate(); // navigate to another page
 
     useEffect(() => {
+        // get user details
         getUserDetails().then(res => {
             if (res.success === true) {
                 getJoinedGroups(res.userID).then(res => {
@@ -63,13 +74,15 @@ export function ProfileScreen({}) {
 
     const height = window.innerHeight - 64 + 'px';
 
-
+    /**
+     * @description updates the profile photo of the user
+     * @param file
+     * @returns {Promise<void>}
+     */
     async function updateProfilePhoto(file){
         if(!file) return
-        console.log('debug-updateProfilePhoto:', file)
         let [url,metadata] = await uploadFiles(file)
 
-        console.log('uploaded photo,',url)
         uploadUserIcon(url).then(getUserDetails().then(res => {
             if (res.success === true) {
                 getJoinedGroups(res.userID).then(res => {

@@ -6,16 +6,29 @@ import {useNavigate} from "react-router-dom";
 import {createGroup} from "../../repository/repo";
 import {Loader} from "../../common/loading_anim";
 
+/**
+ * @description CreateGroup Screen component
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function CreateGroup({}) {
 
-    const contentHeight = window.innerHeight - 64 + 'px';
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    /**
+     * Variables to display the screen conditionally
+     */
+    const contentHeight = window.innerHeight - 64 + 'px'; // 64px is the height of the top navigation bar
+    const [name, setName] = useState(''); // Group name
+    const [description, setDescription] = useState(''); // Group description
+    const [error, setError] = useState(''); // Error message
+    const [loading, setLoading] = useState(false); // Loading state
+    const navigate = useNavigate(); // React router navigate function
 
 
+    /**
+     * @description Creates a new group
+     * if the group name and description is not empty
+     * @returns {Promise<void>}
+     */
     async function createTheGroup() {
         setError('');
         setLoading(true);

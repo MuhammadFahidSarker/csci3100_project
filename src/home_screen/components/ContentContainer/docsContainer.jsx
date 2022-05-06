@@ -6,6 +6,11 @@ import {getGoogleToolWidth, getGoogleToolHeight, GOOGLE_TOOL_MARGIN_LEFT} from "
 import TopNavigation from "../TopNavigation";
 
 
+/**
+ * @class DocsContainer
+ * @extends Component
+ * Returns a container that displays Google Docs using the iframe component
+ */
 export class DocsContainer extends Component {
     constructor(props) {
         super(props);
@@ -15,11 +20,14 @@ export class DocsContainer extends Component {
         }
     }
 
-
-
+    /**
+     * @method componentDidMount
+     * @returns {void}
+     * @description This method is called when the component is mounted. It fetches
+     * the Google Docs link from the repository and sets it in the state.
+     */
     componentDidMount() {
         getGoogleDocLink(this.props.group.groupid).then(res => {
-            console.log('doc link recieved:',res.content)
             if (res.success === true) {
                 this.setState({
                     docLink: res.content.docsLink,

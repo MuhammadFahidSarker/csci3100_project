@@ -5,17 +5,22 @@ import {AiFillCloseCircle, FiCheckCircle, FiHome, FiLoader, FiLogOut, FiRefreshC
 import {getUserDetails, logout, sendVerificationEmail} from "../repository/repo";
 import {Navigate} from 'react-router-dom';
 
+/**
+ * @description This is the component that is rendered when the user is not verified
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function VerifyUser() {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [emailSent, setEmailSent] = useState(false);
-    const navigate = useNavigate();
+    const [user, setUser] = useState(null); // user details
+    const [loading, setLoading] = useState(true); // loading state
+    const [emailSent, setEmailSent] = useState(false); // email sent state
+    const navigate = useNavigate(); // navigate to another page
 
-
+    /**
+     */
     useEffect(
         () => {
             getUserDetails().then(user => {
-                console.log(user);
                 if(user.success === true){
                     setUser(user);
                     setLoading(false);
@@ -34,17 +39,22 @@ export function VerifyUser() {
         })
     }
 
-    console.log('verification screen:',user);
 
     if (loading === true) {
         return <LoadingScreen withTopNav={false}/>
     }
 
 
+    /**
+     * User not logged in
+     */
     if(user === null){
         return  <Navigate to={'/logiasdn'}/>
     }
 
+    /**
+     * User already verified
+     */
     if (user.isVerified === true) {
         return <div className={'content-container'}>
             <div className={'center'}>

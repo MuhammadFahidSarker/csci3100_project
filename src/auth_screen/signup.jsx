@@ -7,16 +7,27 @@ import {useNavigate} from "react-router-dom";
 import logo from "../images/logo.png";
 import {Loader} from "../common/loading_anim";
 
+
+/**
+ * return the signup screen
+ * **/
 export default function SignupScreen({}) {
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [password2, setPassword2] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+    /**
+     * variables to display the screen conditionally
+     * **/
+    const [name, setName] = useState(''); // name of the user
+    const [email, setEmail] = useState(''); // email of the user
+    const [password, setPassword] = useState(''); // password of the user
+    const [password2, setPassword2] = useState(''); // password of the user
+    const [loading, setLoading] = useState(false); // loading state
+    const [error, setError] = useState(''); // error state
+    const navigate = useNavigate(); // hook to navigate to other pages
 
+    /**
+     * use effect to check if the user is logged in,
+     * if so, redirect to the home page
+     * **/
     useEffect(
         () => {
             getUserDetails().then(user => {
@@ -28,6 +39,13 @@ export default function SignupScreen({}) {
     )
 
 
+    /**
+     * signup function
+     * if name, email, password and password2 are not empty,
+     * and password and password2 are equal,
+     * then signup the user
+     * else show errors
+     * **/
     function performSignUp(){
         if(name.length === 0 || email.length === 0 || password.length === 0){
             setError('Please fill all the fields');
@@ -52,7 +70,9 @@ export default function SignupScreen({}) {
 
     }
 
-
+    /**
+     * render the signup screen
+     * **/
     return <div className={'content-container'}>
         <div style={{
             display: 'flex',

@@ -16,13 +16,25 @@ import zoom from '../../../images/zoom.png'
 import TopNavigation from '../TopNavigation'
 import ZoomMtgEmbedded from '@zoomus/websdk/embedded'
 
-export function ZoomContainer({ group, toolbarHidden, user }) {
-  const client = ZoomMtgEmbedded.createClient()
-  const meetingSDKElement = document.getElementById('meetingSDKElement')
-  const [existingMeeting, setExistingMeeting] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [success, setSuccess] = useState('')
 
+/**
+ * @description Zoom meeting container component for zoom meeting
+ * @param group
+ * @param toolbarHidden
+ * @param user
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export function ZoomContainer({ group, toolbarHidden, user }) {
+  const client = ZoomMtgEmbedded.createClient()   // Create a client instance
+  const meetingSDKElement = document.getElementById('meetingSDKElement') // Get the meeting SDK element
+  const [existingMeeting, setExistingMeeting] = useState(null) // Set the existing meeting
+  const [loading, setLoading] = useState(true) // Set the loading state
+  const [success, setSuccess] = useState('') // Set the success state
+
+  /**
+   * @description Get the zoom meeting link
+   */
   useEffect(()=>{
     if(!group) return
     getJoinAbleZoomMeetingLink(group.groupid)
@@ -70,6 +82,9 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
     console.log(e)
   }
 
+  /**
+   * @returns {Promise<void>}
+   */
   async function getSignature() {
     //e.preventDefault()
     let resp = await getJoinAbleZoomMeetingLink(group.groupid) 
@@ -87,7 +102,12 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
       })
   }
 
-
+  /**
+   * @description Start the meeting with the given signature
+   * @param signature
+   * @param user
+   * @param meetingNumber
+   */
   function startMeeting(signature, user, meetingNumber) {
     client.join({
       apiKey: 'CyxAFmRCQWeCyu4eGFC0IQ',
@@ -99,11 +119,19 @@ export function ZoomContainer({ group, toolbarHidden, user }) {
     //setLoading(false)
   }
 
+  /**
+   * @description join a particular meeting
+   * @returns {Promise<void>}
+   */
   async function joinMeeting(){
     setLoading(true)
     getSignature()
   }
 
+  /**
+   * @description create a new meeting
+   * @returns {Promise<void>}
+   */
   async function createMeeting(){
     console.log('create meeting')
     setLoading(true)

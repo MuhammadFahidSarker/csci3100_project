@@ -6,6 +6,11 @@ import {getGoogleToolWidth, getGoogleToolHeight, GOOGLE_TOOL_MARGIN_LEFT} from "
 import TopNavigation from "../TopNavigation";
 
 
+/**
+ * @class SheetsContainer
+ * @extends Component
+ * @description SheetsContainer component is a container for google sheets
+ */
 export class SheetsContainer extends Component{
     constructor(props) {
         super(props);
@@ -17,6 +22,9 @@ export class SheetsContainer extends Component{
     }
 
     componentDidMount() {
+        /**
+         * gets the google sheet link and updates the state
+         */
         getGoogleSheetLink(this.props.group.groupid).then(res => {
             console.log('sheet link recieved:',res.content)
             if (res.success === true) {
@@ -33,7 +41,6 @@ export class SheetsContainer extends Component{
     render() {
         const {sheetLink, loading} = this.state;
         const {toolbarHidden, user, group} = this.props;
-
 
         return (
             <div style={{marginLeft: toolbarHidden === true ? GOOGLE_TOOL_MARGIN_LEFT : null}}  id={'doc-container'} className="content-container">

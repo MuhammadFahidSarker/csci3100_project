@@ -25,6 +25,13 @@ const useLocalStorage = (key, initialValue) => {
   return [storedValue, setValue];
 };
 
+/**
+ * @function useDarkMode
+ * @description Hook to get the dark mode state
+ * @returns {boolean} darkMode
+ * @param key
+ * @param initialValue
+ */
 const useDarkMode = () => {
   const [enabled, setEnabled] = useLocalStorage('dark-theme');
   const isEnabled = typeof enabledState === 'undefined' && enabled;

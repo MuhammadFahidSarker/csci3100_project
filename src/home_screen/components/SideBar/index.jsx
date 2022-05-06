@@ -6,6 +6,15 @@ import { useNavigate } from "react-router-dom";
 import {logout} from "../../../repository/repo";
 
 
+/**
+ * @Deprecated We dont use it anymore
+ * Side bar component for the home screen
+ * @param onClick
+ * @param user
+ * @param group
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const SideBar = ({onClick, user, group}) => {
     const [darkTheme, setDarkTheme] = useDarkMode();
     const handleMode = () => setDarkTheme(!darkTheme);
@@ -35,6 +44,14 @@ const SideBar = ({onClick, user, group}) => {
   );
 };
 
+/**
+ * @description Sidebar icon component
+ * @param icon
+ * @param text
+ * @param onClick
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const SideBarIcon = ({ icon, text = 'tooltip 💡' , onClick}) => (
   <div className="sidebar-icon group"  onClick={() => onClick?.()}>
     {icon}

@@ -1,5 +1,10 @@
 import './txtinput.css';
 
+/**
+ * @description A Generic Text input component for the application
+ * @param {Object} props
+ * @returns {JSX}
+ * **/
 export function TextInput({hideCnt, width = '400px', label, value, multiline = false, onChange, placeHolder}) {
     return <div>
         <div className={'label'}>{label}</div>

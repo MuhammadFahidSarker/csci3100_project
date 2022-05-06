@@ -6,12 +6,24 @@ import {LoadingScreen} from "../common/loading";
 import {Navigate} from "react-router-dom";
 import {BiLogOut} from "react-icons/all";
 
+/**
+ * @description This component is used to display the banned user page
+ * If a user is banned, he/she is not allowed to use our services. Instead,
+ * he/she is redirected to this page.
+ * **/
 export function BannedUser({}){
 
-    const [loading, setLoading] = useState(true)
-    const [user, setUser] = useState(null)
-    const navigate = useNavigate()
+    /**
+     * Variables to display the screen conditionally
+     * **/
+    const [loading, setLoading] = useState(true) // Loading screen
+    const [user, setUser] = useState(null) // User details
+    const navigate = useNavigate() // react hook to navigate to another page
 
+    /**
+     * @description This function is used to get the user details
+     * if no user is logged in, he/she is redirected to the login page
+     */
     useEffect(() => {
         getUserDetails().then(user => {
             if(user.success === true){
@@ -24,6 +36,8 @@ export function BannedUser({}){
         })
     }, [])
 
+    /**
+     */
     if(loading === true){
         return <LoadingScreen withTopNav={false}/>
     }
@@ -32,8 +46,10 @@ export function BannedUser({}){
         return <Navigate to={'/login'}/>
     }
 
-    console.log(user)
 
+    /**
+     * @description If the user is not banned, he/she is redirected to the home page
+     */
     if(user.isBanned === false){
         return <Navigate to={'/'}/>
     }

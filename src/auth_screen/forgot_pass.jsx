@@ -7,7 +7,17 @@ import logo from "../images/logo.png";
 import {useNavigate} from "react-router-dom";
 import {Loader} from "../common/loading_anim";
 
+/**
+ * return the ui of the forgot password screen
+ * **/
 export  function ForgotPassword(){
+    /**
+     * Variables to hold the state of the form and display content conditionally
+     *
+     * email is empty initially
+     * loading is true initially
+     * user is null initially
+     * **/
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
@@ -15,6 +25,10 @@ export  function ForgotPassword(){
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
 
+    /**
+     * useEffect hook to fetch the user details
+     * if the user is logged in, redirect to home page
+     * **/
     useEffect(
         () => {
             getUserDetails().then(
@@ -30,6 +44,10 @@ export  function ForgotPassword(){
         [user]
     )
 
+    /**
+     * if email is empty or invalid, display error message
+     * if email is valid, reset password
+     * **/
     async function resetPass() {
         if (email === '') {
             setError('Email is required')
@@ -52,6 +70,9 @@ export  function ForgotPassword(){
         }
     }
 
+    /**
+     * returns the ui
+     * **/
     return <div className={'content-container'}>
         <div style={{
             display: 'flex',

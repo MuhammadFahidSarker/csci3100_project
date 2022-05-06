@@ -5,8 +5,12 @@ import {getGoogleDriveLink, getGooglePresLink, getGoogleSheetLink} from "../../.
 import {getGoogleToolWidth, getGoogleToolHeight, GOOGLE_TOOL_MARGIN_LEFT} from "./etc";
 import TopNavigation from "../TopNavigation";
 
-
-export class DriveContainer extends Component{
+/**
+ * @class   PresContainer
+ * @extends Component
+ * @description Displays the google presentation
+ */
+export class PresContainer extends Component{
     constructor(props) {
         super(props);
         this.state={
@@ -16,6 +20,9 @@ export class DriveContainer extends Component{
     }
 
     componentDidMount() {
+        /**
+         * @description Fetches the google presentation link
+         */
         getGooglePresLink(this.props.group.groupid).then(res => {
             console.log(res);
             if (res.success === true) {

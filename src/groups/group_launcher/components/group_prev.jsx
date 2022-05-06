@@ -1,27 +1,34 @@
 import './group_prev.css'
-import {Button} from "next-gen-ui";
-import useDarkMode from "../../../home_screen/hooks/useDarkMode";
 import {useNavigate} from "react-router-dom";
 import {BiArrowBack, FcLeave, FiEdit, RiAdminFill} from "react-icons/all";
 import {joinGroup, leaveGroup} from "../../../repository/repo";
 import {useState} from "react";
-import {LoadingScreen} from "../../../common/loading";
 import {Loader} from "../../../common/loading_anim";
 
+/**
+ * @description A component that displays the preview of the group showing the name, description, and image.
+ * @param onGroupLeaved
+ * @param group
+ * @param userID
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function GroupPreview({onGroupLeaved, group, userID}) {
-    let navigate = useNavigate();
-    const gMembers = group.members;
-    const members = gMembers?.length | 0;
-    const isMember = gMembers?.includes(userID);
-    const [action, setAction] = useState(isMember ? 'Launch' : 'Join');
-    console.log(gMembers, userID, action, gMembers.includes(userID));
 
-    const admins = group.admins;
-    const isAdmin = admins?.includes(userID);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    let navigate = useNavigate(); // used to navigate to the group page
+    const gMembers = group.members; // the group members
+    const members = gMembers?.length | 0; // the number of members
+    const isMember = gMembers?.includes(userID); // whether the user is a member of the group
+    const [action, setAction] = useState(isMember ? 'Launch' : 'Join'); // the action to be performed
+    const admins = group.admins; // the group admins
+    const isAdmin = admins?.includes(userID); // whether the user is an admin of the group
+    const [error, setError] = useState('');    // the error message
+    const [loading, setLoading] = useState(false); // whether the action is being performed
 
-
+    /**
+     * @description join a new group and if successful, navigate to the group page
+     * @returns {Promise<void>}
+     */
     async function joinNewGroup() {
         setLoading(true);
         const res = await joinGroup(group.groupid);
@@ -33,10 +40,17 @@ export default function GroupPreview({onGroupLeaved, group, userID}) {
         }
     }
 
+    /**
+     * @returns {Promise<void>}
+     */
     async function launchGroup() {
         navigate('/groups/' + group.groupid)
     }
 
+    /**
+     * @description leave a group and if successful, call the onGroupLeaved callback
+     * @returns {Promise<void>}
+     */
     async function leaveTheGroup() {
         setLoading(true);
         const res = await leaveGroup(group.groupid);
@@ -50,7 +64,6 @@ export default function GroupPreview({onGroupLeaved, group, userID}) {
         }
     }
 
-    console.log(group);
 
     return <div className={'prev'} style={{
         display: 'flex', fontSize: '40px',

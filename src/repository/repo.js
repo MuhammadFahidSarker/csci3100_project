@@ -298,7 +298,6 @@ export async function getGooglePresLink(groupID) {
  *
  * Note object contains params provided in the getUserDetails function
  *
- * todo: implementation
  * **/
 export async function sendMessage(message, groupID, user) {
   await waitAuthObject()

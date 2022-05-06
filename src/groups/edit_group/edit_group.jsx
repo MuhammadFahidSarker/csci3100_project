@@ -5,18 +5,15 @@ import {LoadingScreen} from "../../common/loading";
 import TopNavigation from "../../home_screen/components/TopNavigation";
 import {TextInput} from "../../common/input/textinput";
 import {
-    AiFillBackward, AiFillCloseCircle,
+    AiFillBackward,
     AiFillDelete,
-    AiFillRightCircle,
-    AiFillWarning, AiOutlineClose, AiOutlineCloseCircle,
+    AiOutlineCloseCircle,
     BiArrowBack,
     FiDelete,
     FiEdit, GiConfirmed, IoClose, RiAdminFill
 } from "react-icons/all";
 import {useNavigate} from "react-router-dom";
 import './edit_grp.css'
-
-
 import firebase from 'firebase/compat'
 import {firebaseConfig} from '../../repository/firebase_auth'
 import 'firebase/compat/firestore'
@@ -28,6 +25,11 @@ firebase.initializeApp(firebaseConfig)
 const firestore = firebase.firestore()
 const storage = getStorage()
 
+/**
+ * @description uploads a file to firebase storage and returns the url and metadata
+ * @param file
+ * @returns {Promise<null|(string|FullMetadata)[]>}
+ */
 const uploadFiles = async (file) => {
   // if there is no file, return null
   console.log('upload file')
@@ -44,18 +46,29 @@ const uploadFiles = async (file) => {
   return [url,metadata]
 }
 
-
+/**
+ * @description An Edit Group Component
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function EditGroup({}) {
-    const location = useLocation();
-    const groupId = location.pathname.split('/')[2];
-    const [confirmDel, setConfirmDel] = useState(false);
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [photo, setPhoto] = useState(null);
 
-    const navigate = useNavigate();
-    const [group, setGroup] = useState(null);
+    /**
+     * Variables used in the component and these are used to display the screen conditionally
+     * @type {Location<LocationState>}
+     */
+    const location = useLocation(); // hooks to get the current location
+    const groupId = location.pathname.split('/')[2]; // gets the group id from the url
+    const [confirmDel, setConfirmDel] = useState(false); // sets the confirm delete state
+    const [name, setName] = useState(''); // sets the group name
+    const [description, setDescription] = useState(''); // sets the group description
+    const [photo, setPhoto] = useState(null); // sets the group photo
+    const navigate = useNavigate(); // hooks to navigate to a page
+    const [group, setGroup] = useState(null); // sets the group details
 
+    /**
+     * @description fetches the group details from the database
+     */
     useEffect(
         () => {
             getGroupDetails(groupId).then(grp => {
@@ -71,6 +84,9 @@ export function EditGroup({}) {
         }, [],
     )
 
+    /**
+     * @description deletes the group and navigates to the groups page
+     */
     function deleteTheGroup(){
         deleteGroup(groupId).then(res => {
             if (res.success === true) {
@@ -81,15 +97,13 @@ export function EditGroup({}) {
         })
     }
 
-
-    //TODO refresh after update
+    /**
+     * @description updates the group name and description
+     */
     function updateGroupDetails(){
-        console.log('updateGroupDetails to',name,description)
-        
         updateGroupNameDescription(name,description,groupId).then(
             getGroupDetails(groupId).then(grp => {
                 if (grp.success === true) {
-                    console.log('after update group profile', grp)
                     setGroup(grp.content)
                     setName(grp.content.name)
                     setDescription(grp.content.description)
@@ -101,16 +115,19 @@ export function EditGroup({}) {
         )
     }
 
-    //TODO refresh after update
+
+    /**
+     * updates the group photo
+     * @param file
+     * @returns {Promise<void>}
+     */
     async function updateGroupPhoto(file){
         if(!file) return
         
         let [url,metadata] = await uploadFiles(file)
-        console.log('uploaded photo,',url)
         uploadGroupIcon(url,groupId).then(
             getGroupDetails(groupId).then(grp => {
                 if (grp.success === true) {
-                    console.log('after upload photo', grp)
                     setGroup(grp.content)
                     setName(grp.content.name)
                     setDescription(grp.content.description)
@@ -127,6 +144,7 @@ export function EditGroup({}) {
     }
 
     const height = window.innerHeight - 64 + 'px';
+
 
     if (confirmDel === true) {
         return <div className={'content-container'}>
@@ -187,6 +205,13 @@ export function EditGroup({}) {
     );
 }
 
+/**
+ * @description A group Photo component
+ * @param groupPhotoUrl
+ * @param onFileUploaded
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const GroupPhoto = ({groupPhotoUrl, onFileUploaded}) => {
 
     function fileUploadButton() {
@@ -195,8 +220,6 @@ const GroupPhoto = ({groupPhotoUrl, onFileUploaded}) => {
             onFileUploaded(document.getElementById('fileButton').files[0]);
         }
     }
-
-    console.log(groupPhotoUrl);
 
     return (
         <div>
@@ -213,9 +236,19 @@ const GroupPhoto = ({groupPhotoUrl, onFileUploaded}) => {
     )
 }
 
+/**
+ * @description A group members component that represents the group members
+ * @param groupID
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function GroupMembers({groupID}) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [members, setMembers] = useState(null);
+
+    /**
+     * @description fetch the group members
+     */
     useEffect(
         () => {
             getGroupMembers(groupID).then(grp => {
@@ -228,6 +261,10 @@ function GroupMembers({groupID}) {
         }, [],
     )
 
+    /**
+     * @description remove a member from the group
+     * @param member
+     */
     function removeMember(member) {
         kickUser(member.userid, groupID).then(res => {
             if (res.success) {
@@ -248,6 +285,13 @@ function GroupMembers({groupID}) {
     </ul>
 }
 
+/**
+ * @description A group member component that renders a single member
+ * @param member
+ * @param removeMember
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function Member({member, removeMember}) {
     const [shouldDel, setShouldDel] = useState(false);
     const isAdmin = member.role === 'admin';

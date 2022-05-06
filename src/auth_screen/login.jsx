@@ -8,14 +8,26 @@ import {useNavigate} from "react-router-dom";
 import logo from '../images/logo.png';
 import {Loader} from "../common/loading_anim";
 
+
+/**
+ * @param adminLogin
+ * @returns {*}
+ * **/
 export default function LoginScreen({adminLogin = false}) {
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+    /**
+     * variables to display the screen conditionally
+     * **/
+    const [email, setEmail] = useState(''); // email
+    const [password, setPassword] = useState(''); // password
+    const [loading, setLoading] = useState(true); // loading
+    const [error, setError] = useState(''); // error
+    const navigate = useNavigate(); // navigate to navigate to the next screen
 
+    /**
+     * useEffect to get the user details
+     * if the user is already logged in and not an admin, show error
+     * **/
     useEffect(
         () => {
             getUserDetails().then(user => {
@@ -42,6 +54,11 @@ export default function LoginScreen({adminLogin = false}) {
     )
 
 
+    /**
+     * function to handle the login
+     * if email and password are empty, show error
+     * if email and password are not empty, sign in
+     * **/
     function executeLogin() {
         if (email === '' || password === '') {
             setError('Please enter email and password');
@@ -73,6 +90,9 @@ export default function LoginScreen({adminLogin = false}) {
     }
 
 
+    /**
+     * show the login screen
+     * **/
     return <div className={'content-container'}>
 
         <div style={{

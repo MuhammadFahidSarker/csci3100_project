@@ -2,7 +2,7 @@ import TopNavigation from '../TopNavigation';
 import { BsPlusCircleFill } from 'react-icons/bs';
 import {GroupChatContainer, groupChatContainer} from "./groupChatContainer";
 import {DocsContainer} from "./docsContainer";
-import {DriveContainer} from "./driveContainer";
+import {PresContainer} from "./presContainer";
 import {SheetsContainer} from "./sheetsContainer";
 import {ZoomContainer} from "./zoomContainer";
 // import { useState } from 'react';
@@ -16,7 +16,7 @@ const ContentContainer = (props) => {
         case 'Google Sheets':
             return <SheetsContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user}/>
         case 'Google Presentation':
-            return <DriveContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user} />
+            return <PresContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user} />
         case 'Meeting':
             return <ZoomContainer group={props.group} toolbarHidden={props.toolbarHidden} user={props.user} />
         default: <div/>

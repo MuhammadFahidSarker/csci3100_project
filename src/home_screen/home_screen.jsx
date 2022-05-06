@@ -9,9 +9,17 @@ import {LoadingScreen} from "../common/loading";
 import { useLocation } from 'react-router-dom'
 import {useNavigate} from "react-router-dom";
 
+/**
+ * Home screen that displays the content of a group
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
+
 function Home (props) {
-    const location = useLocation();
-    const navigate = useNavigate();
+    const location = useLocation(); // get the current location
+    const navigate = useNavigate(); // hook to navigate
 
     return <HomeComponent {...props} onNavigate={navigate} groupID={location.pathname.split('/')[2]}/>
 }
@@ -38,29 +46,31 @@ class HomeComponent extends Component {
     async componentDidMount() {
         let user, error, group;
 
+        // get user details
         user = await getUserDetails();
         if(user.success === false){
             this.setState({loginRequired: true});
         }
 
+        // user not varified -> redirect to verify-user to verify user account
         if(user.isVerified === false){
             this.props.onNavigate('/verify-user');
         }
 
-
+        // get group details
         group = await getGroupDetails(this.props.groupID);
-        console.log(group);
         if(group.success === false){
             this.setState({error: GROUP_NOT_FOUND, loginRequired: false});
         }
 
-        console.log(group);
 
         this.setState({user: user, group: group.content, loginRequired: false});
     }
 
-
-
+    /**
+     * @Deprecated - do not use it since the sidebar is no longer used
+     * @param type
+     */
     handleMainBarOnclick = (type) => {
         if(type === 'hide_show'){
             this.setState({toolbarHidden: !this.state.toolbarHidden});

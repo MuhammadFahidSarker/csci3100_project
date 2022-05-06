@@ -16,6 +16,22 @@ import {useNavigate} from 'react-router-dom';
 import {SideBarIcon} from "../SideBar";
 import {logout} from "../../../repository/repo";
 
+/**
+ * @description Top navigation bar for the home screen
+ * @param showNormalModeIcon
+ * @param hideAdminIcon
+ * @param forceName
+ * @param toolbarHidden
+ * @param user
+ * @param showAllGroup
+ * @param showCreateGroup
+ * @param group
+ * @param url
+ * @param onSearch
+ * @param type
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const TopNavigation = ({
                            showNormalModeIcon = false,
     hideAdminIcon = false, forceName,
