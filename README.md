@@ -17,3 +17,4 @@ For MacOS/Linux:
 The credentials of service accounts supposed to be in tokaho/SDK folder (Firebase SDK, Google API, Zoom SDK).
 
 If you have any question on how to set up the program, just email to one of our members :)
+
